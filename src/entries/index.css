@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+  scrollbar-width: thin;
+}
+
+html, body{
+  scrollbar-width: none;
+}
+
+ul[role="listbox"] {
+  @apply max-h-40;
+}
