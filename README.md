@@ -1,19 +1,19 @@
 # HIMTI Learning Management System (LMS)
 
-## 📌 Tentang Proyek
+## 📌 About Project
 LMS (Learning Management System) is a platform to help the online learning process. This system allows users to take classes, access learning modules, and track their learning progress.
 
-## ✨ Fitur Utama
+## ✨ Core Feature
 - **User Management**: Registration, authentication, and user roles (admin, mentor, participant).
 - **Classes & Mentors**: Mentors can create classes and manage participants.
 - **Modules & Sessions**: Each class has sessions containing learning modules in the form of text and video.
 - **Progress Tracking**: Users can mark completed modules.
 - **Points & Reward System**: Can be further developed to increase user engagement.
 
-## 🛠️ Teknologi yang Digunakan
+## 🛠️ Tech Stack
 React Vite, Typescript, Tailwind CSS
 
-## 📂 Struktur Proyek
+## 📂 Project Structure
 ```
 📦 learning-management-system
 ├── 📁 src
@@ -36,11 +36,11 @@ React Vite, Typescript, Tailwind CSS
 ├── 📄 README.md
 ```
 
-## 🚀 Instalasi & Menjalankan Proyek
-### Prasyarat
+## 🚀 How to run?
+### Requirement
 - Node.js & npm/yarn
 
-### Langkah-Langkah
+### Step by step
 #### 1️⃣ Clone Repository
 ```bash
 git clone https://github.com/LitbangHimtiUMT/learning-management-system.git
