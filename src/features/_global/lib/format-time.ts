@@ -16,7 +16,6 @@ interface IFormatTime {
 
 export function formatDate(isoDate: Date) {
     const date = new Date(isoDate);
-    console.log({ isoDate })
 
     const optionsDate: IFormatDate = {
         year: 'numeric',
