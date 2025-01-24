@@ -13,3 +13,7 @@ html, body{
 ul[role="listbox"] {
   @apply max-h-40;
 }
+
+#poppins {
+  font-family: 'Poppins' !important;
+}

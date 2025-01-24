@@ -6,7 +6,7 @@ interface IPoppinsProps extends React.HTMLAttributes<HTMLParagraphElement> {
 
 export const Poppins: React.FC<IPoppinsProps> = ({ children, ...rest }) => {
   return (
-    <p className={`font-poppins ${rest.className}`} {...rest}>
+    <p id="poppins" {...rest}>
       {children}
     </p>
   );

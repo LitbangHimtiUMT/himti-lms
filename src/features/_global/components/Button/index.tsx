@@ -4,7 +4,13 @@ import { generateSize } from "./utils";
 export interface IButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "danger" | "success" | "disabled";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "success"
+    | "disabled"
+    | "warning";
   rounded?: "sm" | "md" | "lg" | "full";
   size?: "sm" | "md" | "lg";
 }
@@ -32,6 +38,8 @@ export const Button: React.FC<IButtonProps> = ({
         ? "bg-blue-500"
         : variant == "success"
         ? "bg-green-500"
+        : variant == "warning"
+        ? "bg-yellow-500"
         : "bg-gray-300"
     }
     ${
@@ -39,7 +47,11 @@ export const Button: React.FC<IButtonProps> = ({
         ? "text-gray-500"
         : "text-white"
     }
-        ${variant == "disabled" ? "cursor-not-allowed" : "cursor-pointer"}
+        ${
+          variant == "disabled" && !rest.onClick
+            ? "cursor-not-allowed"
+            : "cursor-pointer"
+        }
     ${
       rounded == "sm"
         ? "rounded-sm"
@@ -67,6 +79,10 @@ export const Button: React.FC<IButtonProps> = ({
          ? "hover:bg-blue-600"
          : variant == "success"
          ? "hover:bg-green-600"
+         : variant == "warning"
+         ? "hover:bg-yellow-600"
+         : variant == "disabled" && rest.onClick
+         ? "hover:bg-gray-400"
          : ""
      }
     `}
