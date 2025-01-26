@@ -4,12 +4,16 @@ import { Poppins } from "../Text";
 export const AuthSection = () => {
   return (
     <div className="flex items-center gap-2">
-      <Button variant="warning" rounded="sm">
-        <Poppins className="text-black font-semibold">Register</Poppins>
-      </Button>
-      <Button variant="disabled" rounded="sm" onClick={() => {}}>
-        <Poppins className="text-black font-semibold">Login</Poppins>
-      </Button>
+      <div className="w-28">
+        <Button size="md" rounded="full" variant="warning">
+          <Poppins className="text-black font-medium">Sign In</Poppins>
+        </Button>
+      </div>
+      <div className="w-28">
+        <Button rounded="full">
+          <Poppins className="text-white font-medium">Sign Up</Poppins>
+        </Button>
+      </div>
     </div>
   );
 };

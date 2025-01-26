@@ -1,16 +1,16 @@
+import HIMTI from "@core/assets/logo/HIMTI.png";
 import { AuthSection } from "./AuthSection";
-import { Brand } from "./Brand";
 import { Group } from "./Group";
 
 export const Navbar = () => {
   return (
     <>
-      <div className="w-full h-16 flex flex-row items-center pl-48 pr-24 fixed gap-28 justify-center">
-        <div className="flex flex-row items-center gap-12">
-          <Brand />
+      <div className="sticky top-0 left-20 right-20 flex items-center justify-center z-50">
+        <div className="w-[90vw] h-24 flex px-4 items-center bg-white rounded-bl-3xl rounded-br-3xl justify-between shadow-[0_1px_10px_rgba(0,0,0,0.1)]  ">
+          <img src={HIMTI} width={100} />
           <Group />
+          <AuthSection />
         </div>
-        <AuthSection />
       </div>
     </>
   );

@@ -35,11 +35,11 @@ export const Button: React.FC<IButtonProps> = ({
         : variant == "secondary"
         ? "bg-gray-50"
         : variant == "primary"
-        ? "bg-blue-500"
+        ? "bg-[#023A6B]"
         : variant == "success"
         ? "bg-green-500"
         : variant == "warning"
-        ? "bg-yellow-500"
+        ? "bg-[#ffcc00]"
         : "bg-gray-300"
     }
     ${
@@ -76,11 +76,11 @@ export const Button: React.FC<IButtonProps> = ({
          : variant == "secondary"
          ? "hover:bg-gray-100"
          : variant == "primary"
-         ? "hover:bg-blue-600"
+         ? "hover:bg-[#2b6394]"
          : variant == "success"
          ? "hover:bg-green-600"
          : variant == "warning"
-         ? "hover:bg-yellow-600"
+         ? "hover:bg-[#d09c35]"
          : variant == "disabled" && rest.onClick
          ? "hover:bg-gray-400"
          : ""
