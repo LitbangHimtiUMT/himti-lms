@@ -57,7 +57,7 @@ async function createRequest<Res = unknown, Req = unknown>(
   return data as Res;
 }
 
-export const HTTP_REQUEST = {
+export const request = {
   get:
     <Res = unknown, Req = unknown>(endpoint: string) =>
       (apiOption?: ApiOption) =>
