@@ -1,4 +1,4 @@
-import HIMTI from "@core/assets/logo/HIMTI.png";
+import HIMTI from "../../../../core/assets/logo/HIMTI.png";
 import { AuthSection } from "./AuthSection";
 import { Group } from "./Group";
 
