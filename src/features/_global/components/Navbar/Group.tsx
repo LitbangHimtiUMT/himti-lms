@@ -38,6 +38,18 @@ export const Group = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [querySearch]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsOpen(false);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <div className="flex items-center justify-between w-full mx-5">
@@ -80,7 +92,7 @@ export const Group = () => {
 export const GroupResponsive = ({ isOpen }: { isOpen: boolean }) => {
   return (
     <div
-      className={`hidden md:flex md:flex-col duration-300 items-center gap-10 absolute left-10 rounded-3xl mt-5 right-10 py-10 bg-white ${
+      className={`lg:hidden flex flex-col duration-300 items-center gap-10 absolute left-10 rounded-3xl mt-5 right-10 py-10 bg-white ${
         isOpen ? "top-[100%]" : "top-[-1000px] z-[-1]"
       }`}
     >
