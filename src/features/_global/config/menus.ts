@@ -10,6 +10,14 @@ export const Menus: MenuAdminConfig = [
     to: "/class",
   },
   {
+    name: "Mentors",
+    to: "/mentors",
+  },
+  {
+    name: "Faq",
+    to: "/faq",
+  },
+  {
     name: "Learning Flow",
     to: "/learning-flow",
   },
