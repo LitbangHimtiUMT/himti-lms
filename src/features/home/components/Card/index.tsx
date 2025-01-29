@@ -17,7 +17,7 @@ export const Card: React.FC<CardProps> = ({ description, icon, title }) => {
       onMouseOut={() => {
         setIsHover(false);
       }}
-      className={`w-80 h-60 duration-300 rounded-lg overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.2)]`}
+      className={`w-full h-60 duration-300 rounded-lg overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.2)]`}
       style={{
         background: isHover
           ? "linear-gradient(to right, #023A6B, #0471D1)"
