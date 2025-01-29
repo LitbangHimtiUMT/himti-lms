@@ -4,9 +4,14 @@ import { Poppins } from "../Text";
 import { Input } from "../Input";
 import { BiSearch } from "react-icons/bi";
 import { convertQueryParamsToObject } from "../../helper";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { IoClose } from "react-icons/io5";
+import { AuthSection } from "./AuthSection";
 
 export const Group = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const location = useLocation();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,7 +40,7 @@ export const Group = () => {
   }, [querySearch]);
   return (
     <>
-      <div className="flex items-center gap-10">
+      <div className="flex items-center justify-between w-full mx-5">
         <div className="w-64">
           <Input
             placeholder="Apa yang ingin dipelajari?"
@@ -45,7 +50,14 @@ export const Group = () => {
             onChange={onChange}
           />
         </div>
-        <div className="flex items-center gap-10">
+        <button
+          className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <IoClose size={24} /> : <GiHamburgerMenu size={24} />}
+        </button>
+        <GroupResponsive isOpen={isOpen} />
+        <div className="flex items-center gap-10 lg-max:hidden">
           {Menus.map((item, index) => (
             <Link to={item.to} key={index}>
               <Poppins
@@ -62,5 +74,30 @@ export const Group = () => {
         </div>
       </div>
     </>
+  );
+};
+
+export const GroupResponsive = ({ isOpen }: { isOpen: boolean }) => {
+  return (
+    <div
+      className={`hidden md:flex md:flex-col duration-300 items-center gap-10 absolute left-10 rounded-3xl mt-5 right-10 py-10 bg-white ${
+        isOpen ? "top-[100%]" : "top-[-1000px] z-[-1]"
+      }`}
+    >
+      {Menus.map((item, index) => (
+        <Link to={item.to} key={index}>
+          <span
+            className={`text-black hover:text-gray-600 ${
+              location.pathname === item.to
+                ? "font-semibold text-lg"
+                : "text-md"
+            } duration-300`}
+          >
+            {item.name}
+          </span>
+        </Link>
+      ))}
+      <AuthSection />
+    </div>
   );
 };
