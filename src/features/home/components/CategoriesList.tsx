@@ -6,8 +6,8 @@ import { MdOutlineDesignServices } from "react-icons/md";
 
 export const CategoriesList = () => {
   return (
-    <div className="px-10">
-      <div className="flex items-center justify-between relative z-40 -mt-32">
+    <div className="px-10 my-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 justify-center xl:grid-cols-4 gap-5 relative z-40 -mt-40">
         <Card
           icon={<BiWorld size={32} />}
           title="Web Development"
