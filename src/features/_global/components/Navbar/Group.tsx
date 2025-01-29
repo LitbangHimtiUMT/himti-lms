@@ -52,7 +52,7 @@ export const Group = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full mx-5">
+      <div className="flex items-center justify-between w-full mx-5 flex-wrap">
         <div className="w-64">
           <Input
             placeholder="Apa yang ingin dipelajari?"
@@ -69,7 +69,7 @@ export const Group = () => {
           {isOpen ? <IoClose size={24} /> : <GiHamburgerMenu size={24} />}
         </button>
         <GroupResponsive isOpen={isOpen} />
-        <div className="flex items-center gap-10 lg-max:hidden">
+        <div className="flex items-center gap-5 lg-max:hidden my-1">
           {Menus.map((item, index) => (
             <Link to={item.to} key={index}>
               <Poppins
@@ -83,6 +83,7 @@ export const Group = () => {
               </Poppins>
             </Link>
           ))}
+          <AuthSection />
         </div>
       </div>
     </>
