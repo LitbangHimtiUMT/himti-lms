@@ -17,3 +17,12 @@ ul[role="listbox"] {
 #poppins {
   font-family: 'Poppins' !important;
 }
+
+@keyframes loading {
+  0% {
+    background-position: 200%;
+  }
+  100% {
+    background-position: -200%;
+  }
+}
