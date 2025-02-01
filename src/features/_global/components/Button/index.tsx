@@ -31,16 +31,16 @@ export const Button: React.FC<IButtonProps> = ({
       className={`
     ${
       variant == "danger"
-        ? "bg-red-500"
+        ? "bg-red-500 shadow-red-500"
         : variant == "secondary"
-        ? "bg-gray-50"
+        ? "bg-gray-50 shadow-gray-400"
         : variant == "primary"
-        ? "bg-[#023A6B]"
+        ? "bg-[#023A6B] shadow-[#466c8e]"
         : variant == "success"
-        ? "bg-green-500"
+        ? "bg-green-500 shadow-green-500"
         : variant == "warning"
-        ? "bg-[#ffcc00]"
-        : "bg-gray-300"
+        ? "bg-[#ffcc00] shadow-yellow-500"
+        : "bg-gray-300 shadow-gray-300"
     }
     ${
       variant == "secondary" || variant == "disabled"
@@ -65,6 +65,20 @@ export const Button: React.FC<IButtonProps> = ({
     ${generateSize(size)}
     w-full
     duration-300
+    transition-all
+    transform active:scale-95 active:shadow-sm ${
+      variant === "danger"
+        ? "active:shadow-red-700"
+        : variant === "secondary"
+        ? "active:shadow-gray-500"
+        : variant === "primary"
+        ? "active:shadow-blue-900"
+        : variant === "success"
+        ? "active:shadow-green-700"
+        : variant === "warning"
+        ? "active:shadow-yellow-600"
+        : "active:shadow-gray-400"
+    }
     ${
       variant == "secondary" || variant == "disabled"
         ? "border border-solid border-gray-300"

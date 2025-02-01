@@ -25,7 +25,7 @@ export const Group = () => {
 
   return (
     <>
-      <div className="flex lg:flex-row flex-row-reverse items-center justify-between w-full mx-5">
+      <div className="flex lg:flex-row flex-row-reverse flex-wrap items-center justify-between w-full mx-5">
         <div className="lg:block hidden">
           <InputSearch />
         </div>
@@ -79,7 +79,7 @@ export const GroupResponsive = ({ isOpen }: { isOpen: boolean }) => {
           </span>
         </Link>
       ))}
-      <AuthSection />
+      <AuthSection direction="column" />
     </div>
   );
 };
