@@ -1,4 +1,5 @@
 import React from "react";
+import { LuMoveLeft, LuMoveRight } from "react-icons/lu";
 
 interface IPaginationProps {
   totalPages: number;
@@ -30,11 +31,11 @@ export const Pagination: React.FC<IPaginationProps> = ({
       <button
         key={1}
         onClick={() => handlePageChange(1)}
-        className={
+        className={`w-14 h-14 rounded-full border border-gray-500 text-lg font-semibold transition duration-300 ${
           currentPage === 1
-            ? "border border-solid bg-gradient-to-tr from-gray-900 to-gray-800 border-gray-800 w-8 h-8 rounded-md text-white"
-            : "border border-solid border-gray-800 w-8 h-8 rounded-md text-black"
-        }
+            ? "bg-gradient-to-tr from-blue-900 to-blue-800 text-white"
+            : "bg-white text-black hover:bg-blue-700 hover:text-white"
+        }`}
       >
         1
       </button>
@@ -49,11 +50,11 @@ export const Pagination: React.FC<IPaginationProps> = ({
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={
+          className={`w-14 h-14 rounded-full border border-gray-500 text-lg font-semibold transition duration-300 ${
             i === currentPage
-              ? "border border-solid bg-gradient-to-tr from-gray-900 to-gray-800 border-gray-800 w-8 h-8 rounded-md text-white"
-              : "border border-solid border-gray-800 w-8 h-8 rounded-md text-black"
-          }
+              ? "bg-gradient-to-tr from-blue-900 to-blue-800 text-white"
+              : "bg-white text-black hover:bg-blue-700 hover:text-white"
+          }`}
         >
           {i}
         </button>
@@ -61,7 +62,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
     }
 
     if (range.end < totalPages - 1) {
-      pageNumbers.push(<span key="end-ellipsis text-black">...</span>);
+      pageNumbers.push(<span key="end-ellipsis">...</span>);
     }
 
     if (totalPages > 1) {
@@ -69,11 +70,11 @@ export const Pagination: React.FC<IPaginationProps> = ({
         <button
           key={totalPages}
           onClick={() => handlePageChange(totalPages)}
-          className={
+          className={`w-14 h-14 rounded-full border border-gray-500 text-lg font-semibold transition duration-300 ${
             currentPage === totalPages
-              ? "border border-solid bg-gradient-to-tr from-gray-900 to-gray-800 border-gray-800 w-8 h-8 rounded-md text-white"
-              : "border border-solid border-gray-800 w-8 h-8 rounded-md text-black"
-          }
+              ? "bg-gradient-to-tr from-blue-900 to-blue-800 text-white"
+              : "bg-white text-black hover:bg-blue-700 hover:text-white"
+          }`}
         >
           {totalPages}
         </button>
@@ -90,11 +91,11 @@ export const Pagination: React.FC<IPaginationProps> = ({
         disabled={currentPage === 1}
         className={
           currentPage === 1
-            ? "border border-solid bg-gray-400 border-gray-400 h-8 rounded-md px-2 text-xs text-white"
-            : "border border-solid border-gray-800 h-8 rounded-md px-2 text-black text-xs"
+            ? "text-gray-400 px-2 text-5xl hover:cursor-not-allowed"
+            : "text-black px-2 text-5xl hover:text-blue-800"
         }
       >
-        Previous
+        <LuMoveLeft />
       </button>
       <div className="flex items-center gap-2">{renderPageNumbers()}</div>
       <button
@@ -102,11 +103,11 @@ export const Pagination: React.FC<IPaginationProps> = ({
         disabled={currentPage === totalPages}
         className={
           currentPage === totalPages
-            ? "border border-solid bg-gray-400 border-gray-400 h-8 rounded-md px-2 text-xs text-white"
-            : "border border-solid border-gray-800 h-8 rounded-md px-2 text-black text-xs"
+            ? "text-gray-400 px-2 text-5xl hover:cursor-not-allowed"
+            : "text-black px-2 text-5xl hover:text-blue-800"
         }
       >
-        Next
+        <LuMoveRight />
       </button>
     </div>
   );

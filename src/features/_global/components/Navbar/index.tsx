@@ -1,6 +1,5 @@
 import HIMTI from "../../../../core/assets/logo/HIMTI.png";
-import { AuthSection } from "./AuthSection";
-import { Group} from "./Group";
+import { Group } from "./Group";
 
 export const Navbar = () => {
   return (
@@ -10,9 +9,6 @@ export const Navbar = () => {
           <img src={HIMTI} className="max-w-[8%] logo" />
 
           <Group />
-          <div className="lg-max:hidden flex items-center gap-2">
-            <AuthSection />
-          </div>
         </div>
       </div>
     </>
