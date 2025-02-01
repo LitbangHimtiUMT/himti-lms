@@ -55,7 +55,7 @@ const MentorGrid = () => {
         {mentors.map((mentor) => (
           <div
             key={mentor.id}
-            className={`relative rounded-3xl overflow-hidden group ${mentor.bgColor} shadow-xl`}
+            className={`relative rounded-3xl overflow-hidden group ${mentor.bgColor} shadow-[0_1px_14px_rgba(0,0,0,0.1)]`}
           >
             <div className="aspect-[4/5] overflow-hidden">
               <div className="w-full bg-white object-cover object-center transition-transform duration-500 group-hover:scale-110">
@@ -81,7 +81,7 @@ const MentorGrid = () => {
               </button>
             </div>
             <div className="absolute bottom-4 left-4 right-4">
-              <div className="bg-white rounded-2xl p-6 shadow-md">
+              <div className="bg-white rounded-2xl p-6 shadow-[0_1px_10px_rgba(0,0,0,0.1)]">
                 <h3 className="font-semibold text-xl text-gray-900 mb-1">
                   {mentor.name}
                 </h3>
