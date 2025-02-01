@@ -18,10 +18,6 @@ export const Menus: MenuAdminConfig = [
     to: "/faq",
   },
   {
-    name: "Learning Flow",
-    to: "/learning-flow",
-  },
-  {
     name: "Other",
     to: "/other",
   },

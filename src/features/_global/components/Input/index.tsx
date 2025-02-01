@@ -2,13 +2,15 @@ import React, { ReactNode } from "react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  rounded?: "sm" | "md" | "lg";
+  rounded?: "sm" | "md" | "lg" | "full";
   error?: boolean;
   LeftIcon?: ReactNode;
   onClickLeftIcon?: () => void;
   onClickRightIcon?: () => void;
   RightIcon?: ReactNode;
   inputSize?: "sm" | "md" | "lg";
+  borderColor?: "black" | "normal";
+  placeholderColor?: "black" | "normal";
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -19,10 +21,12 @@ export const Input: React.FC<InputProps> = ({
   onClickRightIcon,
   error = false,
   inputSize = "md",
+  borderColor = "normal",
+  placeholderColor = "normal",
   ...rest
 }) => {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between relative">
       {LeftIcon && (
         <div className="absolute py-4 px-2" onClick={onClickLeftIcon}>
           {LeftIcon}
@@ -51,11 +55,21 @@ export const Input: React.FC<InputProps> = ({
           ${inputSize === "sm" ? "py-2" : inputSize === "md" ? "py-3" : "py-4"}
           ${LeftIcon ? "pl-10" : ""}
           ${RightIcon ? "pr-10" : ""}
-          ${error ? "border-red-500" : "border-[#DADADA]"}
+          ${
+            error
+              ? "border-red-500"
+              : borderColor === "black"
+              ? "border-black"
+              : "border-[#DADADA]"
+          }
           focus:border
           placeholder:text-sm
           placeholder:font-[Poppins]
-          placeholder:text-[#87898E]
+          ${
+            placeholderColor === "black"
+              ? "placeholder:text-black"
+              : "placeholder:text-[#87898E]"
+          }
           ${error ? "focus:border-red-500" : "focus:border-blue-500"}
           duration-300
           font-poppins
@@ -64,7 +78,9 @@ export const Input: React.FC<InputProps> = ({
           w-full
           ${error ? "text-red-500" : ""}
           ${
-            rounded == "sm"
+            rounded == "full"
+              ? "rounded-full"
+              : rounded == "sm"
               ? "rounded-sm"
               : rounded == "md"
               ? "rounded-md"
@@ -73,7 +89,7 @@ export const Input: React.FC<InputProps> = ({
           `}
       />
       {RightIcon && (
-        <div className="absolute right-10 p-4" onClick={onClickRightIcon}>
+        <div className="absolute right-0 p-4" onClick={onClickRightIcon}>
           <div>{RightIcon}</div>
         </div>
       )}

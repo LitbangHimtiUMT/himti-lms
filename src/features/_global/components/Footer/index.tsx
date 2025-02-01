@@ -2,7 +2,6 @@ import HIMTI from "@core/assets/logo/HIMTI.png";
 import { Menus } from "../../config";
 import { Link, useLocation } from "react-router-dom";
 import { Poppins } from "../Text";
-// bg-gradient-to-r from-[rgba(76,118,163,0.8)] to-[rgba(32,61,93,0.8)]
 
 export const Footer = () => {
   const location = useLocation();
@@ -46,22 +45,22 @@ export const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-3">Ikuti Kami</h4>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-gray-300 transition">
+              <Link to={"#"} className="hover:text-gray-300 transition">
                 Facebook
-              </a>
-              <a href="#" className="hover:text-gray-300 transition">
+              </Link>
+              <Link to={"#"} className="hover:text-gray-300 transition">
                 Instagram
-              </a>
-              <a href="#" className="hover:text-gray-300 transition">
+              </Link>
+              <Link to={"#"} className="hover:text-gray-300 transition">
                 LinkedIn
-              </a>
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Hak Cipta */}
         <div className="border-t border-white/20 mt-8 pt-6 text-center text-sm opacity-70">
-          © 2024 HIMTI. Semua Hak Dilindungi.
+          © 2025 HIMTI. Semua Hak Dilindungi.
         </div>
       </div>
     </footer>

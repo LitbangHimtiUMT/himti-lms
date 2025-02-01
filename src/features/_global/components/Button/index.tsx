@@ -29,11 +29,12 @@ export const Button: React.FC<IButtonProps> = ({
         variant === "disabled" ? e.preventDefault() : rest?.onClick?.(e)
       }
       className={`
+      font-[Poppins]
     ${
       variant == "danger"
         ? "bg-red-500 shadow-red-500"
         : variant == "secondary"
-        ? "bg-gray-50 shadow-gray-400"
+        ? "bg-white shadow-gray-400"
         : variant == "primary"
         ? "bg-gradient-to-r from-[#4C76A3] to-[#203D5D] shadow-[#466c8e]"
         : variant == "success"
@@ -44,7 +45,7 @@ export const Button: React.FC<IButtonProps> = ({
     }
     ${
       variant == "secondary" || variant == "disabled"
-        ? "text-gray-500"
+        ? "text-black"
         : "text-white"
     }
         ${
@@ -81,7 +82,7 @@ export const Button: React.FC<IButtonProps> = ({
     }
     ${
       variant == "secondary" || variant == "disabled"
-        ? "border border-solid border-gray-300"
+        ? "border border-solid border-[#2b6394]"
         : ""
     }
      ${

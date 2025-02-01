@@ -6,6 +6,8 @@ import { FaqViews } from "../../features/faq/views/FaqViews";
 import { MentorViews } from "../../features/mentor/views/MentorViews";
 import { NotFound } from "../../features/_global/components/NotFound";
 import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
+import { AuthLayout } from "../../features/_global/views/AuthLayout";
+import { SignInViews } from "../../features/authentication/views/sign-in";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +29,16 @@ export const router = createBrowserRouter([
       {
         path: "/faq",
         element: <FaqViews />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/sign-in",
+        element: <SignInViews />,
       },
     ],
   },
