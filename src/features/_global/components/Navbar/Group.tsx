@@ -25,8 +25,8 @@ export const Group = () => {
 
   return (
     <>
-      <div className="flex lg:flex-row flex-row-reverse flex-wrap items-center justify-between w-full mx-5">
-        <div className="lg:block hidden">
+      <div className="flex lg:flex-row flex-row-reverse flex-wrap items-center justify-between w-full mx-5 gap-3">
+        <div className="xl:block hidden">
           <InputSearch />
         </div>
         <button
