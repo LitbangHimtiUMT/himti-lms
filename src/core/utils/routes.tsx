@@ -8,6 +8,7 @@ import { NotFound } from "../../features/_global/components/NotFound";
 import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
 import { AuthLayout } from "../../features/_global/views/AuthLayout";
 import { SignInViews } from "../../features/authentication/views/sign-in";
+import { SignUpViews } from "../../features/authentication/views/sign-up";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
       {
         path: "/sign-in",
         element: <SignInViews />,
+      },
+      {
+        path: "/sign-up",
+        element: <SignUpViews />,
       },
     ],
   },
