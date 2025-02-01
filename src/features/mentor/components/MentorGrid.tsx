@@ -1,6 +1,6 @@
 // import React from "react";
-import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
-import Learning from "@core/assets/learning-assets.jpg";
+import DefaultPhoto from "@core/assets/default-photo.svg";
+import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 interface Mentor {
   id: number;
@@ -15,37 +15,37 @@ const MentorGrid = () => {
       id: 1,
       name: "Cameron Williamson",
       role: "Web Developer",
-      bgColor: "bg-gray-200",
+      bgColor: "bg-white",
     },
     {
       id: 2,
       name: "Emily Carter",
       role: "Web Developer",
-      bgColor: "bg-gray-100",
+      bgColor: "bg-white",
     },
     {
       id: 3,
       name: "Liam Johnson",
       role: "Web Developer",
-      bgColor: "bg-stone-100",
+      bgColor: "bg-white",
     },
     {
       id: 4,
       name: "Noah Brown",
       role: "Web Developer",
-      bgColor: "bg-orange-100",
+      bgColor: "bg-white",
     },
     {
       id: 5,
       name: "Sophia Martinez",
       role: "Web Developer",
-      bgColor: "bg-gray-100",
+      bgColor: "bg-white",
     },
     {
       id: 6,
       name: "Mason Wilson",
       role: "Web Developer",
-      bgColor: "bg-amber-300",
+      bgColor: "bg-white",
     },
   ];
 
@@ -55,13 +55,16 @@ const MentorGrid = () => {
         {mentors.map((mentor) => (
           <div
             key={mentor.id}
-            className={`relative rounded-3xl overflow-hidden group ${mentor.bgColor} shadow-xl`}>
+            className={`relative rounded-3xl overflow-hidden group ${mentor.bgColor} shadow-xl`}
+          >
             <div className="aspect-[4/5] overflow-hidden">
-              <img
-                src={Learning}
-                alt={mentor.name}
-                className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
-              />
+              <div className="w-full bg-white object-cover object-center transition-transform duration-500 group-hover:scale-110">
+                <img
+                  src={DefaultPhoto}
+                  alt={mentor.name}
+                  className="w-full h-full"
+                />
+              </div>
             </div>
             <div className="absolute top-0 right-0 bottom-0 w-16 flex flex-col items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <button className="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-orange-600 hover:bg-orange-600 hover:text-white transition-colors">

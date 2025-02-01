@@ -40,16 +40,12 @@ export const Card: React.FC<CardProps> = ({ description, icon, title }) => {
           {title}
         </Poppins>
         <Poppins
-          className={`text-sm ${
+          className={`text-sm overflow-hidden text-ellipsis leading-relaxed h-max-[100px] ${
             isHover ? "text-white" : "text-black"
           } duration-200`}
           style={{
-            overflow: "hidden",
             display: "-webkit-box",
             WebkitBoxOrient: "vertical",
-            maxHeight: "100px",
-            textOverflow: "ellipsis",
-            lineHeight: "leading-relaxed",
             WebkitLineClamp: 4,
           }}
         >
