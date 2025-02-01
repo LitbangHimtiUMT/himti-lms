@@ -8,10 +8,10 @@ export const FormSignIn = () => {
       <div className="lg:mt-24 lg:px-10 py-10 w-full flex items-center justify-center">
         <div className="lg:w-full w-[95%] bg-white h-full p-10 rounded-xl flex flex-col items-center justify-center gap-10">
           <div className="flex flex-col lg:w-[75%] w-full gap-2">
-            <h1 className="lg:text-4xl text-xl font-semibold">
+            <h1 className="lg:text-4xl text-xl font-medium">
               Sign In here !
             </h1>
-            <h1 className="lg:text-3xl text-lg font-semibold">
+            <h1 className="lg:text-3xl text-lg font-medium">
               Let’s upgrade your skills
             </h1>
           </div>

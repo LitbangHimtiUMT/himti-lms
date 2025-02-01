@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 import { Menus } from "../../config";
 import { Poppins } from "../Text";
 import { AuthSection } from "./AuthSection";
-import { InputSearch } from "./InputSearch";
 
 export const Group = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,11 +23,11 @@ export const Group = () => {
   }, []);
 
   return (
-    <>
+    <div className="flex items-center justify-between">
       <div className="flex lg:flex-row flex-row-reverse flex-wrap items-center justify-between w-full mx-5 gap-3">
-        <div className="xl:block hidden">
+        {/* <div className="xl:block hidden">
           <InputSearch />
-        </div>
+        </div> */}
         <button
           className="lg:hidden p-2 hover:bg-gray-100 rounded-lg border-none outline-none"
           onClick={() => setIsOpen(!isOpen)}
@@ -53,7 +52,7 @@ export const Group = () => {
           <AuthSection />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -64,9 +63,9 @@ export const GroupResponsive = ({ isOpen }: { isOpen: boolean }) => {
         isOpen ? "top-[100%]" : "top-[-1000px] z-[-1]"
       }`}
     >
-      <div className="w-full flex items-center justify-center px-0">
+      {/* <div className="w-full flex items-center justify-center px-0">
         <InputSearch />
-      </div>
+      </div> */}
       {Menus.map((item, index) => (
         <Link to={item.to} key={index}>
           <span
