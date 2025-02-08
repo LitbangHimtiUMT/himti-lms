@@ -11,6 +11,7 @@ export interface InputProps
   inputSize?: "sm" | "md" | "lg";
   borderColor?: "black" | "normal";
   placeholderColor?: "black" | "normal";
+  errorText?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -20,21 +21,23 @@ export const Input: React.FC<InputProps> = ({
   onClickLeftIcon,
   onClickRightIcon,
   error = false,
+  errorText,
   inputSize = "md",
   borderColor = "normal",
   placeholderColor = "normal",
   ...rest
 }) => {
   return (
-    <div className="flex items-center justify-between relative">
-      {LeftIcon && (
-        <div className="absolute py-4 px-2" onClick={onClickLeftIcon}>
-          {LeftIcon}
-        </div>
-      )}
-      <input
-        {...rest}
-        className={`
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between relative w-full">
+        {LeftIcon && (
+          <div className="absolute py-4 px-2" onClick={onClickLeftIcon}>
+            {LeftIcon}
+          </div>
+        )}
+        <input
+          {...rest}
+          className={`
           border
           ${
             inputSize === "sm"
@@ -87,12 +90,14 @@ export const Input: React.FC<InputProps> = ({
               : "rounded-lg"
           }
           `}
-      />
-      {RightIcon && (
-        <div className="absolute right-0 p-4" onClick={onClickRightIcon}>
-          <div>{RightIcon}</div>
-        </div>
-      )}
+        />
+        {RightIcon && (
+          <div className="absolute right-0 p-4" onClick={onClickRightIcon}>
+            <div>{RightIcon}</div>
+          </div>
+        )}
+      </div>
+      {error && errorText && <small className="ms-2 mt-1 text-red-500">{errorText}</small>}
     </div>
   );
 };

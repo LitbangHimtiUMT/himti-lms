@@ -1,8 +1,60 @@
-import { FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Button } from "../../_global/components/Button";
 import { InputLabel } from "../../_global/components/InputLabel";
+import { useState } from "react";
+import { AuthRegisterDTO } from "@core/model/auth";
+import { useAuthCreation } from "../hooks/useAuth";
+
+const InitialValue = {
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 export const FormSignUp = () => {
+  const [authBody, setAuthBody] = useState<AuthRegisterDTO>({
+    ...InitialValue,
+  });
+  const [errors, setErrors] = useState<AuthRegisterDTO>({ ...InitialValue });
+
+  const mutation = useAuthCreation();
+
+  const validate = () => {
+    if (!authBody.email || !authBody.password) {
+      const newErrors: AuthRegisterDTO = { ...InitialValue };
+
+      if (!authBody.name) {
+        newErrors.name = "Name is required";
+      }
+
+      if (!authBody.email) {
+        newErrors.email = "Email is required";
+      }
+      if (!authBody.password) {
+        newErrors.password = "Password is required";
+      }
+
+      if (!authBody.confirmPassword) {
+        newErrors.confirmPassword = "Confirm Password is required";
+      }
+      setErrors(newErrors);
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validate()) return;
+    await mutation.mutateAsync({
+      body: authBody,
+      type: "register",
+    });
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   return (
     <>
       <div className="lg:mt-24 lg:px-10 py-10 w-full flex items-center justify-center">
@@ -15,7 +67,7 @@ export const FormSignUp = () => {
               Start your adventure
             </h1>
           </div>
-          <div className="flex flex-col items-center gap-6 w-full">
+          <form className="flex flex-col items-center gap-6 w-full" onSubmit={handleSubmit}>
             <div className="lg:w-[75%] w-full">
               <InputLabel
                 title="Full Name"
@@ -24,6 +76,13 @@ export const FormSignUp = () => {
                   borderColor: "black",
                   placeholder: "Enter your name",
                   placeholderColor: "normal",
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setAuthBody((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    })),
+                  error: !!errors.name,
+                  errorText: errors.name,
                 }}
               />
             </div>
@@ -35,6 +94,10 @@ export const FormSignUp = () => {
                   borderColor: "black",
                   placeholder: "Enter your email",
                   placeholderColor: "normal",
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setAuthBody((prev) => ({ ...prev, email: e.target.value })),
+                  error: !!errors.email,
+                  errorText: errors.email,
                 }}
               />
             </div>
@@ -46,7 +109,21 @@ export const FormSignUp = () => {
                   borderColor: "black",
                   placeholder: "Enter your password",
                   placeholderColor: "normal",
-                  RightIcon: <FaEyeSlash size={16} />,
+                  RightIcon: showPassword ? (
+                    <FaEye size={16} />
+                  ) : (
+                    <FaEyeSlash size={16} />
+                  ),
+                  onClickRightIcon() {
+                    setShowPassword((prev) => !prev);
+                  },
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setAuthBody((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    })),
+                  error: !!errors.password,
+                  errorText: errors.password,
                 }}
               />
             </div>
@@ -58,16 +135,30 @@ export const FormSignUp = () => {
                   borderColor: "black",
                   placeholder: "Confirm your password",
                   placeholderColor: "normal",
-                  RightIcon: <FaEyeSlash size={16} />,
+                  RightIcon: showConfirmPassword ? (
+                    <FaEye size={16} />
+                  ) : (
+                    <FaEyeSlash size={16} />
+                  ),
+                  onClickRightIcon() {
+                    setShowConfirmPassword((prev) => !prev);
+                  },
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setAuthBody((prev) => ({
+                      ...prev,
+                      confirmPassword: e.target.value,
+                    })),
+                  error: !!errors.confirmPassword,
+                  errorText: errors.confirmPassword,
                 }}
               />
             </div>
             <div className="lg:w-[75%] w-full">
-              <Button rounded="full" size="lg" variant="primary">
+              <Button rounded="full" size="lg" variant="primary" type="submit">
                 Sign Up
               </Button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </>

@@ -6,7 +6,8 @@ export const CONFIG_APP = {
 };
 
 export const API_ENDPOINT = {
-  login: `${CONFIG_APP.BASE_URL}/auth/admin/login`,
+  login: `${CONFIG_APP.BASE_URL}/auth/login?authType=lms`,
+  register: `${CONFIG_APP.BASE_URL}/auth/register?authType=lms`,
   check: `${CONFIG_APP.BASE_URL}/check`,
   categories: `${CONFIG_APP.BASE_URL}/lms/categories`,
   mentors: `${CONFIG_APP.BASE_URL}/lms/mentors`,
