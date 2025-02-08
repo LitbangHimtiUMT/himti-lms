@@ -11,4 +11,5 @@ export const API_ENDPOINT = {
   check: `${CONFIG_APP.BASE_URL}/check`,
   categories: `${CONFIG_APP.BASE_URL}/lms/categories`,
   mentors: `${CONFIG_APP.BASE_URL}/lms/mentors`,
+  classes: `${CONFIG_APP.BASE_URL}/lms/class`,
 };

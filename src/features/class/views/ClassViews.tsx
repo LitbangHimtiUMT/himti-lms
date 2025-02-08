@@ -1,7 +1,6 @@
 import Learning from "@core/assets/learning-assets.jpg";
 import { Poppins } from "../../_global/components/Text";
-import ClassGrid from "../components/CardGrid";
-import { Pagination } from "@features/_global/components/Pagination";
+import ClassLayout from "../components/ClassLayout";
 
 export const ClassViews = () => {
   return (
@@ -22,10 +21,7 @@ export const ClassViews = () => {
           </div>
         </div>
       </div>
-      <ClassGrid />
-      <div className="w-full flex px-5 justify-center">
-        <Pagination currentPage={2} totalPages={10} onPageChange={() => {}} />
-      </div>
+      <ClassLayout />
     </div>
   );
 };
