@@ -1,5 +1,5 @@
 import React from "react";
-import { LuMoveLeft, LuMoveRight } from "react-icons/lu";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface IPaginationProps {
   totalPages: number;
@@ -31,18 +31,18 @@ export const Pagination: React.FC<IPaginationProps> = ({
       <button
         key={1}
         onClick={() => handlePageChange(1)}
-        className={`w-14 h-14 rounded-full border border-gray-500 text-lg font-semibold transition duration-300 ${
-          currentPage === 1
-            ? "bg-gradient-to-tr from-blue-900 to-blue-800 text-white"
-            : "bg-white text-black hover:bg-blue-700 hover:text-white"
-        }`}
+        className={
+          `w-9 h-9 ${currentPage === 1
+            ? "border border-solid bg-gradient-to-r from-[#4C76A3] to-[#203D5D] shadow-[#466c8e] border-gray-800 rounded-md text-white"
+            : "border border-solid border-gray-800 rounded-md text-black"}`
+        }
       >
         1
       </button>
     );
 
     if (range.start > 2) {
-      pageNumbers.push(<span key="start-ellipsis">...</span>);
+      pageNumbers.push(<span key="start-ellipsis w-9">...</span>);
     }
 
     for (let i = range.start; i <= range.end; i++) {
@@ -50,11 +50,9 @@ export const Pagination: React.FC<IPaginationProps> = ({
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`w-14 h-14 rounded-full border border-gray-500 text-lg font-semibold transition duration-300 ${
-            i === currentPage
-              ? "bg-gradient-to-tr from-blue-900 to-blue-800 text-white"
-              : "bg-white text-black hover:bg-blue-700 hover:text-white"
-          }`}
+          className={`w-9 h-9 ${i === totalPages
+            ? "border border-solid bg-gradient-to-r from-[#4C76A3] to-[#203D5D] shadow-[#466c8e] border-gray-800 rounded-md text-white"
+            : "border border-solid border-gray-800 rounded-md text-black"}`}
         >
           {i}
         </button>
@@ -62,7 +60,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
     }
 
     if (range.end < totalPages - 1) {
-      pageNumbers.push(<span key="end-ellipsis">...</span>);
+      pageNumbers.push(<span key="end-ellipsis text-black w-9">...</span>);
     }
 
     if (totalPages > 1) {
@@ -70,11 +68,9 @@ export const Pagination: React.FC<IPaginationProps> = ({
         <button
           key={totalPages}
           onClick={() => handlePageChange(totalPages)}
-          className={`w-14 h-14 rounded-full border border-gray-500 text-lg font-semibold transition duration-300 ${
-            currentPage === totalPages
-              ? "bg-gradient-to-tr from-blue-900 to-blue-800 text-white"
-              : "bg-white text-black hover:bg-blue-700 hover:text-white"
-          }`}
+          className={`w-9 h-9 ${currentPage === totalPages
+            ? "border border-solid bg-gradient-to-r from-[#4C76A3] to-[#203D5D] shadow-[#466c8e] border-gray-800 rounded-md text-white"
+            : "border border-solid border-gray-800 rounded-md text-black"}`}
         >
           {totalPages}
         </button>
@@ -89,25 +85,27 @@ export const Pagination: React.FC<IPaginationProps> = ({
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={
-          currentPage === 1
-            ? "text-gray-400 px-2 text-5xl hover:cursor-not-allowed"
-            : "text-black px-2 text-5xl hover:text-blue-800"
-        }
+        className={`
+          h-9 w-9 flex items-center justify-center ${
+            currentPage === 1
+              ? "border border-solid bg-gray-400 border-gray-400 rounded-md px-2 text-xs text-white"
+              : "border border-solid border-gray-800 rounded-md px-2 text-black text-xs"
+          }`}
       >
-        <LuMoveLeft />
+        <FaChevronLeft size={14} />
       </button>
       <div className="flex items-center gap-2">{renderPageNumbers()}</div>
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={
-          currentPage === totalPages
-            ? "text-gray-400 px-2 text-5xl hover:cursor-not-allowed"
-            : "text-black px-2 text-5xl hover:text-blue-800"
-        }
+        className={`
+          h-9 w-9 flex items-center justify-center ${
+            currentPage === totalPages
+              ? "border border-solid bg-gray-400 border-gray-400 rounded-md px-2 text-xs text-white"
+              : "border border-solid border-gray-800 rounded-md px-2 text-black text-xs"
+          }`}
       >
-        <LuMoveRight />
+        <FaChevronRight size={14} />
       </button>
     </div>
   );
