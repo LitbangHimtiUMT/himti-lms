@@ -43,7 +43,7 @@ const ClassLayout: React.FC = () => {
       <div className="w-full flex px-5 justify-center">
         <Pagination
           currentPage={pagination.currentPage}
-          totalPages={pagination.totalPages + 10}
+          totalPages={pagination.totalPages}
           onPageChange={(page: number) => onPageChange(page)}
         />
       </div>
