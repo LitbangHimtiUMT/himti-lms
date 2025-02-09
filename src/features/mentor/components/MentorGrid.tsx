@@ -25,7 +25,7 @@ const MentorGrid = () => {
               <div className="aspect-[4/5] overflow-hidden">
                 <div className="w-full bg-white object-cover object-center transition-transform duration-500 group-hover:scale-110">
                   <img
-                    src={DefaultPhoto}
+                    src={mentor.photo || DefaultPhoto}
                     alt={mentor.name}
                     className="w-full h-full"
                   />
@@ -69,12 +69,11 @@ const MentorGrid = () => {
                   <FaInstagram className="w-5 h-5 text-inherit" />
                 </button>
               </div>
-              <div className="absolute bottom-4 left-4 right-4">
+              <div className="absolute bottom-2 left-4 right-4">
                 <div className="bg-white rounded-2xl p-6 shadow-[0_1px_10px_rgba(0,0,0,0.1)]">
                   <h3 className="font-semibold text-xl text-gray-900 mb-1">
                     {mentor.name}
                   </h3>
-                  {/* <p className="text-gray-600">{mentor.role}</p> */}
                 </div>
               </div>
             </div>
