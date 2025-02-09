@@ -1,5 +1,5 @@
 export interface AuthLoginModel {
-    access_token?: string
+    accessToken?: string
 }
 
 export interface AuthLoginDTO {
