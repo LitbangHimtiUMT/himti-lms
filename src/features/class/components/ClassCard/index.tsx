@@ -1,4 +1,4 @@
-import { Users, BookOpen } from "lucide-react";
+import { FaUsers, FaBookOpen } from "react-icons/fa";
 import Learning from "@core/assets/learning-assets.jpg";
 import DefaultImg from "@core/assets/default-photo.svg";
 import { ClassModel } from "@core/model/classes";
@@ -32,10 +32,10 @@ export const ClassCard: React.FC<{ course: ClassModel }> = ({ course }) => {
         </p>
         <div className="flex items-center gap-10 text-gray-500 text-sm mt-2">
           <div className="flex items-center gap-1">
-            <Users size={16} /> {course.level}
+            <FaUsers size={16} /> {course.level}
           </div>
           <div className="flex items-center gap-1">
-            <BookOpen size={16} /> {course.category.name}
+            <FaBookOpen size={16} /> {course.category.name}
           </div>
         </div>
         <div className="border-t border-gray-400 my-5"></div>

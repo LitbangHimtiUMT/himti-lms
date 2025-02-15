@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { FaChevronDown } from "react-icons/fa";
 import Learning from "@core/assets/learning-assets.jpg";
 
 interface FAQItem {
@@ -70,7 +70,7 @@ const FaqComponent = () => {
                   <span className="font-medium text-gray-900">
                     {faq.question}
                   </span>
-                  <ChevronDown
+                  <FaChevronDown
                     className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${
                       openIndex === index
                         ? "transform rotate-180"
