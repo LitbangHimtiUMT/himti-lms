@@ -14,6 +14,7 @@ interface Options extends QueryParams {
   page?: number;
   perPage?: number;
   name?: string;
+  path?: string;
 }
 
 type PayloadType = "create" | "update" | "delete";
@@ -33,14 +34,15 @@ export function useClasses(options?: Options) {
   const search = useDebounce(searchQuery as string, 500);
 
   const query = useQuery({
-    queryKey: ["classes", { page, perPage, search }],
+    queryKey: ["classes", { page, perPage, search, path: options?.path }],
     queryFn: () =>
       classesService.get({
         queryParams: {
           perPage: perPage ? Number(perPage) : undefined,
           page: page ? Number(page) : undefined,
           search,
-        } as Options,
+        },
+        path: options?.path,
       }),
   });
   return query;

@@ -12,6 +12,12 @@ export interface ClassModel {
   thumbnail: string;
   price: number;
   creator: UserModel;
+  progressStatus: 'Completed' | 'In Progress'
+  total: {
+    module: number;
+    completed: number;
+    precentage: number;
+  };
 }
 
 export interface ClassDTO {

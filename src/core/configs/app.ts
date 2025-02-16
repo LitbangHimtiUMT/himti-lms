@@ -3,6 +3,7 @@ export const CONFIG_APP = {
   BASE_URL: import.meta.env.HIMTI_BASE_URL,
   HIMTI_SECRET_KEY: import.meta.env.HIMTI_SECRET_KEY ?? "",
   HIMTI_HEADER_KEY: import.meta.env.HIMTI_HEADER_KEY ?? "",
+  TOKEN_KEY: btoa(`token${import.meta.env.HIMTI_SECRET_KEY ?? ""}`),
 };
 
 export const API_ENDPOINT = {
@@ -12,4 +13,5 @@ export const API_ENDPOINT = {
   categories: `${CONFIG_APP.BASE_URL}/lms/categories`,
   mentors: `${CONFIG_APP.BASE_URL}/lms/mentors`,
   classes: `${CONFIG_APP.BASE_URL}/lms/class`,
+  profile: `${CONFIG_APP.BASE_URL}/profile`,
 };

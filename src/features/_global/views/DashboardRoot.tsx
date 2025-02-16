@@ -1,20 +1,4 @@
-// import { Outlet } from "react-router-dom";
-// import { Sidebar } from "../components/Sidebar";
-// import { Footer } from "../components/Footer";
-
-// export const DashboardRoot = () => {
-//   return (
-//     <>
-//       <div>
-//         <Sidebar />
-//         <Outlet />
-//       </div>
-//       <Footer />
-//     </>
-//   );
-// };
-
-// App.jsx
+import DefaultImage from "@core/assets/default-photo.svg";
 import { useState } from "react";
 import {
   IoBookOutline,
@@ -61,6 +45,7 @@ export const DashboardRoot = () => {
 
 // components/Navbar.jsx
 const Navbar = () => {
+  const { data: profile, isFetching } = useProfile();
   return (
     <nav className="bg-white shadow-sm px-4 py-2">
       <div className="flex justify-between items-center max-w-[1920px] mx-auto">
@@ -79,11 +64,20 @@ const Navbar = () => {
             <IoNotificationsOutline className="text-gray-500 w-6 h-6" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-          <img
-            src="/api/placeholder/32/32"
-            alt="Profile"
-            className="w-8 h-8 rounded-full cursor-pointer"
-          />
+          <div className="flex items-center gap-2">
+            <Poppins className="text-xs">
+              {profile?.data?.name || "unknown"}
+            </Poppins>
+            <img
+              src={
+                !profile?.data?.photo || isFetching
+                  ? DefaultImage
+                  : profile?.data?.photo
+              }
+              alt="Profile"
+              className="w-8 h-8 rounded-full cursor-pointer"
+            />
+          </div>
         </div>
       </div>
     </nav>
@@ -91,18 +85,9 @@ const Navbar = () => {
 };
 
 const Sidebar = () => {
-  const courses = [
-    { name: "React.JS", status: "Completed", progress: 100 },
-    { name: "Vue.JS", status: "Completed", progress: 100 },
-    { name: "Bootstrap", status: "Completed", progress: 100 },
-    { name: "Laravel", status: "Completed", progress: 100 },
-    { name: "Flutter", status: "Completed", progress: 100 },
-    { name: "Figma", status: "In Progress", progress: 75 },
-    { name: "Kotlin", status: "In Progress", progress: 60 },
-    { name: "Kotlin", status: "In Progress", progress: 60 },
-    { name: "Kotlin", status: "In Progress", progress: 60 },
-    { name: "Kotlin", status: "In Progress", progress: 60 },
-  ];
+  const { data: classess, isFetching } = useClasses({
+    path: "user",
+  });
 
   return (
     <div className="h-full overflow-hidden w-80 bg-[#E5E7EB]">
@@ -115,35 +100,59 @@ const Sidebar = () => {
       {/* Course List Card */}
       <div className="p-4 lg-max:h-[500px] overflow-auto">
         <div className="bg-white rounded-lg shadow-sm p-4">
-          {courses.map((course, index) => (
-            <div
-              key={index}
-              className={`mb-4 ${index === courses.length - 1 ? "" : "mb-6"}`}
-            >
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium text-gray-900">{course.name}</span>
-                <span
-                  className={`${
-                    course.status === "Completed"
-                      ? "text-[#2B4B7C]"
-                      : "text-orange-500"
-                  } text-sm font-medium`}
-                >
-                  {course.status}
-                </span>
-              </div>
-              <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+          {isFetching ? (
+            <>
+              {Array.from({ length: 4 }).map((_, index) => (
                 <div
-                  className={`h-full rounded-full ${
-                    course.status === "Completed"
-                      ? "bg-[#2B4B7C]"
-                      : "bg-orange-500"
+                  className={`mb-4 ${
+                    index === (classess?.data?.length as number) - 1
+                      ? ""
+                      : "mb-6"
                   }`}
-                  style={{ width: `${course.progress}%` }}
-                />
+                >
+                  <Skeleton width="100%" height="75px" />
+                </div>
+              ))}
+            </>
+          ) : (
+            classess?.data?.map((course, index) => (
+              <div
+                key={index}
+                className={`mb-4 ${
+                  index === (classess?.data?.length as number) - 1 ? "" : "mb-6"
+                }`}
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium text-gray-900">
+                    {course.name}
+                  </span>
+                  <span
+                    className={`${
+                      course.progressStatus === "Completed"
+                        ? "text-[#2B4B7C]"
+                        : "text-orange-500"
+                    } text-sm font-medium`}
+                  >
+                    <Poppins className="text-black">
+                      {course.progressStatus === "Completed"
+                        ? course.progressStatus
+                        : `${Number(course.total.precentage)}% Progress`}
+                    </Poppins>
+                  </span>
+                </div>
+                <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full ${
+                      course.progressStatus === "Completed"
+                        ? "bg-[#2B4B7C]"
+                        : "bg-orange-500"
+                    }`}
+                    style={{ width: `${course.total.precentage}%` }}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -157,6 +166,10 @@ import { IoSearchOutline } from "react-icons/io5";
 
 // components/AssignmentTable.jsx
 import { IoChevronForward } from "react-icons/io5";
+import { useProfile } from "../../profile/useProfile";
+import { Poppins } from "../components/Text";
+import { useClasses } from "../../class/hooks/useClasses";
+import { Skeleton } from "../components/Shimer";
 
 const AssignmentTable = () => {
   const assignments = [

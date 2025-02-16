@@ -84,15 +84,28 @@ export const FormSignIn = () => {
                   placeholder: "Enter your password",
                   placeholderColor: "normal",
                   RightIcon: showPassword ? (
-                    <FaEye size={16} />
+                    <FaEye
+                      size={16}
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    />
                   ) : (
-                    <FaEyeSlash size={16} />
+                    <FaEyeSlash
+                      size={16}
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    />
                   ),
                   onClickRightIcon() {
                     setShowPassword((prev) => !prev);
                   },
                   onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAuthBody((prev) => ({ ...prev, password: e.target.value })),
+                    setAuthBody((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    })),
                   error: !!errors.password,
                   errorText: errors.password,
                 }}

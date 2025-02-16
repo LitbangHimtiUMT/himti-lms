@@ -15,7 +15,7 @@ function isAuthLoginModel(data: unknown): data is AuthLoginModel {
   return (
     data !== null &&
     typeof data === "object" &&
-    "access_token" in data &&
+    "accessToken" in data &&
     typeof (data as AuthLoginModel).accessToken === "string"
   );
 }
@@ -53,7 +53,7 @@ export function useAuthCreation() {
         theme: "dark",
       });
       if (res.data && isAuthLoginModel(res.data)) {
-        localStorage.setItem("token", res.data.accessToken as string);
+        localStorage.setItem(CONFIG_APP.TOKEN_KEY, res.data.accessToken as string);
         navigate("/dashboard");
       } else {
         navigate("/sign-in");
