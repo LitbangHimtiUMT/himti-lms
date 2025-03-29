@@ -21,7 +21,6 @@ export const ClassCard: React.FC<{ course: ClassModel }> = ({ course }) => {
         </div>
       </div>
       <div className="mt-3">
-      
         <h4 className="mt-2 text-lg font-semibold">
           <a href="#" className="hover:text-yellow-800">
             {course.name}
@@ -42,8 +41,10 @@ export const ClassCard: React.FC<{ course: ClassModel }> = ({ course }) => {
         <div className="mt-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img
-              src={course.creator.photo || DefaultImg}
-              alt={course.creator.photo}
+              src={course.creator.photo}
+              onError={(e) =>
+                ((e.target as HTMLImageElement).src = DefaultImg)
+              }
               className="w-8 h-8 rounded-full"
             />
             <span className="text-sm font-medium">{course.creator.name}</span>

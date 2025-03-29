@@ -2,8 +2,13 @@ import { File } from "buffer";
 import { CategoriesModel } from "./categories";
 import { UserModel } from "./user";
 
+export interface SessionDTO {
+  id: string;
+  name: string;
+}
+
 export interface ClassModel {
-  id: number;
+  id: string;
   name: string;
   description: string;
   status: string;
@@ -12,6 +17,7 @@ export interface ClassModel {
   thumbnail: string;
   price: number;
   creator: UserModel;
+  sessions: SessionDTO[];
   progressStatus: 'Completed' | 'In Progress'
   total: {
     module: number;

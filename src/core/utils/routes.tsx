@@ -10,6 +10,7 @@ import { AuthLayout } from "../../features/_global/views/AuthLayout";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
 import { Playground } from "../../features/_global/views/playground";
+import { DashboardView } from "../../features/dashboard/views/DashboardView";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,12 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardRoot />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <DashboardView />,
+      },
+    ],
   },
   {
     path: "/playground",

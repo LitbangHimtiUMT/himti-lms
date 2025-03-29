@@ -5,9 +5,10 @@ import { Pagination } from "@features/_global/components/Pagination";
 import { convertQueryParamsToObject } from "@features/_global/helper";
 import { useSearchParams } from "react-router-dom";
 import { Skeleton } from "@mui/material";
+import DefaultImage from "@core/assets/default-photo.svg";
 
 const ClassLayout: React.FC = () => {
-  const { data: classes, isLoading } = useClasses();
+  const { data: classes, isFetching } = useClasses();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParams = convertQueryParamsToObject(searchParams.toString());
@@ -20,23 +21,36 @@ const ClassLayout: React.FC = () => {
     totalPages: classes?.meta?.totalPages || 1,
     onPageChange,
   };
+
   return (
     <>
       <div className="container mx-auto py-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
-          {isLoading && (
+          {isFetching && (
             <>
               <Skeleton width={"384px"} height={"450px"} />
               <Skeleton width={"384px"} height={"450px"} />
               <Skeleton width={"384px"} height={"450px"} />
             </>
           )}
-          {!isLoading && !classes?.data && (
+          {!isFetching && !classes?.data && (
             <div className="text-center">No classes found</div>
           )}
           {classes?.data &&
             classes.data.map((course, index) => (
-              <ClassCard key={index} course={course} />
+              <ClassCard
+                key={index}
+                course={{
+                  ...course,
+                  creator: {
+                    ...course.creator,
+                    photo:
+                      !course.creator?.photo || isFetching
+                        ? DefaultImage
+                        : course.creator?.photo,
+                  },
+                }}
+              />
             ))}
         </div>
       </div>
