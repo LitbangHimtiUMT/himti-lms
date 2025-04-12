@@ -7,7 +7,7 @@ export const useSessions = () => {
   const classId = searchParams.get("classId") || undefined;
 
   const query = useQuery({
-    queryKey: ["classess"],
+    queryKey: ["classess", { classId }],
     queryFn: () =>
       sessionService.getByClass({
         path: `class/${classId}`,

@@ -26,3 +26,7 @@ ul[role="listbox"] {
     background-position: -200%;
   }
 }
+
+.sun-editor-editable {
+  min-height: 300px !important;
+}

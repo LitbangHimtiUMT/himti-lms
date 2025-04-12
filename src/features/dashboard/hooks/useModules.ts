@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { moduleService } from "../../../core/services/modules";
 import { useSearchParams } from "react-router-dom";
 
-export const useModules = () => {
+export const useModules = (id?: string) => {
   const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get("sessionId") || undefined;
+  const sessionId = id || searchParams.get("sessionId") || undefined;
 
   const query = useQuery({
     queryKey: ["modules"],

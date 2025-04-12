@@ -1,16 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
-import { RootViews } from "../../features/_global/views";
-import { HomeViews } from "../../features/home/views/HomeViews";
-import { ClassViews } from "../../features/class/views/ClassViews";
-import { FaqViews } from "../../features/faq/views/FaqViews";
-import { MentorViews } from "../../features/mentor/views/MentorViews";
 import { NotFound } from "../../features/_global/components/NotFound";
-import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
+import { RootViews } from "../../features/_global/views";
 import { AuthLayout } from "../../features/_global/views/AuthLayout";
+import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
+import { Playground } from "../../features/_global/views/playground";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
-import { Playground } from "../../features/_global/views/playground";
+import { ClassViews } from "../../features/class/views/ClassViews";
+import { CreateModules } from "../../features/dashboard/views/CreateModules";
 import { DashboardView } from "../../features/dashboard/views/DashboardView";
+import { FaqViews } from "../../features/faq/views/FaqViews";
+import { HomeViews } from "../../features/home/views/HomeViews";
+import { MentorViews } from "../../features/mentor/views/MentorViews";
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,14 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/dashboard",
+        element: <DashboardView />,
+      },
+      {
+        path: "/dashboard/create-modules",
+        element: <CreateModules />,
+      },
+      {
+        path: "/dashboard/:sessionId",
         element: <DashboardView />,
       },
     ],

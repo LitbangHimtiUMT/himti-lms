@@ -5,9 +5,14 @@ import { useSessions } from "../hooks/sessions/useSessions";
 import { Poppins } from "../../_global/components/Text";
 import { convertQueryParamsToObject } from "../../_global/helper";
 import { Skeleton } from "../../_global/components/Shimer";
+import { EmptyState } from "../../_global/components/Empty";
+import { Button } from "../../_global/components/Button";
+import { IoDocumentOutline } from "react-icons/io5";
+import { useProfile } from "../../profile/useProfile";
 
 export const AssignmentTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { data: profile } = useProfile();
   const sessionId = searchParams.get("classId");
   const { data: sessions, isFetching } = useSessions();
   const queries = convertQueryParamsToObject(searchParams.toString());
@@ -18,30 +23,33 @@ export const AssignmentTable = () => {
     <>
       {sessionId ? (
         <div className="w-full rounded-md">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-md">
             <table className="w-full">
-              {/* Table Header */}
               <thead>
-                <tr className="bg-[#2B4B7C] text-white">
+                <tr className="bg-[#192d4c] text-white">
                   <th className="py-3 px-6 text-left font-medium text-sm">
                     Title
                   </th>
-                  <th className="py-3 px-6 text-left font-medium text-sm">
-                    Total Module
-                  </th>
+                  {!profile?.data?.isMentor && (
+                    <th className="py-3 px-6 text-left font-medium text-sm">
+                      Total Module
+                    </th>
+                  )}
                   <th className="py-3 px-6 text-left font-medium text-sm">
                     Progress
                   </th>
+                  <th className="py-3 px-6 text-left font-medium text-sm"></th>
                 </tr>
               </thead>
 
               {/* Table Body */}
               <tbody className="bg-gray-50">
-                {sessions?.data?.length && !isFetching
-                  ? (sessions?.data ?? [])?.map((item, index) => (
-                      <tr key={index} className="border-b border-gray-200">
-                        <td className="py-4 px-6 text-gray-900">{item.name}</td>
-                        <td className="py-4 px-6 text-gray-900">{`${item.module.length} Module`}</td>
+                {sessions?.data?.length && !isFetching ? (
+                  (sessions?.data ?? [])?.map((item, index) => (
+                    <tr key={index} className="border-b border-gray-200">
+                      <td className="py-4 px-6 text-gray-900">{item.name}</td>
+                      <td className="py-4 px-6 text-gray-900">{`${item.module.length} Module`}</td>
+                      {!profile?.data?.isMentor && (
                         <td className="py-4 px-6 text-gray-900 flex items-center gap-2">
                           <div className="h-1 w-full bg-gray-200 rounded-full overflow-hidden flex items-center">
                             <div
@@ -55,23 +63,31 @@ export const AssignmentTable = () => {
                           </div>
                           <Poppins className="text-sm">{`${item.progress}%`}</Poppins>
                         </td>
-                      </tr>
-                    ))
-                  : Array.from({ length: 4 }).map((_, index) => (
-                      <tr
-                        key={index}
-                        className="border-b border-gray-200"
-                        // className={`mb-4 ${
-                        //   index === (classess?.data?.length as number) - 1
-                        //     ? ""
-                        //     : "mb-6"
-                        // }`}
-                      >
-                        <td colSpan={3} className="py-4 px-6 text-gray-900">
-                          <Skeleton width="100%" height="40px" />
-                        </td>
-                      </tr>
-                    ))}
+                      )}
+                      <td>
+                        <div className="w-10">
+                          <Button variant="secondary">
+                            <IoDocumentOutline />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : !sessions?.data?.length && !isFetching ? (
+                  <EmptyState
+                    customMinHeight={400}
+                    colspan={3}
+                    description={["Session not found"]}
+                  />
+                ) : (
+                  Array.from({ length: 4 }).map((_, index) => (
+                    <tr key={index} className="border-b border-gray-200">
+                      <td colSpan={3} className="py-4 px-6 text-gray-900">
+                        <Skeleton width="100%" height="40px" />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

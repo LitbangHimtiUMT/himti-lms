@@ -3,4 +3,5 @@ export interface ProfileModel {
   email: string;
   role: string;
   photo: string | null;
+  isMentor: boolean
 }

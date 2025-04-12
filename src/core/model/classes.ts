@@ -9,6 +9,7 @@ export interface SessionDTO {
 
 export interface ClassModel {
   id: string;
+  participantId: string
   name: string;
   description: string;
   status: string;

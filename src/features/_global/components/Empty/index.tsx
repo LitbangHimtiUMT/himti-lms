@@ -1,5 +1,6 @@
 import { MdHourglassEmpty } from "react-icons/md";
 import { Poppins } from "../Text";
+import { TbMoodEmpty } from "react-icons/tb";
 
 interface IEmptyProps {
   description?: string[];
@@ -22,7 +23,7 @@ export const EmptyState: React.FC<IEmptyProps> = ({
               minHeight: customMinHeight,
             }}
           >
-            <MdHourglassEmpty className="text-5xl" />
+            <TbMoodEmpty className="text-8xl" />
             {description && (
               <div className="flex flex-col items-center justify-center">
                 {description.map((item) => (
