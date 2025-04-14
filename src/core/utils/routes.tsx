@@ -12,6 +12,7 @@ import { DashboardView } from "../../features/dashboard/views/DashboardView";
 import { FaqViews } from "../../features/faq/views/FaqViews";
 import { HomeViews } from "../../features/home/views/HomeViews";
 import { MentorViews } from "../../features/mentor/views/MentorViews";
+import { DetailSessionView } from "../../features/dashboard/views/DetailSessionView";
 
 export const router = createBrowserRouter([
   {
@@ -59,12 +60,12 @@ export const router = createBrowserRouter([
         element: <DashboardView />,
       },
       {
-        path: "/dashboard/create-modules",
+        path: "/dashboard/:sessionId/create-modules",
         element: <CreateModules />,
       },
       {
         path: "/dashboard/:sessionId",
-        element: <DashboardView />,
+        element: <DetailSessionView />,
       },
     ],
   },

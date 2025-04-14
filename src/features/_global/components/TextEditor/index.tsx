@@ -6,7 +6,7 @@ import "suneditor/dist/css/suneditor.min.css";
 
 interface ITextEditor {
   onChange: (res: string) => void;
-  value: string;
+  value?: string;
   textEditorProps?: SunEditorReactProps;
 }
 

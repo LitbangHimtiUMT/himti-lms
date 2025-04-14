@@ -4,5 +4,6 @@ import { ApiResponse } from "../libs/api/types";
 import { ModuleDTO } from "../model/modules";
 
 export const moduleService = {
-    getBySession: request.get<ApiResponse<ModuleDTO[]>>(API_ENDPOINT.modules)
+    getBySession: request.get<ApiResponse<ModuleDTO[]>>(API_ENDPOINT.modules),
+    create: request.post<ApiResponse, FormData>(API_ENDPOINT.modules)
 }

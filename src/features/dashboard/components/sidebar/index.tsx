@@ -3,6 +3,8 @@ import { useClasses } from "../../../class/hooks/useClasses";
 import { Skeleton } from "../../../_global/components/Shimer";
 import { ClassCard } from "../ClassCard";
 import { useProfile } from "../../../profile/useProfile";
+import { ConditionNode } from "../../../_global/components/ConditionNode";
+import { Button } from "../../../_global/components/Button";
 
 export const DashboardSidebar = () => {
   const { data: profile } = useProfile();
@@ -19,7 +21,10 @@ export const DashboardSidebar = () => {
       </div>
 
       {/* Course List Card */}
-      <div className="p-4 lg-max:h-[500px] overflow-auto">
+      <div className="p-4 lg-max:h-[500px] overflow-auto flex flex-col gap-2">
+        <ConditionNode condition={!!profile?.data?.isMentor}>
+          <Button variant="primary" size="lg">Create Course</Button>
+        </ConditionNode>
         <div className="bg-white rounded-lg shadow-sm p-4">
           {isFetching ? (
             <>

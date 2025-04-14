@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import HIMTI from "../../../core/assets/logo/HIMTI.png";
 import { Pagination } from "../../_global/components/Pagination";
 import { useSessions } from "../hooks/sessions/useSessions";
@@ -16,9 +16,11 @@ export const AssignmentTable = () => {
   const sessionId = searchParams.get("classId");
   const { data: sessions, isFetching } = useSessions();
   const queries = convertQueryParamsToObject(searchParams.toString());
+  const navigate = useNavigate();
 
   const handleChangePage = (page: string) =>
     setSearchParams({ ...queries, page });
+
   return (
     <>
       {sessionId ? (
@@ -30,14 +32,14 @@ export const AssignmentTable = () => {
                   <th className="py-3 px-6 text-left font-medium text-sm">
                     Title
                   </th>
+                  <th className="py-3 px-6 text-left font-medium text-sm">
+                    Total Module
+                  </th>
                   {!profile?.data?.isMentor && (
                     <th className="py-3 px-6 text-left font-medium text-sm">
-                      Total Module
+                      Progress
                     </th>
                   )}
-                  <th className="py-3 px-6 text-left font-medium text-sm">
-                    Progress
-                  </th>
                   <th className="py-3 px-6 text-left font-medium text-sm"></th>
                 </tr>
               </thead>
@@ -66,7 +68,7 @@ export const AssignmentTable = () => {
                       )}
                       <td>
                         <div className="w-10">
-                          <Button variant="secondary">
+                          <Button variant="secondary" onClick={() => navigate(`/dashboard/${item.id}`)}>
                             <IoDocumentOutline />
                           </Button>
                         </div>

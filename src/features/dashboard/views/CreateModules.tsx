@@ -1,16 +1,27 @@
-import { MdArrowBackIosNew } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { BreadCrumb } from "../../_global/components/BreadCrumb";
 import { FormCreateModules } from "../components/create-modules/FormCreateModules";
 
 export const CreateModules = () => {
+  const { sessionId } = useParams();
   return (
-    <div className="mt-4 lg:mt-6">
-      <div className="flex items-center justify-between">
-        <Link to="/dashboard" className="flex items-center gap-4">
-          <MdArrowBackIosNew className="text-2xl" />
-          <h1 className="text-2xl font-bold">Create Modules</h1>
-        </Link>
-      </div>
+    <div className="flex flex-col gap-5">
+      <BreadCrumb
+        items={[
+          {
+            name: "Dashboard",
+            to: "/dashboard",
+          },
+          {
+            name: "Detail Session",
+            to: `/dashboard/${sessionId}`,
+          },
+          {
+            name: "Create Modules",
+            to: `/dashboard/${sessionId}/create-modules`,
+          },
+        ]}
+      />
       <FormCreateModules />
     </div>
   );

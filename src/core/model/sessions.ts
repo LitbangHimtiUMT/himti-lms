@@ -7,3 +7,7 @@ export interface SessionDTO {
   progress: number
   progressStatus: 'Completed' | 'In Progress'
 }
+
+export interface SessionCreationDTO {
+  name: string
+}

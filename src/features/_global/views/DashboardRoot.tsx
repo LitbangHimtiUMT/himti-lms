@@ -33,7 +33,7 @@ export const DashboardRoot = () => {
         )}
         {/* Main Content */}
         <div className="flex-1 flex flex-col min-w-0">
-          <main className="flex-1 mx-4 mb-4 overflow-x-hidden rounded-lg">
+          <main className="flex-1 mx-4 mb-4 overflow-x-hidden rounded-lg m-4 lg:m-6">
             {/* <AssignmentTable /> */}
             <Outlet />
           </main>

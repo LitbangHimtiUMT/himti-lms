@@ -49,8 +49,10 @@ export const Button: React.FC<IButtonProps> = ({
           ? "bg-[#ffcc00] shadow-yellow-500"
           : "bg-gray-300 shadow-gray-300"
       } ${
-        variant == "secondary" || variant == "disabled"
+        variant == "secondary"
           ? "text-black"
+          : variant == "disabled"
+          ? "text-gray-500"
           : "text-white"
       } ${
         rounded == "sm"
@@ -73,9 +75,7 @@ export const Button: React.FC<IButtonProps> = ({
           ? "active:shadow-yellow-600"
           : "active:shadow-gray-400"
       } ${
-        variant == "secondary" || variant == "disabled"
-          ? "border border-solid border-[#2b6394]"
-          : ""
+        variant == "secondary" ? "border border-solid border-[#2b6394]" : ""
       } ${
         variant == "danger"
           ? "hover:bg-red-600"
