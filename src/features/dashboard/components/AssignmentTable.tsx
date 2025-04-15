@@ -12,8 +12,8 @@ import { useProfile } from "../../profile/useProfile";
 
 export const AssignmentTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data: profile } = useProfile();
-  const sessionId = searchParams.get("classId");
+  const { data: profile, isFetching: isFetchingProfile } = useProfile();
+  const classId = searchParams.get("classId");
   const { data: sessions, isFetching } = useSessions();
   const queries = convertQueryParamsToObject(searchParams.toString());
   const navigate = useNavigate();
@@ -23,9 +23,9 @@ export const AssignmentTable = () => {
 
   return (
     <>
-      {sessionId ? (
+      {classId ? (
         <div className="w-full rounded-md">
-          <div className="overflow-x-auto rounded-md">
+          <div className="overflow-x-auto rounded-md border border-solid border-gray-300">
             <table className="w-full">
               <thead>
                 <tr className="bg-[#192d4c] text-white">
@@ -48,10 +48,17 @@ export const AssignmentTable = () => {
               <tbody className="bg-gray-50">
                 {sessions?.data?.length && !isFetching ? (
                   (sessions?.data ?? [])?.map((item, index) => (
-                    <tr key={index} className="border-b border-gray-200">
+                    <tr
+                      key={index}
+                      className={`${
+                        index !== (sessions?.data?.length as number) - 1
+                          ? "border-b border-gray-200"
+                          : ""
+                      }`}
+                    >
                       <td className="py-4 px-6 text-gray-900">{item.name}</td>
                       <td className="py-4 px-6 text-gray-900">{`${item.module.length} Module`}</td>
-                      {!profile?.data?.isMentor && (
+                      {!profile?.data?.isMentor && !isFetchingProfile && (
                         <td className="py-4 px-6 text-gray-900 flex items-center gap-2">
                           <div className="h-1 w-full bg-gray-200 rounded-full overflow-hidden flex items-center">
                             <div
@@ -68,7 +75,12 @@ export const AssignmentTable = () => {
                       )}
                       <td>
                         <div className="w-10">
-                          <Button variant="secondary" onClick={() => navigate(`/dashboard/${item.id}`)}>
+                          <Button
+                            variant="secondary"
+                            onClick={() =>
+                              navigate(`/dashboard/${classId}/${item.id}`)
+                            }
+                          >
                             <IoDocumentOutline />
                           </Button>
                         </div>

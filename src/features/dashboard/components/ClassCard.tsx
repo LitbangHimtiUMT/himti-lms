@@ -1,8 +1,7 @@
 import React from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ClassModel } from "../../../core/model/classes";
 import { Poppins } from "../../_global/components/Text";
-import { convertQueryParamsToObject } from "../../_global/helper";
 
 export const ClassCard: React.FC<ClassModel & { border: boolean }> = ({
   border,
@@ -10,16 +9,15 @@ export const ClassCard: React.FC<ClassModel & { border: boolean }> = ({
   progressStatus,
   total,
   id,
-  status
+  status,
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const objectSearchParams = convertQueryParamsToObject(
-    searchParams.toString()
-  );
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { classId } = useParams();
   const changeClass = (classId: string) =>
-    setSearchParams({ ...objectSearchParams, classId });
+    navigate(`/dashboard?classId=${classId}`);
 
-  const classId = searchParams.get("classId") || undefined;
+  const classes = searchParams.get("classId") || classId || undefined;
   return (
     <div>
       <div className={`mb-4 ${border ? "" : "mb-6"}`}>
@@ -44,7 +42,7 @@ export const ClassCard: React.FC<ClassModel & { border: boolean }> = ({
                       : `${Number(total.precentage)}% Progress`}
                   </Poppins>
                 ) : null}
-                {classId === id ? (
+                {classes === id ? (
                   <>
                     <div className="bg-red-500 w-[6px] h-[6px] rounded-full"></div>
                   </>
@@ -63,9 +61,7 @@ export const ClassCard: React.FC<ClassModel & { border: boolean }> = ({
                 style={{ width: `${total.precentage}%` }}
               />
             ) : (
-              <Poppins className="text-black">
-               {status}
-              </Poppins>
+              <Poppins className="text-black">{status}</Poppins>
             )}
           </div>
         </div>

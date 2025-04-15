@@ -26,8 +26,23 @@ export const useModules = (id?: string) => {
   return query;
 };
 
+export const useDetailModule = (id?: string) => {
+  const { moduleId } = useParams();
+
+  const query = useQuery({
+    queryKey: ["detail-module", { moduleId, id }],
+    queryFn: () =>
+      moduleService.getById({
+        path: moduleId || id,
+      }),
+    enabled: !!moduleId,
+  });
+
+  return query;
+};
+
 export const useModulesCreation = () => {
-  const { sessionId } = useParams();
+  const { sessionId, classId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -50,7 +65,7 @@ export const useModulesCreation = () => {
       }
     },
     onSuccess: (res) => {
-      navigate(`/dashboard/${sessionId}`);
+      navigate(`/dashboard/${classId}/${sessionId}`);
       toast.success(res.message);
       queryClient.removeQueries({
         queryKey: ["modules"],

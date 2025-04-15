@@ -1,5 +1,6 @@
 export interface AuthLoginModel {
     accessToken?: string
+    refreshToken?: string
 }
 
 export interface AuthLoginDTO {

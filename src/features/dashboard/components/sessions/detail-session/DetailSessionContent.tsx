@@ -1,14 +1,14 @@
 import { IoDocumentOutline } from "react-icons/io5";
-import { useParams, useSearchParams } from "react-router-dom";
-import { Button } from "../../../_global/components/Button";
-import { EmptyState } from "../../../_global/components/Empty";
-import { Pagination } from "../../../_global/components/Pagination";
-import { Skeleton } from "../../../_global/components/Shimer";
-import { convertQueryParamsToObject } from "../../../_global/helper";
-import { useModules } from "../../hooks/modules/useModules";
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Button } from "../../../../_global/components/Button";
+import { EmptyState } from "../../../../_global/components/Empty";
+import { Pagination } from "../../../../_global/components/Pagination";
+import { Skeleton } from "../../../../_global/components/Shimer";
+import { convertQueryParamsToObject } from "../../../../_global/helper";
+import { useModules } from "../../../hooks/modules/useModules";
 
 export const DetailSessionContent = () => {
-  const { sessionId } = useParams();
+  const { sessionId, classId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const queries = convertQueryParamsToObject(searchParams.toString());
 
@@ -20,7 +20,7 @@ export const DetailSessionContent = () => {
   return (
     <>
       <div className="w-full rounded-md">
-        <div className="overflow-x-auto rounded-md">
+        <div className="overflow-x-auto rounded-md border border-solid border-gray-300">
           <table className="w-full">
             <thead>
               <tr className="bg-[#192d4c] text-white">
@@ -38,17 +38,26 @@ export const DetailSessionContent = () => {
             <tbody className="bg-gray-50">
               {modules?.data?.length && !isFetching ? (
                 (modules?.data ?? [])?.map((item, index) => (
-                  <tr key={index} className="border-b border-gray-200">
+                  <tr
+                    key={index}
+                    className={`${
+                      index !== (modules?.data?.length as number) - 1
+                        ? "border-b border-gray-200"
+                        : ""
+                    }`}
+                  >
                     <td className="py-4 px-6 text-gray-900">{item.name}</td>
                     <td className="py-4 px-6 text-gray-900">
                       {item.assignment ? "Yes" : "No"}
                     </td>
                     <td>
-                      <div className="w-10">
-                        <Button variant="secondary">
-                          <IoDocumentOutline />
-                        </Button>
-                      </div>
+                      <Link to={`/dashboard/${classId}/${sessionId}/${item.id}`}>
+                        <div className="w-10">
+                          <Button variant="secondary">
+                            <IoDocumentOutline />
+                          </Button>
+                        </div>
+                      </Link>
                     </td>
                   </tr>
                 ))

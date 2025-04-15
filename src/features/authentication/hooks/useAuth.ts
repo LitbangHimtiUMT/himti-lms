@@ -11,7 +11,11 @@ interface ITypeAuth {
   type: "login" | "register";
 }
 
-function isAuthLoginModel(data: unknown): data is AuthLoginModel {
+function isAuthLoginModel(data: AuthLoginModel): boolean {
+  if (data.accessToken)
+    localStorage.setItem(CONFIG_APP.TOKEN_KEY, data.accessToken);
+  if (data.refreshToken)
+    localStorage.setItem(CONFIG_APP.REFRESH_TOKEN_KEY, data.refreshToken);
   return (
     data !== null &&
     typeof data === "object" &&
@@ -53,7 +57,6 @@ export function useAuthCreation() {
         theme: "dark",
       });
       if (res.data && isAuthLoginModel(res.data)) {
-        localStorage.setItem(CONFIG_APP.TOKEN_KEY, res.data.accessToken as string);
         navigate("/dashboard");
       } else {
         navigate("/sign-in");
@@ -102,3 +105,17 @@ export function useAuth() {
     data,
   };
 }
+
+export const useRefreshToken = (enabled = false) => {
+  const token = localStorage.getItem(CONFIG_APP.REFRESH_TOKEN_KEY) ?? "";
+  const query = useQuery({
+    queryKey: ["refresh-token", { enabled }],
+    queryFn: () =>
+      authService.refreshToken(undefined, {
+        bearerToken: token,
+      }),
+    enabled: !!token && enabled,
+  });
+
+  return query;
+};

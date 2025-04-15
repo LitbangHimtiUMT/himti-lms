@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { InputLabel } from "../../../_global/components/InputLabel";
-import { Poppins } from "../../../_global/components/Text";
-import { TextEditor } from "../../../_global/components/TextEditor";
-import { ModuleCreationDTO } from "../../../../core/model/modules";
-import { Button } from "../../../_global/components/Button";
-import { useModulesCreation } from "../../hooks/modules/useModules";
+import { InputLabel } from "../../../../_global/components/InputLabel";
+import { Poppins } from "../../../../_global/components/Text";
+import { TextEditor } from "../../../../_global/components/TextEditor";
+import { ModuleCreationDTO } from "../../../../../core/model/modules";
+import { Button } from "../../../../_global/components/Button";
+import { useModulesCreation } from "../../../hooks/modules/useModules";
 
 export const FormCreateModules = () => {
   const [data, setData] = useState<ModuleCreationDTO>({
