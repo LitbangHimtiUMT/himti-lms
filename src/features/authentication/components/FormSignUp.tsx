@@ -67,7 +67,10 @@ export const FormSignUp = () => {
               Start your adventure
             </h1>
           </div>
-          <form className="flex flex-col items-center gap-6 w-full" onSubmit={handleSubmit}>
+          <form
+            className="flex flex-col items-center gap-6 w-full"
+            onSubmit={handleSubmit}
+          >
             <div className="lg:w-[75%] w-full">
               <InputLabel
                 title="Full Name"
@@ -154,8 +157,13 @@ export const FormSignUp = () => {
               />
             </div>
             <div className="lg:w-[75%] w-full">
-              <Button rounded="full" size="lg" variant="primary" type="submit">
-                Sign Up
+              <Button
+                rounded="full"
+                size="lg"
+                variant={mutation.isPending ? "disabled" : "primary"}
+                type="submit"
+              >
+                {mutation.isPending ? "Loading..." : "Sign Up"}
               </Button>
             </div>
           </form>

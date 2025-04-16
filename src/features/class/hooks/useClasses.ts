@@ -17,12 +17,13 @@ interface Options extends QueryParams {
   path?: string;
 }
 
-type PayloadType = "create" | "update" | "delete";
+type PayloadType = "create" | "update" | "delete" | "join-invitation";
 
 interface ClassesCreation {
   type: PayloadType;
   data?: FormData;
   id?: string;
+  code?: string;
 }
 
 export function useClasses(options?: Options) {
@@ -52,7 +53,7 @@ export function useClassesCreation() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const mutation = useMutation({
-    mutationFn: async ({ data, type, id }: ClassesCreation) => {
+    mutationFn: async ({ data, type, id, code }: ClassesCreation) => {
       switch (type) {
         case "create":
           return classesService.post(data, {
@@ -76,6 +77,15 @@ export function useClassesCreation() {
               [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
             },
           });
+        case "join-invitation":
+          return classesService.joinInvitation(
+            {
+              code: code ?? "",
+            },
+            {
+              path: "join/invitation",
+            }
+          );
         default:
           return classesService.post(data, {
             contentType: "form-data",
@@ -85,14 +95,17 @@ export function useClassesCreation() {
           });
       }
     },
-    onSuccess: (res) => {
+    onSuccess: (res, vars) => {
       toast.success(res.message, {
         position: "top-right",
         autoClose: 2500,
         pauseOnHover: true,
         theme: "dark",
       });
-      navigate("/lms/class");
+
+      if (vars.type === "join-invitation") {
+        navigate(`/dashboard?classId=${res.data?.classId}`);
+      }
 
       queryClient.removeQueries({ queryKey: ["classes"] });
       queryClient.removeQueries({ queryKey: ["classesById"] });
@@ -110,11 +123,12 @@ export function useClassesCreation() {
   return mutation;
 }
 
-export function useClassesById() {
-  const { id } = useParams();
+export function useDetailClass(by: "id" | "code" = "id") {
+  const { id, code } = useParams();
   return useQuery({
-    queryKey: ["classesById", id],
-    queryFn: () => classesService.getById({ path: id }),
-    enabled: !!id,
+    queryKey: ["classesById", { id, code }],
+    queryFn: () =>
+      classesService.getById({ path: by === "id" ? id : `code/${code}` }),
+    enabled: !!id || !!code,
   });
 }

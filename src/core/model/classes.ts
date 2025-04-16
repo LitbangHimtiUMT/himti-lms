@@ -9,17 +9,19 @@ export interface SessionDTO {
 
 export interface ClassModel {
   id: string;
-  participantId: string
+  participantId: string;
   name: string;
   description: string;
+  isAlreadyJoin: boolean;
   status: string;
+  code?: string;
   level: string;
   category: CategoriesModel;
   thumbnail: string;
   price: number;
   creator: UserModel;
   sessions: SessionDTO[];
-  progressStatus: 'Completed' | 'In Progress'
+  progressStatus: "Completed" | "In Progress";
   total: {
     module: number;
     completed: number;
@@ -35,3 +37,9 @@ export interface ClassDTO {
   categoryId: string;
   price: number;
 }
+
+export interface JoinInvitationClassDTO {
+  classId: string;
+  code: string;
+}
+

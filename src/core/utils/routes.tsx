@@ -3,17 +3,19 @@ import { NotFound } from "../../features/_global/components/NotFound";
 import { RootViews } from "../../features/_global/views";
 import { AuthLayout } from "../../features/_global/views/AuthLayout";
 import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
+import { InvitationRoot } from "../../features/_global/views/InvitationRoot";
 import { Playground } from "../../features/_global/views/playground";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
 import { ClassViews } from "../../features/class/views/ClassViews";
 import { CreateModules } from "../../features/dashboard/views/CreateModules";
 import { DashboardView } from "../../features/dashboard/views/DashboardView";
+import { DetailModuleView } from "../../features/dashboard/views/DetailModuleView";
+import { DetailSessionView } from "../../features/dashboard/views/DetailSessionView";
 import { FaqViews } from "../../features/faq/views/FaqViews";
 import { HomeViews } from "../../features/home/views/HomeViews";
+import { InvitationUseCodeViews } from "../../features/invitations/views/InvitationUseCodeViews";
 import { MentorViews } from "../../features/mentor/views/MentorViews";
-import { DetailSessionView } from "../../features/dashboard/views/DetailSessionView";
-import { DetailModuleView } from "../../features/dashboard/views/DetailModuleView";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +73,16 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/:classId/:sessionId/:moduleId",
         element: <DetailModuleView />,
+      },
+    ],
+  },
+  {
+    path: "/invitation",
+    element: <InvitationRoot />,
+    children: [
+      {
+        path: "/invitation/:code",
+        element: <InvitationUseCodeViews />,
       },
     ],
   },

@@ -112,8 +112,13 @@ export const FormSignIn = () => {
               />
             </div>
             <div className="lg:w-[75%] w-full">
-              <Button rounded="full" size="lg" variant="primary" type="submit">
-                Sign In
+              <Button
+                rounded="full"
+                size="lg"
+                variant={mutation.isPending ? "disabled" : "primary"}
+                type="submit"
+              >
+                {mutation.isPending ? "Loading..." : "Sign In"}
               </Button>
             </div>
           </form>
