@@ -8,14 +8,17 @@ import { Playground } from "../../features/_global/views/playground";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
 import { ClassViews } from "../../features/class/views/ClassViews";
+import { CreateClassessViews } from "../../features/dashboard/views/CreateClassessViews";
 import { CreateModules } from "../../features/dashboard/views/CreateModules";
-import { DashboardView } from "../../features/dashboard/views/DashboardView";
 import { DetailModuleView } from "../../features/dashboard/views/DetailModuleView";
 import { DetailSessionView } from "../../features/dashboard/views/DetailSessionView";
+import { EnrolledClassViews } from "../../features/dashboard/views/EnrolledClassViews";
+import { MyClassViews } from "../../features/dashboard/views/MyClassViews";
 import { FaqViews } from "../../features/faq/views/FaqViews";
 import { HomeViews } from "../../features/home/views/HomeViews";
 import { InvitationUseCodeViews } from "../../features/invitations/views/InvitationUseCodeViews";
 import { MentorViews } from "../../features/mentor/views/MentorViews";
+import { SessionViews } from "../../features/dashboard/views/SessionViews";
 
 export const router = createBrowserRouter([
   {
@@ -59,8 +62,20 @@ export const router = createBrowserRouter([
     element: <DashboardRoot />,
     children: [
       {
-        path: "/dashboard",
-        element: <DashboardView />,
+        path: "/dashboard/my-class",
+        element: <MyClassViews />,
+      },
+      {
+        path: "/dashboard/enrolled-class",
+        element: <EnrolledClassViews />,
+      },
+      {
+        path: "/dashboard/class/:classId",
+        element: <SessionViews />,
+      },
+      {
+        path: "/dashboard/class/create",
+        element: <CreateClassessViews />,
       },
       {
         path: "/dashboard/:classId/:sessionId/create-modules",

@@ -1,6 +1,6 @@
 import { ConditionNode } from "../../_global/components/ConditionNode";
 import { useProfile } from "../../profile/useProfile";
-import { AssignmentTable } from "../components/AssignmentTable";
+import { TableCreatedClassessList } from "../components/classess/classess-list/TableCreatedClassessList";
 import { CreateSession } from "../components/sessions/create-session/CreateSession";
 
 export const DashboardView = () => {
@@ -13,7 +13,8 @@ export const DashboardView = () => {
           <CreateSession />
         </ConditionNode>
       </div>
-      <AssignmentTable />
+      
+      <TableCreatedClassessList />
     </div>
   );
 };

@@ -105,6 +105,8 @@ export function useClassesCreation() {
 
       if (vars.type === "join-invitation") {
         navigate(`/dashboard?classId=${res.data?.classId}`);
+      } else if(vars.type === 'create') {
+        navigate(`/dashboard?classId=${res.data?.classId}`);
       }
 
       queryClient.removeQueries({ queryKey: ["classes"] });

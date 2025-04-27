@@ -29,11 +29,13 @@ export interface ClassModel {
   };
 }
 
+export type ClassLevel = "BEGINNER" | "INTERMEDIATE" | "EXPERT"
+
 export interface ClassDTO {
   name: string;
   description?: string;
   thumbnail?: File;
-  level: "BEGINNER" | "INTERMEDIATE" | "EXPERT";
+  level: ClassLevel;
   categoryId: string;
   price: number;
 }

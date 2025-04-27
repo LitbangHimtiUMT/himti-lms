@@ -6,6 +6,7 @@ import { Skeleton } from "../../../_global/components/Shimer";
 import { useClasses } from "../../../class/hooks/useClasses";
 import { useProfile } from "../../../profile/useProfile";
 import { ClassCard } from "../ClassCard";
+import { useNavigate } from "react-router-dom";
 
 export const DashboardSidebar = () => {
   const { data: profile } = useProfile();
@@ -13,6 +14,7 @@ export const DashboardSidebar = () => {
     path: profile?.data?.isMentor ? undefined : "user",
   });
 
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -24,22 +26,28 @@ export const DashboardSidebar = () => {
       <div className="h-max min-h-64 overflow-hidden lg:w-96 w-full bg-[#E5E7EB] sticky top-20 left-0 rounded-lg">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className={`lg:hidden fixed top-3 ${sidebarOpen ? 'left-0' : 'left-[100%]'} z-50 p-2 rounded-e-2xl bg-white shadow-xl`}
+          className={`lg:hidden fixed top-3 ${
+            sidebarOpen ? "left-0" : "left-[100%]"
+          } z-50 p-2 rounded-e-2xl bg-white shadow-xl`}
         >
           <IoMenuOutline className="w-4 h-4" />
         </button>
         {/* Header */}
         <div className="bg-[#192d4c] text-white p-4 rounded-t-lg sticky top-0">
           <div className="flex items-center gap-3 text-white relative left-7">
-          <IoBookOutline className="w-5 h-5" />
-          <span className="font-medium">Courses</span>
+            <IoBookOutline className="w-5 h-5" />
+            <span className="font-medium">Courses</span>
           </div>
         </div>
 
         {/* Course List Card */}
         <div className="p-4 lg-max:h-[500px] overflow-auto flex flex-col gap-2">
           <ConditionNode condition={!!profile?.data?.isMentor}>
-            <Button variant="primary" size="lg">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate("/dashboard/classess/create")}
+            >
               Create Course
             </Button>
           </ConditionNode>

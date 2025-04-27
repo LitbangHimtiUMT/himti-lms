@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
-import { sessionService } from "../../../../core/services/sessions";
-import { SessionCreationDTO } from "../../../../core/model/sessions";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { SessionCreationDTO } from "../../../../core/model/sessions";
+import { sessionService } from "../../../../core/services/sessions";
 
 interface CreationPayload {
   type: "create" | "update";
@@ -11,8 +11,7 @@ interface CreationPayload {
 }
 
 export const useSessions = () => {
-  const [searchParams] = useSearchParams();
-  const classId = searchParams.get("classId") || undefined;
+  const { classId } = useParams();
 
   const query = useQuery({
     queryKey: ["sessions", { classId }],
