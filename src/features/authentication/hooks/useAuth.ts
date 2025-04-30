@@ -57,7 +57,7 @@ export function useAuthCreation() {
         theme: "dark",
       });
       if (res.data && isAuthLoginModel(res.data)) {
-        navigate("/dashboard");
+        navigate("/dashboard/enrolled-class");
       } else {
         navigate("/sign-in");
       }

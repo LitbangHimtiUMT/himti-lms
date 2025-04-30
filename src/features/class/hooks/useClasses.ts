@@ -103,10 +103,8 @@ export function useClassesCreation() {
         theme: "dark",
       });
 
-      if (vars.type === "join-invitation") {
-        navigate(`/dashboard?classId=${res.data?.classId}`);
-      } else if(vars.type === 'create') {
-        navigate(`/dashboard?classId=${res.data?.classId}`);
+      if (vars.type === "join-invitation" || vars.type === "create") {
+        navigate(`/dashboard/enrolled-class`);
       }
 
       queryClient.removeQueries({ queryKey: ["classes"] });
