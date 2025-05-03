@@ -41,7 +41,7 @@ export const FormCreateModules = () => {
             title="Module Name"
             inputProps={{
               inputSize: "md",
-              onChange: (e) => setData({ ...data, name: e.target.value }),
+              onChange: (e) => setData(prev => ({ ...prev, name: e.target.value })),
             }}
           />
         </div>
@@ -51,7 +51,7 @@ export const FormCreateModules = () => {
             title="Youtube URL"
             inputProps={{
               inputSize: "md",
-              onChange: (e) => setData({ ...data, videoUrl: e.target.value }),
+              onChange: (e) => setData(prev => ({ ...prev, videoUrl: e.target.value })),
             }}
           />
         </div>
@@ -72,7 +72,7 @@ export const FormCreateModules = () => {
         </div>
         <div className="flex flex-col gap-2">
           <Poppins className="text-sm">Content</Poppins>
-          <TextEditor onChange={(e) => setData({ ...data, textModule: e })} />
+          <TextEditor onChange={(e) => setData(prev => ({ ...prev, textModule: e }))} />
         </div>
         <Button
           size="lg"

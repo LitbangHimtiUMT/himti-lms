@@ -6,13 +6,25 @@ import { Pagination } from "../../../../_global/components/Pagination";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { convertQueryParamsToObject } from "../../../../_global/helper";
 import { useModules } from "../../../hooks/modules/useModules";
-import { ConditionNode } from "../../../../_global/components/ConditionNode";
+import { CreateAssignmentDrawer } from "../../drawer/CreateAssignmentDrawer";
+import { useState } from "react";
+import { useProfile } from "../../../../profile/useProfile";
+
+interface IShowDrawer {
+  show: boolean;
+  moduleId: string;
+}
 
 export const DetailSessionContent = () => {
   const { sessionId, classId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const queries = convertQueryParamsToObject(searchParams.toString());
 
+  const { data: profile } = useProfile();
+  const [show, setShow] = useState<IShowDrawer>({
+    moduleId: "",
+    show: false,
+  });
   const { data: modules, isFetching } = useModules(sessionId);
   const from = searchParams.get("from");
 
@@ -54,6 +66,11 @@ export const DetailSessionContent = () => {
                     </td>
                     <td>
                       <div className="flex items-center gap-2 justify-end pr-2">
+                        {!item.isCompleted ? (
+                          <>
+                            <div className="w-2 h-2 rounded-full bg-green-600"></div>
+                          </>
+                        ) : null}
                         <Link
                           to={`/dashboard/${classId}/${sessionId}/${item.id}${
                             from ? `?from=${from}` : ""
@@ -66,11 +83,27 @@ export const DetailSessionContent = () => {
                           </div>
                         </Link>
                         <div>
-                          <Button variant={item.assignment ? "secondary" : "success"} size="sm">
-                            {item.assignment
-                              ? "View Assignment"
-                              : "Create Assignment"}
-                          </Button>
+                          {profile?.data?.isMentor ? (
+                            <Button
+                              variant={
+                                item.assignment ? "secondary" : "success"
+                              }
+                              size="sm"
+                              onClick={() => {
+                                if (!item.assignment) {
+                                  setShow((prev) => ({
+                                    ...prev,
+                                    moduleId: item.id,
+                                    show: !prev.show,
+                                  }));
+                                }
+                              }}
+                            >
+                              {item.assignment
+                                ? "View Assignment"
+                                : "Create Assignment"}
+                            </Button>
+                          ) : null}
                         </div>
                       </div>
                     </td>
@@ -102,6 +135,11 @@ export const DetailSessionContent = () => {
           />
         )}
       </div>
+      <CreateAssignmentDrawer
+        show={show.show}
+        onHide={() => setShow({ show: false, moduleId: "" })}
+        moduleId={show.moduleId}
+      />
     </>
   );
 };

@@ -20,7 +20,9 @@ export const DetailModuleView = () => {
               },
               {
                 name: "Detail Session",
-                to: `/dashboard/${classId}/${sessionId}`,
+                to: `/dashboard/${classId}/${sessionId}${
+                  from ? `?from=${from}` : ""
+                }`,
               },
               {
                 name: "Detail Module",

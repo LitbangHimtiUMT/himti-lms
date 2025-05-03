@@ -50,7 +50,7 @@ export const Group = () => {
             </Link>
           ))}
           {token && profile?.data?.email && !isFetching && (
-            <Link to={"/dashboard"}>
+            <Link to={"/dashboard/enrolled-class"}>
               <Poppins className={`text-black text-md duration-300`}>
                 Dashboard
               </Poppins>

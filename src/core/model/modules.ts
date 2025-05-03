@@ -15,6 +15,7 @@ export interface ModuleDTO {
     isFinalAssigment: boolean;
     dueDate: Date;
   } | null;
+  isCompleted: boolean
 }
 
 export interface ModuleCreationDTO {

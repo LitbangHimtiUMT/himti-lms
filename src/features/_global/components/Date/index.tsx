@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DayPicker, DayPickerProps } from "react-day-picker";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { BsCalendarDateFill } from "react-icons/bs";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { formatTime } from "../../lib/format-time";
 
 export interface DatePickerProps {
   dropdownState?: (state: boolean) => void;
@@ -11,6 +12,7 @@ export const DatePicker: React.FC<DatePickerProps & DayPickerProps> = ({
   dropdownState,
   ...rest
 }) => {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [show, setShow] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -34,8 +36,8 @@ export const DatePicker: React.FC<DatePickerProps & DayPickerProps> = ({
       >
         <div
           onClick={() => {
-            setShow((prev) => !prev)
-            dropdownState?.(show)
+            setShow((prev) => !prev);
+            dropdownState?.(show);
           }}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
@@ -44,11 +46,15 @@ export const DatePicker: React.FC<DatePickerProps & DayPickerProps> = ({
           } w-full rounded-lg flex items-center justify-between px-4 py-2 cursor-pointer`}
         >
           <div className="flex items-center gap-2">
-            <BsCalendarDateFill className="text-gray-500" />
+            <BsCalendarDateFill
+              className={`${selectedDate ? "" : "text-gray-500"}`}
+            />
             <p
-              className={`text-sm font-poppins font-medium duration-200 opacity-50`}
+              className={`text-sm font-poppins font-medium duration-200 ${
+                selectedDate ? "" : "opacity-50"
+              }`}
             >
-              Select Date
+              {selectedDate ? formatTime(selectedDate, false) : "Select Date"}
             </p>
           </div>
           <MdKeyboardArrowDown
@@ -61,7 +67,14 @@ export const DatePicker: React.FC<DatePickerProps & DayPickerProps> = ({
           <div className="relative z-20">
             <div className="absolute z-20 overflow-auto max-h-96 flex flex-col gap-1 w-full mt-2 pb-2">
               <div className="bg-white w-max p-4 rounded-md shadow-md">
-                <DayPicker {...rest} />
+                <DayPicker
+                  {...rest}
+                  onDayClick={(date, modifiers, e) => {
+                    setSelectedDate(date);
+                    rest.onDayClick?.(date, modifiers, e);
+                    setShow(prev => !prev);
+                  }}
+                />
               </div>
             </div>
           </div>

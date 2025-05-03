@@ -44,7 +44,7 @@ export const Drawer: React.FC<DrawerProps> = ({
                 : position === "left"
                 ? "-translate-x-full"
                 : "translate-x-full"
-            }`}
+            } overflow-auto`}
             onClick={(e) => e.stopPropagation()}
             style={style}
           >

@@ -9,6 +9,7 @@ import { Poppins } from "../../_global/components/Text";
 import { convertQueryParamsToObject } from "../../_global/helper";
 import { useProfile } from "../../profile/useProfile";
 import { useSessions } from "../hooks/sessions/useSessions";
+import { FaLock } from "react-icons/fa";
 
 export const AssignmentTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,11 +23,12 @@ export const AssignmentTable = () => {
   const handleChangePage = (page: string) =>
     setSearchParams({ ...queries, page });
 
+  const lastHead = profile?.data?.isMentor ? [""] : ["Progress", ""];
   return (
     <>
       <div className="w-full rounded-md">
         <Table>
-          <TableHead field={["Title", "Total Module", ""]} />
+          <TableHead field={["Title", "Total Module", ...lastHead]} />
           <TableBody>
             {sessions?.data?.length && !isFetching ? (
               (sessions?.data ?? [])?.map((item, index) => (
@@ -58,12 +60,19 @@ export const AssignmentTable = () => {
                   <td>
                     <div className="w-10">
                       <Button
-                        variant="secondary"
-                        onClick={() =>
-                          navigate(`/dashboard/${classId}/${item.id}${from ? `?from=${from}` : ""}`)
+                        variant={item.isLocked ? "disabled" : "secondary"}
+                        onClick={
+                          !item.isLocked
+                            ? () =>
+                                navigate(
+                                  `/dashboard/${classId}/${item.id}${
+                                    from ? `?from=${from}` : ""
+                                  }`
+                                )
+                            : undefined
                         }
                       >
-                        <IoDocumentOutline />
+                        {item.isLocked ? <FaLock /> : <IoDocumentOutline />}
                       </Button>
                     </div>
                   </td>

@@ -6,6 +6,7 @@ export interface SessionDTO {
   module: ModuleDTO[];
   progress: number
   progressStatus: 'Completed' | 'In Progress'
+  isLocked: boolean
 }
 
 export interface SessionCreationDTO {

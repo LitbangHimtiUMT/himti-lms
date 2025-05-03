@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { moduleService } from "../../../../core/services/modules";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 interface ModulesCreationPayload {
   data?: FormData;
@@ -28,7 +29,7 @@ export const useModules = (id?: string) => {
 
 export const useDetailModule = (id?: string) => {
   const { moduleId } = useParams();
-
+  const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["detail-module", { moduleId, id }],
     queryFn: () =>
@@ -37,6 +38,15 @@ export const useDetailModule = (id?: string) => {
       }),
     enabled: !!moduleId,
   });
+
+  useEffect(() => {
+    queryClient.removeQueries({
+      queryKey: ["sessions"],
+    });
+    queryClient.removeQueries({
+      queryKey: ["modules"],
+    });
+  }, [id, queryClient]);
 
   return query;
 };

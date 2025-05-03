@@ -6,6 +6,7 @@ import { convertQueryParamsToObject } from "@features/_global/helper";
 import { useSearchParams } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 import DefaultImage from "@core/assets/default-photo.svg";
+import { Poppins } from "../../_global/components/Text";
 
 const ClassLayout: React.FC = () => {
   const { data: classes, isFetching } = useClasses();
@@ -25,7 +26,7 @@ const ClassLayout: React.FC = () => {
   return (
     <>
       <div className="container mx-auto py-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+        <div className={`${classes?.data?.length ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center" : ''}`}>
           {isFetching && (
             <>
               <Skeleton width={"384px"} height={"450px"} />
@@ -33,8 +34,10 @@ const ClassLayout: React.FC = () => {
               <Skeleton width={"384px"} height={"450px"} />
             </>
           )}
-          {!isFetching && !classes?.data && (
-            <div className="text-center">No classes found</div>
+          {!isFetching && !classes?.data?.length && (
+            <div className="text-center w-full flex items-center justify-center">
+              <Poppins>No classes found</Poppins>
+            </div>
           )}
           {classes?.data &&
             classes.data.map((course, index) => (
