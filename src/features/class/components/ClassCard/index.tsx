@@ -14,7 +14,8 @@ export const ClassCard: React.FC<{ course: ClassModel }> = ({ course }) => {
       <div className="relative">
         <div className="relative overflow-hidden rounded-[10px] mb-[24px]">
           <img
-            src={Learning}
+            src={course.thumbnail || Learning}
+            onError={(e) => ((e.target as HTMLImageElement).src = DefaultImg)}
             alt={course.name}
             className="aspect-[330/223] w-full object-cover transform transition-transform duration-300 hover:scale-110"
           />
