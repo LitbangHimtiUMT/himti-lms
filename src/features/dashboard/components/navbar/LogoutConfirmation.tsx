@@ -5,6 +5,7 @@ import { Poppins } from "../../../_global/components/Text";
 import { Button } from "../../../_global/components/Button";
 import { CONFIG_APP } from "../../../../core/configs/app";
 import { useNavigate } from "react-router-dom";
+import { ConditionNode } from "../../../_global/components/ConditionNode";
 
 interface LogoutConfirmationProps {
   show: boolean;
@@ -23,7 +24,7 @@ export const LogoutConfirmation: React.FC<LogoutConfirmationProps> = ({
   };
 
   return (
-    <>
+    <ConditionNode condition={show}>
       <Dialog onHide={onHide} show={show}>
         <div className="p-4 flex flex-col gap-4">
           <div className="flex items-center gap-6">
@@ -41,7 +42,7 @@ export const LogoutConfirmation: React.FC<LogoutConfirmationProps> = ({
           </div>
           <div className="flex items-center justify-end">
             <div className="flex items-center gap-4">
-              <Button variant="secondary">
+              <Button variant="secondary" onClick={onHide}>
                 <Poppins>Cancel</Poppins>
               </Button>
               <Button variant="danger" onClick={handleConfirmLogout}>
@@ -51,6 +52,6 @@ export const LogoutConfirmation: React.FC<LogoutConfirmationProps> = ({
           </div>
         </div>
       </Dialog>
-    </>
+    </ConditionNode>
   );
 };

@@ -1,9 +1,11 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { BreadCrumb } from "../../_global/components/BreadCrumb";
 import { DetailModuleContent } from "../components/modules/detail-modules/DetailModuleContent";
 
 export const DetailModuleView = () => {
   const { sessionId, moduleId, classId } = useParams();
+  const [searchParams] = useSearchParams();
+  const from = searchParams.get("from");
   return (
     <>
       <div className="flex flex-col gap-5">
@@ -11,8 +13,10 @@ export const DetailModuleView = () => {
           <BreadCrumb
             items={[
               {
-                name: "Dashboard",
-                to: "/dashboard",
+                name: `${from === "enrolled" ? "Enrolled Class" : "My Class"}`,
+                to: `/dashboard${
+                  from === "enrolled" ? "/enrolled-class" : "/my-class"
+                }`,
               },
               {
                 name: "Detail Session",

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { BreadCrumb } from "../../_global/components/BreadCrumb";
 import { DetailSessionContent } from "../components/sessions/detail-session/DetailSessionContent";
 import { Button } from "../../_global/components/Button";
@@ -7,15 +7,21 @@ import { useProfile } from "../../profile/useProfile";
 
 export const DetailSessionView = () => {
   const { sessionId, classId } = useParams();
-  const {data: profile} = useProfile()
+  const { data: profile } = useProfile();
+  const [searchParams] = useSearchParams();
+  const from = searchParams.get("from");
   return (
     <div className="flex flex-col gap-5">
       <div className="flex lg:flex-row flex-col lg:items-start justify-between lg:gap-0 gap-4">
         <BreadCrumb
           items={[
             {
-              name: "Dashboard",
-              to: "/dashboard",
+              name: `${
+                from === "enrolled" ? "Enrolled Class" : "My Class"
+              }`,
+              to: `/dashboard/${
+                from === "enrolled" ? "enrolled-class" : "my-class"
+              }`,
             },
             {
               name: "Detail Session",
@@ -24,7 +30,11 @@ export const DetailSessionView = () => {
           ]}
         />
         <ConditionNode condition={!!profile?.data?.isMentor}>
-          <Link to={`/dashboard/${classId}/${sessionId}/create-modules`}>
+          <Link
+            to={`/dashboard/${classId}/${sessionId}/create-modules${
+              from ? `?from=${from}` : ""
+            }`}
+          >
             <Button>Create Modules</Button>
           </Link>
         </ConditionNode>

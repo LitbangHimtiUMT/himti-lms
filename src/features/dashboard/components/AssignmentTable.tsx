@@ -17,6 +17,7 @@ export const AssignmentTable = () => {
   const { data: sessions, isFetching } = useSessions();
   const queries = convertQueryParamsToObject(searchParams.toString());
   const navigate = useNavigate();
+  const from = searchParams.get("from");
 
   const handleChangePage = (page: string) =>
     setSearchParams({ ...queries, page });
@@ -59,7 +60,7 @@ export const AssignmentTable = () => {
                       <Button
                         variant="secondary"
                         onClick={() =>
-                          navigate(`/dashboard/${classId}/${item.id}`)
+                          navigate(`/dashboard/${classId}/${item.id}${from ? `?from=${from}` : ""}`)
                         }
                       >
                         <IoDocumentOutline />

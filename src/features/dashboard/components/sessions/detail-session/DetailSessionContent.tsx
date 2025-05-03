@@ -6,6 +6,7 @@ import { Pagination } from "../../../../_global/components/Pagination";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { convertQueryParamsToObject } from "../../../../_global/helper";
 import { useModules } from "../../../hooks/modules/useModules";
+import { ConditionNode } from "../../../../_global/components/ConditionNode";
 
 export const DetailSessionContent = () => {
   const { sessionId, classId } = useParams();
@@ -13,6 +14,7 @@ export const DetailSessionContent = () => {
   const queries = convertQueryParamsToObject(searchParams.toString());
 
   const { data: modules, isFetching } = useModules(sessionId);
+  const from = searchParams.get("from");
 
   const handleChangePage = (page: string) =>
     setSearchParams({ ...queries, page });
@@ -51,13 +53,26 @@ export const DetailSessionContent = () => {
                       {item.assignment ? "Yes" : "No"}
                     </td>
                     <td>
-                      <Link to={`/dashboard/${classId}/${sessionId}/${item.id}`}>
-                        <div className="w-10">
-                          <Button variant="secondary">
-                            <IoDocumentOutline />
+                      <div className="flex items-center gap-2 justify-end pr-2">
+                        <Link
+                          to={`/dashboard/${classId}/${sessionId}/${item.id}${
+                            from ? `?from=${from}` : ""
+                          }`}
+                        >
+                          <div className="w-10">
+                            <Button variant="secondary">
+                              <IoDocumentOutline />
+                            </Button>
+                          </div>
+                        </Link>
+                        <div>
+                          <Button variant={item.assignment ? "secondary" : "success"} size="sm">
+                            {item.assignment
+                              ? "View Assignment"
+                              : "Create Assignment"}
                           </Button>
                         </div>
-                      </Link>
+                      </div>
                     </td>
                   </tr>
                 ))

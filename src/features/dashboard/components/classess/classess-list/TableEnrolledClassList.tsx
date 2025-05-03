@@ -10,14 +10,27 @@ import {
 } from "../../../../_global/components/Table";
 import { formatRupiah } from "../../../../_global/helper";
 import { useClasses } from "../../../../class/hooks/useClasses";
+import { CiSearch } from "react-icons/ci";
+import { Input } from "../../../../_global/components/Input";
+import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
 
 export const TableEnrolledClassessList = () => {
   const navigate = useNavigate();
   const { data: classess, isFetching } = useClasses({
     path: "user",
   });
+
+  const { handleInputChange } = useSearchParamsInput("search");
+
   return (
-    <>
+    <div className="flex flex-col gap-2">
+      <div className="w-1/3">
+        <Input
+          LeftIcon={<CiSearch className="text-lg" />}
+          placeholder="Search Class..."
+          onChange={handleInputChange}
+        />
+      </div>
       <Table>
         <TableHead field={["Class Name", "Price", "Category", ""]} />
         <TableBody>
@@ -41,9 +54,7 @@ export const TableEnrolledClassessList = () => {
                     <Button
                       variant="secondary"
                       onClick={() =>
-                        navigate(
-                          `/dashboard/class/${item.id}?from=enrolled`
-                        )
+                        navigate(`/dashboard/class/${item.id}?from=enrolled`)
                       }
                     >
                       <IoDocumentOutline />
@@ -69,6 +80,6 @@ export const TableEnrolledClassessList = () => {
           )}
         </TableBody>
       </Table>
-    </>
+    </div>
   );
 };

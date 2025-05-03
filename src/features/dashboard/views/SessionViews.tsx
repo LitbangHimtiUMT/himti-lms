@@ -26,7 +26,7 @@ export const SessionViews = () => {
               },
               {
                 name: "Sessions",
-                to: `/dashboard/${classId}`,
+                to: `/dashboard/class/${classId}`,
               },
             ]}
           />

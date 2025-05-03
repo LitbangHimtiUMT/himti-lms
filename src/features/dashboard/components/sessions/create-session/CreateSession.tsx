@@ -7,8 +7,9 @@ import { CreateSessionDrawer } from "../../drawer/CreateSessionDrawer";
 export const CreateSession = () => {
   const [searchParams] = useSearchParams();
   const classId = searchParams.get("classId");
-
+  
   const [show, setShow] = useState<boolean>(false);
+  
   const onHide = () => setShow((prev) => !prev);
   return (
     <>

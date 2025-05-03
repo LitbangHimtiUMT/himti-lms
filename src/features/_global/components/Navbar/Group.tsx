@@ -70,9 +70,6 @@ export const GroupResponsive = ({ isOpen }: { isOpen: boolean }) => {
         isOpen ? "top-[100%]" : "top-[-1000px] z-[-1]"
       }`}
     >
-      {/* <div className="w-full flex items-center justify-center px-0">
-        <InputSearch />
-      </div> */}
       {Menus.map((item, index) => (
         <Link to={item.to} key={index}>
           <span

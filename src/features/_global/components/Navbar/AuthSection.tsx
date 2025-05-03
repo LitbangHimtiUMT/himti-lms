@@ -4,6 +4,9 @@ import { useProfile } from "../../../profile/useProfile";
 import { CONFIG_APP } from "../../../../core/configs/app";
 import { Poppins } from "../Text";
 import DefaultImage from "@core/assets/default-photo.svg";
+import { useState } from "react";
+import { CiLogout } from "react-icons/ci";
+import { LogoutConfirmation } from "../../../dashboard/components/navbar/LogoutConfirmation";
 
 interface AuthSectionProps {
   direction?: "row" | "column";
@@ -14,10 +17,11 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
 }) => {
   const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
   const { data: profile, isFetching } = useProfile();
+  const [show, setShow] = useState<boolean>(false);
   return (
     <>
       {token ? (
-        <>
+        <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
             <Poppins className="text-xs">
               {profile?.data?.name || "unknown"}
@@ -35,7 +39,16 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
               className="w-8 h-8 rounded-full cursor-pointer"
             />
           </div>
-        </>
+          <>
+            <div
+              className="border border-solid border-red-500 h-8 flex items-center gap-2 rounded-md bg-red-700 hover:bg-red-500 duration-300 px-1 pr-2 cursor-pointer"
+              onClick={() => setShow((prev) => !prev)}
+            >
+              <CiLogout className="text-white" />
+              <Poppins className="text-xs text-white">Logout</Poppins>
+            </div>
+          </>
+        </div>
       ) : (
         <div
           className={`flex gap-4 ${
@@ -56,6 +69,7 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
           </div>
         </div>
       )}
+      <LogoutConfirmation onHide={() => setShow((prev) => !prev)} show={show} />
     </>
   );
 };
