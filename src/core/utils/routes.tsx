@@ -19,6 +19,8 @@ import { HomeViews } from "../../features/home/views/HomeViews";
 import { InvitationUseCodeViews } from "../../features/invitations/views/InvitationUseCodeViews";
 import { MentorViews } from "../../features/mentor/views/MentorViews";
 import { SessionViews } from "../../features/dashboard/views/SessionViews";
+import { ClassDetailView } from "@features/class/views/ClassDetailView";
+import { LearningDashboardView } from "@features/learning/views/LearningView";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "/class",
         element: <ClassViews />,
+      },
+      {
+        path: "/class-detail",
+        element: <ClassDetailView />,
       },
       {
         path: "/mentors",
@@ -104,6 +110,10 @@ export const router = createBrowserRouter([
   {
     path: "/playground",
     element: <Playground />,
+  },
+  {
+    path: "/learning-dashboard",
+    element: <LearningDashboardView />,
   },
   {
     path: "*",
