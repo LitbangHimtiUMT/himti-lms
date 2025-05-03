@@ -4,8 +4,11 @@ import DefaultImg from "@core/assets/default-photo.svg";
 import { ClassModel } from "@core/model/classes";
 import { Button } from "../../../_global/components/Button";
 import { formatRupiah } from "../../../_global/helper";
+import { useNavigate } from "react-router-dom";
 
 export const ClassCard: React.FC<{ course: ClassModel }> = ({ course }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white rounded-xl shadow-xl p-4 max-w-sm">
       <div className="relative">
@@ -42,15 +45,15 @@ export const ClassCard: React.FC<{ course: ClassModel }> = ({ course }) => {
           <div className="flex items-center gap-2">
             <img
               src={course.creator.photo}
-              onError={(e) =>
-                ((e.target as HTMLImageElement).src = DefaultImg)
-              }
+              onError={(e) => ((e.target as HTMLImageElement).src = DefaultImg)}
               className="w-8 h-8 rounded-full"
             />
             <span className="text-sm font-medium">{course.creator.name}</span>
           </div>
           <div>
-            <Button>See Detail</Button>
+            <Button onClick={() => navigate(`/class-detail`)}>
+              See Detail
+            </Button>
           </div>
         </div>
       </div>
