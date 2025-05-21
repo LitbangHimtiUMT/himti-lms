@@ -9,7 +9,6 @@ import { Poppins } from "../../_global/components/Text";
 import { convertQueryParamsToObject } from "../../_global/helper";
 import { useProfile } from "../../profile/useProfile";
 import { useSessions } from "../hooks/sessions/useSessions";
-import { FaLock } from "react-icons/fa";
 
 export const AssignmentTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -60,19 +59,18 @@ export const AssignmentTable = () => {
                   <td>
                     <div className="w-10">
                       <Button
-                        variant={item.isLocked ? "disabled" : "secondary"}
+                        variant={'secondary'}
                         onClick={
-                          !item.isLocked
-                            ? () =>
-                                navigate(
-                                  `/dashboard/${classId}/${item.id}${
-                                    from ? `?from=${from}` : ""
-                                  }`
-                                )
-                            : undefined
+                          () =>
+                            navigate(
+                              `/dashboard/${classId}/${item.id}${
+                                from ? `?from=${from}` : ""
+                              }`
+                            )
                         }
                       >
-                        {item.isLocked ? <FaLock /> : <IoDocumentOutline />}
+                        {/* {item.isLocked ? <FaLock /> : <IoDocumentOutline />} */}
+                        <IoDocumentOutline />
                       </Button>
                     </div>
                   </td>

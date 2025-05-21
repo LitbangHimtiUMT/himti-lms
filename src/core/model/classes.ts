@@ -27,6 +27,12 @@ export interface ClassModel {
     completed: number;
     precentage: number;
   };
+  certificate: {
+    id: string
+    code: string
+    classId: string
+    userId: string
+  } | null
 }
 
 export type ClassLevel = "BEGINNER" | "INTERMEDIATE" | "EXPERT"

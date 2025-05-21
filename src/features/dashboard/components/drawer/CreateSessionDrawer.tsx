@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { SessionCreationDTO } from "../../../../core/model/sessions";
 import { Button } from "../../../_global/components/Button";
 import { Drawer } from "../../../_global/components/Drawer";
@@ -13,8 +13,7 @@ interface Props {
 
 export const CreateSessionDrawer: React.FC<Props> = ({ onHide, show }) => {
   const mutation = useSessionsCreation();
-  const [searchParams] = useSearchParams();
-  const classId = searchParams.get("classId") || "";
+  const { classId } = useParams();
 
   const [form, setForm] = useState<SessionCreationDTO>({
     name: "",

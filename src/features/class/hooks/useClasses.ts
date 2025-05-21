@@ -124,11 +124,13 @@ export function useClassesCreation() {
 }
 
 export function useDetailClass(by: "id" | "code" = "id") {
-  const { id, code } = useParams();
+  const { id, classId, code } = useParams();
   return useQuery({
-    queryKey: ["classesById", { id, code }],
+    queryKey: ["classesById", { id, code, classId }],
     queryFn: () =>
-      classesService.getById({ path: by === "id" ? id : `code/${code}` }),
-    enabled: !!id || !!code,
+      classesService.getById({
+        path: by === "id" ? id || classId : `code/${code}`,
+      }),
+    enabled: !!id || !!classId || !!code,
   });
 }

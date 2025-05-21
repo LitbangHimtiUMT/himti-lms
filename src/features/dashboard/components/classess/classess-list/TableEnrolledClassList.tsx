@@ -1,18 +1,21 @@
+import { CiSearch } from "react-icons/ci";
+import { FaEye } from "react-icons/fa";
 import { IoDocumentOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../_global/components/Button";
 import { EmptyState } from "../../../../_global/components/Empty";
+import { Input } from "../../../../_global/components/Input";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import {
   Table,
   TableBody,
   TableHead,
 } from "../../../../_global/components/Table";
+import { Poppins } from "../../../../_global/components/Text";
 import { formatRupiah } from "../../../../_global/helper";
-import { useClasses } from "../../../../class/hooks/useClasses";
-import { CiSearch } from "react-icons/ci";
-import { Input } from "../../../../_global/components/Input";
 import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
+import { useClasses } from "../../../../class/hooks/useClasses";
+import { useGenerateCertificate } from "../../../hooks/certificates/useCertificates";
 
 export const TableEnrolledClassessList = () => {
   const navigate = useNavigate();
@@ -21,6 +24,12 @@ export const TableEnrolledClassessList = () => {
   });
 
   const { handleInputChange } = useSearchParamsInput("search");
+  const mutation = useGenerateCertificate();
+
+  const handleGenerate = async (classId: string) =>
+    await mutation.mutateAsync({
+      classId,
+    });
 
   return (
     <div className="flex flex-col gap-2">
@@ -32,7 +41,9 @@ export const TableEnrolledClassessList = () => {
         />
       </div>
       <Table>
-        <TableHead field={["Class Name", "Price", "Category", ""]} />
+        <TableHead
+          field={["Class Name", "Price", "Category", "Progress", ""]}
+        />
         <TableBody>
           {classess?.data?.length && !isFetching ? (
             (classess?.data ?? [])?.map((item, index) => (
@@ -49,16 +60,43 @@ export const TableEnrolledClassessList = () => {
                   item.price
                 )}`}</td>
                 <td className="py-4 px-6 text-gray-900">{`${item.category.name}`}</td>
+                <td className="py-4 px-6 text-gray-900">{`${item.total.precentage}%`}</td>
                 <td>
-                  <div className="w-10">
-                    <Button
-                      variant="secondary"
-                      onClick={() =>
-                        navigate(`/dashboard/class/${item.id}?from=enrolled`)
-                      }
-                    >
-                      <IoDocumentOutline />
-                    </Button>
+                  <div className="w-full flex justify-end gap-2 px-2">
+                    <div className="w-10">
+                      <Button
+                        variant="secondary"
+                        onClick={() =>
+                          navigate(`/dashboard/class/${item.id}?from=enrolled`)
+                        }
+                      >
+                        <IoDocumentOutline />
+                      </Button>
+                    </div>
+                    {item.certificate && item.progressStatus === "Completed" ? (
+                      <>
+                        <div className="w-10">
+                          <Button
+                            variant="secondary"
+                            // onClick={() =>
+                            //   navigate(`/dashboard/class/${item.id}?from=enrolled`)
+                            // }
+                          >
+                            <FaEye />
+                          </Button>
+                        </div>
+                      </>
+                    ) : item.progressStatus === "Completed" &&
+                      !item.certificate ? (
+                      <div>
+                        <Button
+                          variant="primary"
+                          onClick={() => handleGenerate(item.id)}
+                        >
+                          <Poppins>Generate Certificate</Poppins>
+                        </Button>
+                      </div>
+                    ) : null}
                   </div>
                 </td>
               </tr>
@@ -66,7 +104,7 @@ export const TableEnrolledClassessList = () => {
           ) : !classess?.data?.length && !isFetching ? (
             <EmptyState
               customMinHeight={400}
-              colspan={4}
+              colspan={5}
               description={["Class not found"]}
             />
           ) : (

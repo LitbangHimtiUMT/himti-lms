@@ -17,9 +17,7 @@ export const SessionViews = () => {
           <BreadCrumb
             items={[
               {
-                name: `${
-                  from === "enrolled" ? "Enrolled Class" : "My Class"
-                }`,
+                name: `${from === "enrolled" ? "Enrolled Class" : "My Class"}`,
                 to: `/dashboard/${
                   from === "enrolled" ? "enrolled-class" : "my-class"
                 }`,

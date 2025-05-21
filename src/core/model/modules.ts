@@ -14,6 +14,8 @@ export interface ModuleDTO {
     title: string;
     isFinalAssigment: boolean;
     dueDate: Date;
+    allowedFile: string | null
+    description: string
   } | null;
   isCompleted: boolean
 }

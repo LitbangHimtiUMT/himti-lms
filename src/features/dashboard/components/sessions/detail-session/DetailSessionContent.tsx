@@ -1,5 +1,5 @@
 import { IoDocumentOutline } from "react-icons/io5";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "../../../../_global/components/Button";
 import { EmptyState } from "../../../../_global/components/Empty";
 import { Pagination } from "../../../../_global/components/Pagination";
@@ -9,6 +9,7 @@ import { useModules } from "../../../hooks/modules/useModules";
 import { CreateAssignmentDrawer } from "../../drawer/CreateAssignmentDrawer";
 import { useState } from "react";
 import { useProfile } from "../../../../profile/useProfile";
+import { useDetailClass } from "../../../../class/hooks/useClasses";
 
 interface IShowDrawer {
   show: boolean;
@@ -20,6 +21,9 @@ export const DetailSessionContent = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queries = convertQueryParamsToObject(searchParams.toString());
 
+  const { data: classess } = useDetailClass();
+
+
   const { data: profile } = useProfile();
   const [show, setShow] = useState<IShowDrawer>({
     moduleId: "",
@@ -27,9 +31,12 @@ export const DetailSessionContent = () => {
   });
   const { data: modules, isFetching } = useModules(sessionId);
   const from = searchParams.get("from");
+  const navigate = useNavigate()
 
   const handleChangePage = (page: string) =>
     setSearchParams({ ...queries, page });
+
+  const isOwner = profile?.data?.id === classess?.data?.creator?.id
 
   return (
     <>
@@ -66,7 +73,7 @@ export const DetailSessionContent = () => {
                     </td>
                     <td>
                       <div className="flex items-center gap-2 justify-end pr-2">
-                        {!item.isCompleted ? (
+                        {!item.isCompleted && !isOwner ? (
                           <>
                             <div className="w-2 h-2 rounded-full bg-green-600"></div>
                           </>
@@ -83,10 +90,10 @@ export const DetailSessionContent = () => {
                           </div>
                         </Link>
                         <div>
-                          {profile?.data?.isMentor ? (
+                          {item.assignment || isOwner ? (
                             <Button
                               variant={
-                                item.assignment ? "secondary" : "success"
+                                item.assignment || !isOwner ? "secondary" : "success"
                               }
                               size="sm"
                               onClick={() => {
@@ -96,10 +103,12 @@ export const DetailSessionContent = () => {
                                     moduleId: item.id,
                                     show: !prev.show,
                                   }));
+                                  return
                                 }
+                                navigate(`/dashboard/${classId}/${sessionId}/${item.id}?type=assignment`)
                               }}
                             >
-                              {item.assignment
+                              {item.assignment || !isOwner
                                 ? "View Assignment"
                                 : "Create Assignment"}
                             </Button>

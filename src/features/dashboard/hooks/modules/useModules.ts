@@ -46,6 +46,9 @@ export const useDetailModule = (id?: string) => {
     queryClient.removeQueries({
       queryKey: ["modules"],
     });
+    queryClient.removeQueries({
+      queryKey: ["classes"],
+    });
   }, [id, queryClient]);
 
   return query;
