@@ -1,12 +1,12 @@
-export const convertQueryParamsToObject = (
+export const convertQueryParamsToObject = <T= Record<string, string>>(
     queryParams: string
-): Record<string, string> => {
+): T => {
     const query = new URLSearchParams(queryParams);
     const object: Record<string, string> = {};
     for (const [key, value] of query) {
         object[key] = value;
     }
-    return object;
+    return object as T;
 }
 
 export const convertObjectToQueryParams = (object?: Record<string, string | number | null | undefined>): string => {

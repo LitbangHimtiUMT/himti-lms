@@ -36,7 +36,7 @@ export const useDetailModule = (id?: string) => {
       moduleService.getById({
         path: moduleId || id,
       }),
-    enabled: !!moduleId,
+    enabled: !!moduleId || !!id,
   });
 
   useEffect(() => {

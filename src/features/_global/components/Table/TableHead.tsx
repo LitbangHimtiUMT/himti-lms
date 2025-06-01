@@ -3,11 +3,12 @@ import { Poppins } from "../Text";
 
 interface ITableHeadProps {
   field: string[];
+  className?: string;
 }
 
-export const TableHead: React.FC<ITableHeadProps> = ({ field }) => {
+export const TableHead: React.FC<ITableHeadProps> = ({ field, className }) => {
   return (
-    <thead>
+    <thead className={className}>
       <tr className="bg-[#192d4c] text-white">
         {field.map((item, index) => (
           <th key={index} className="py-3 px-6 text-left font-medium text-sm">

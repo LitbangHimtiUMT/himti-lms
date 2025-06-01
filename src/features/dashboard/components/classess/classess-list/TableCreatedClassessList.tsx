@@ -10,11 +10,15 @@ import {
   TableHead,
 } from "../../../../_global/components/Table";
 import { formatRupiah } from "../../../../_global/helper";
-import { useClasses } from "../../../../class/hooks/useClasses";
+import {
+  useClasses,
+  useClassesCreation,
+} from "../../../../class/hooks/useClasses";
 import { Input } from "../../../../_global/components/Input";
 import { CiSearch } from "react-icons/ci";
 import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
 import { toast } from "react-toastify";
+import { MdOutlineFileUpload } from "react-icons/md";
 
 export const TableCreatedClassessList = () => {
   const navigate = useNavigate();
@@ -28,6 +32,15 @@ export const TableCreatedClassessList = () => {
       .then(() => {
         toast.success("Copied to clipboard");
       });
+  };
+
+  const mutation = useClassesCreation();
+
+  const handlePublishClass = async (id: string) => {
+    await mutation.mutateAsync({
+      id,
+      type: "publish",
+    });
   };
 
   return (
@@ -77,6 +90,18 @@ export const TableCreatedClassessList = () => {
                         <FiLink />
                       </Button>
                     </div>
+                    {item.status === "DRAFT" ? (
+                      <>
+                        <div className="w-10">
+                          <Button
+                            variant="secondary"
+                            onClick={() => handlePublishClass(item.id)}
+                          >
+                            <MdOutlineFileUpload />
+                          </Button>
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 </td>
               </tr>

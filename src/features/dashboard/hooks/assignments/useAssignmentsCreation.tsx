@@ -1,7 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreateAssignmentDTO } from "../../../../core/model/assignments";
 import { assignmentService } from "../../../../core/services/assignments";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 interface AssignmentVars {
   type: "create";
@@ -30,4 +31,17 @@ export const useAssignmentsCreation = () => {
       });
     },
   });
+};
+
+export const useDetailAssignment = () => {
+  const { id } = useParams();
+  const query = useQuery({
+    queryKey: ["detail-assignment", { id }],
+    queryFn: () =>
+      assignmentService.getById({
+        path: id,
+      }),
+    enabled: !!id,
+  });
+  return query;
 };

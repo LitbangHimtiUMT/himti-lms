@@ -1,3 +1,17 @@
+import { SubmissionStatus } from "../../features/dashboard/components/modules/detail-modules/DetailModuleContent";
+
+export interface SubmissionDTO {
+  id: string;
+  file: string;
+  status: SubmissionStatus;
+  feedback: string | null;
+  submittedAt: Date;
+  submittedBy?: {
+    id: string;
+    name: string;
+  }
+}
+
 export interface ModuleDTO {
   id: string;
   name: string;
@@ -16,7 +30,13 @@ export interface ModuleDTO {
     dueDate: Date;
     allowedFile: string | null
     description: string
+    activeSubmission?: SubmissionDTO | null;
+    historySubmission?: SubmissionDTO[]
   } | null;
+  createdBy: {
+    id: string;
+    name: string
+  }
   isCompleted: boolean
 }
 

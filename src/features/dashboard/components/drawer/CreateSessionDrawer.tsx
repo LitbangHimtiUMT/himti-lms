@@ -32,32 +32,37 @@ export const CreateSessionDrawer: React.FC<Props> = ({ onHide, show }) => {
 
   return (
     <>
-      <Drawer
-        onHide={onHide}
-        show={show}
-        style={{
-          marginTop: "3rem",
-        }}
-      >
-        <form
-          className="px-5 flex flex-col items-center gap-3"
-          onSubmit={handleSubmit}
+      {show ? (
+        <Drawer
+          onHide={() => {
+            onHide();
+            setForm({ name: "" });
+          }}
+          show={show}
+          style={{
+            marginTop: "3rem",
+          }}
         >
-          <InputLabel
-            title="Session Name"
-            titleSize="sm"
-            inputProps={{
-              onChange: (e) => setForm({ ...form, name: e.target.value }),
-            }}
-          />
-          <Button
-            type="submit"
-            variant={mutation.isPending ? "disabled" : "primary"}
+          <form
+            className="px-5 flex flex-col items-center gap-3"
+            onSubmit={handleSubmit}
           >
-            {mutation.isPending ? "Loading..." : "Create"}
-          </Button>
-        </form>
-      </Drawer>
+            <InputLabel
+              title="Session Name"
+              titleSize="sm"
+              inputProps={{
+                onChange: (e) => setForm({ ...form, name: e.target.value }),
+              }}
+            />
+            <Button
+              type="submit"
+              variant={mutation.isPending ? "disabled" : "primary"}
+            >
+              {mutation.isPending ? "Loading..." : "Create"}
+            </Button>
+          </form>
+        </Drawer>
+      ) : null}
     </>
   );
 };

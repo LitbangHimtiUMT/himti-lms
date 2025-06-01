@@ -17,7 +17,7 @@ interface Options extends QueryParams {
   path?: string;
 }
 
-type PayloadType = "create" | "update" | "delete" | "join-invitation";
+type PayloadType = "create" | "update" | "delete" | "join-invitation" | 'publish';
 
 interface ClassesCreation {
   type: PayloadType;
@@ -84,6 +84,13 @@ export function useClassesCreation() {
             },
             {
               path: "join/invitation",
+            }
+          );
+        case "publish":
+          return classesService.publish(
+          undefined,
+            {
+              path: `publish/${id}`,
             }
           );
         default:
