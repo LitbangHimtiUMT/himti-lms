@@ -101,7 +101,7 @@ export const TableEnrolledClassessList = () => {
                         size="sm"
                         rounded="lg"
                         onClick={() =>
-                          navigate(`/learning-dashboard/${item.id}`)
+                          navigate(`/learning/${item.id}`)
                         }
                       >
                         <div className="flex items-center gap-4">
@@ -133,14 +133,12 @@ export const TableEnrolledClassessList = () => {
               ))
             ) : !classess?.data?.length && !isFetching ? (
               <tr>
-                <td colSpan={6}>
                   <EmptyState
                     customMinHeight={400}
                     colspan={6}
                     description={["You haven't enrolled in any classes yet"]}
                     // iconSize={80}
                   />
-                </td>
               </tr>
             ) : (
               Array.from({ length: 5 }).map((_, index) => (

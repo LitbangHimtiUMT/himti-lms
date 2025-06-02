@@ -1,7 +1,7 @@
 import { Calendar, Clock, FileText, Search } from "lucide-react";
 import { useState } from "react";
 import { BiLink } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ModuleDTO } from "../../../core/model/modules";
 import { Button } from "../../_global/components/Button";
 import { formatTime } from "../../_global/lib/format-time";
@@ -14,6 +14,7 @@ interface AssignmentProps {
 export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
   const [activeTab, setActiveTab] = useState<"active" | "history">("active");
   const [searchQuery, setSearchQuery] = useState("");
+  const {classId} = useParams()
 
   return (
     <div className="p-6">
@@ -94,7 +95,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                 </div>
 
                 <Link
-                  to={`/assignments/${modules?.assignment.id}`}
+                  to={`/${classId}/assignment/${modules?.assignment.id}`}
                   className="px-4 py-2 text-white rounded-lg"
                 >
                   <Button
@@ -174,7 +175,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
 
                 <div className="mt-4 flex justify-end">
                   <Link
-                    to={`/assignments/${assignment.id}/review`}
+                    to={`/assignment/${assignment.id}/review`}
                     className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
                   >
                     View Details

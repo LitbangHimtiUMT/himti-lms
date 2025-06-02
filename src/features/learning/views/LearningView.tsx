@@ -1,22 +1,21 @@
-import HIMTI from "@core/assets/logo/HIMTI.png";
-import { CheckCircle, Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
-import { HiDocumentMinus, HiDocumentText } from "react-icons/hi2";
-import { IoChevronForward, IoChevronUp } from "react-icons/io5";
-import { Link, useSearchParams } from "react-router-dom";
-import { useDetailClass } from "../../class/hooks/useClasses";
-import { Button } from "../../_global/components/Button";
-import { convertQueryParamsToObject } from "../../_global/helper";
-import { useDetailModule } from "../../dashboard/hooks/modules/useModules";
-import { ConditionNode } from "../../_global/components/ConditionNode";
-import { YoutubeEmbed } from "../../dashboard/components/modules/detail-modules/EmbededYoutube";
-import { AssignmentView } from "./AssignmentView";
+import { useSearchParams } from "react-router-dom";
 import { ModuleDTO } from "../../../core/model/modules";
+import { Button } from "../../_global/components/Button";
+import { ConditionNode } from "../../_global/components/ConditionNode";
+import { convertQueryParamsToObject } from "../../_global/helper";
+import { useDetailClass } from "../../class/hooks/useClasses";
+import { YoutubeEmbed } from "../../dashboard/components/modules/detail-modules/EmbededYoutube";
+import { useDetailModule } from "../../dashboard/hooks/modules/useModules";
+import { AssignmentView } from "./AssignmentView";
+import { useAtom } from "jotai";
+import { DarkModeAtom } from "../../_global/store";
+import { Skeleton } from "../../_global/components/Shimer";
 
 export const LearningDashboardView = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode] = useAtom(DarkModeAtom);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queries = convertQueryParamsToObject(searchParams.toString());
@@ -30,20 +29,7 @@ export const LearningDashboardView = () => {
     }))
   );
 
-  const { data: module } = useDetailModule(moduleIdQs);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setSidebarOpen(true);
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const { data: module, isFetching } = useDetailModule(moduleIdQs);
 
   useEffect(() => {
     setModules(
@@ -51,25 +37,11 @@ export const LearningDashboardView = () => {
     );
   }, [classess?.data?.sessions]);
 
-  // Toggle module open/close
-  const toggleModule = (index: number) => {
-    const updatedModules = [...(modules || [])];
-    if (updatedModules[index].modules.length) {
-      updatedModules[index].isOpen = !updatedModules[index].isOpen;
-      setModules(updatedModules);
-    }
-  };
-
   const handleClickModule = (moduleId: string) => {
     setSearchParams({
       ...queries,
       moduleId,
     });
-  };
-
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
   };
 
   // Toggle sidebar
@@ -143,179 +115,7 @@ export const LearningDashboardView = () => {
   };
 
   return (
-    <div
-      className={`flex min-h-screen h-full w-full ${
-        darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-800"
-      }`}
-    >
-      {/* Sidebar */}
-      <div
-        className={`fixed z-20 top-0 left-0 bottom-0 w-64 transition-all duration-300 ${
-          darkMode ? "bg-gray-800" : "bg-white"
-        } shadow-md ${
-          sidebarOpen
-            ? "translate-x-0"
-            : "-translate-x-full md:translate-x-0 md:w-20"
-        }`}
-      >
-        <div className="p-4 flex items-center justify-between">
-          {sidebarOpen ? (
-            <X
-              size={24}
-              className="text-gray-500 cursor-pointer"
-              onClick={toggleSidebar}
-            />
-          ) : (
-            <Menu
-              size={24}
-              className="text-gray-500 cursor-pointer"
-              onClick={toggleSidebar}
-            />
-          )}
-        </div>
-
-        {sidebarOpen && (
-          <>
-            <img src={HIMTI} width={100} className="mx-2" alt="HIMTI" />
-            <div
-              className={`border-b ${
-                darkMode ? "border-white" : "border-gray-200"
-              }`}
-            >
-              <div
-                className="p-2 flex items-start justify-between cursor-pointer"
-                // onClick={() => toggleModule(index)}
-              >
-                {sidebarOpen ? (
-                  <>
-                    <div className="w-full">
-                      <Link to={"/dashboard/enrolled-class"} className="w-full">
-                        <div className="w-full px-2 py-2 rounded-lg">
-                          <h3 className="font-medium">Back to Dashboard</h3>
-                        </div>
-                      </Link>
-                    </div>
-                  </>
-                ) : (
-                  <div className="w-full flex justify-center">
-                    <HiDocumentMinus size={20} />
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="p-4 border-b">
-              <div className="flex items-center justify-between">
-                <span className="font-medium">Dark Mode</span>
-                <div
-                  className={`w-12 h-6 rounded-full p-1 cursor-pointer ${
-                    darkMode ? "bg-blue-500" : "bg-gray-300"
-                  }`}
-                  onClick={toggleDarkMode}
-                >
-                  <div
-                    className={`w-4 h-4 rounded-full bg-white transform transition-transform ${
-                      darkMode ? "translate-x-6" : ""
-                    }`}
-                  />
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* Course Modules */}
-        <div className="overflow-y-auto h-full pb-20">
-          {(modules || []).map((module, index) => (
-            <div
-              key={index}
-              className={`border-b ${
-                darkMode ? "border-white" : "border-gray-200"
-              }`}
-            >
-              <div
-                className="p-4 flex items-start justify-between cursor-pointer"
-                onClick={() => toggleModule(index)}
-              >
-                {sidebarOpen ? (
-                  <>
-                    <div className="flex items-center gap-2 cursor-pointer">
-                      {module.isOpen ? (
-                        <IoChevronUp size={16} />
-                      ) : (
-                        <IoChevronForward size={16} />
-                      )}
-                      <h3 className="font-medium">{module.name}</h3>
-                    </div>
-                  </>
-                ) : (
-                  <div className="w-full flex justify-center">
-                    <HiDocumentMinus size={20} />
-                  </div>
-                )}
-              </div>
-
-              {sidebarOpen && module.isOpen && module.modules && (
-                <div className="pl-4 pr-2 pb-2">
-                  {module.modules.map((lesson, i) => {
-                    const isActive = lesson.id === moduleIdQs; // Cek apakah module aktif
-                    return (
-                      <div
-                        key={i}
-                        className={`p-2 rounded-lg mb-2 flex items-center ${
-                          lesson.isCompleted
-                            ? "bg-gray-100"
-                            : "hover:bg-gray-50"
-                        } ${
-                          darkMode
-                            ? isActive
-                              ? "bg-gray-700 border-l-4 border-blue-500"
-                              : "hover:bg-gray-700 bg-gray-700"
-                            : isActive
-                            ? "bg-blue-50 border-l-4 border-blue-500"
-                            : "hover:bg-gray-50"
-                        } cursor-pointer transition-colors duration-200`}
-                        onClick={() => handleClickModule(lesson.id)}
-                      >
-                        <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
-                            isActive
-                              ? "bg-blue-100 text-blue-600"
-                              : "bg-gray-200 text-gray-500"
-                          }`}
-                        >
-                          {lesson.isCompleted ? (
-                            <CheckCircle className="text-green-500" size={16} />
-                          ) : (
-                            <HiDocumentText size={16} />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h4
-                            className={`text-sm font-medium ${
-                              isActive ? "text-blue-600" : ""
-                            }`}
-                          >
-                            {lesson.name}
-                          </h4>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Overlay for mobile */}
-      {isMobile && sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10"
-          onClick={toggleSidebar}
-        />
-      )}
-
+    <>
       {/* Main Content */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ${
@@ -333,7 +133,15 @@ export const LearningDashboardView = () => {
         </div>
 
         {/* Di dalam div Main Content (sebelum div penutup) */}
-        {module ? (
+        {isFetching ? (
+          <>
+            <div className="p-6 pb-24 flex flex-col gap-5">
+              <Skeleton width="100%" height="50px" />
+              <Skeleton width="100%" height="600px" />
+              <Skeleton width="100%" height="300px" />
+            </div>
+          </>
+        ) : module ? (
           <div className="p-6 pb-24">
             {" "}
             {/* Tambahkan pb-24 untuk spacing di bawah */}
@@ -399,6 +207,6 @@ export const LearningDashboardView = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };

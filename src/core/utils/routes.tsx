@@ -22,6 +22,7 @@ import { SessionViews } from "../../features/dashboard/views/SessionViews";
 import { ClassDetailView } from "@features/class/views/ClassDetailView";
 import { LearningDashboardView } from "@features/learning/views/LearningView";
 import { AssignmentDetailView } from "../../features/learning/views/AssignmentView";
+import { LearningUserRoot } from "../../features/_global/views/LearningUserRoot";
 
 export const router = createBrowserRouter([
   {
@@ -113,12 +114,18 @@ export const router = createBrowserRouter([
     element: <Playground />,
   },
   {
-    path: "/learning-dashboard/:classId",
-    element: <LearningDashboardView />,
-  },
-  {
-    path: "/assignments/:id",
-    element: <AssignmentDetailView />,
+    path: "/learning",
+    element: <LearningUserRoot />,
+    children: [
+      {
+        path: "/learning/:classId",
+        element: <LearningDashboardView />,
+      },
+      {
+        path: "/learning/:classId/assignment/:id",
+        element: <AssignmentDetailView />,
+      },
+    ],
   },
   {
     path: "*",
