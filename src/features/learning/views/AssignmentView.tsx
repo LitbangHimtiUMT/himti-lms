@@ -95,7 +95,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                 </div>
 
                 <Link
-                  to={`/${classId}/assignment/${modules?.assignment.id}`}
+                  to={`/learning/${classId}/assignment/${modules?.assignment.id}`}
                   className="px-4 py-2 text-white rounded-lg"
                 >
                   <Button
