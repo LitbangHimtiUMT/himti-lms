@@ -1,5 +1,5 @@
 import { Menu } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ModuleDTO } from "../../../core/model/modules";
 import { Button } from "../../_global/components/Button";
@@ -10,12 +10,13 @@ import { YoutubeEmbed } from "../../dashboard/components/modules/detail-modules/
 import { useDetailModule } from "../../dashboard/hooks/modules/useModules";
 import { AssignmentView } from "./AssignmentView";
 import { useAtom } from "jotai";
-import { DarkModeAtom } from "../../_global/store";
+import { DarkModeAtom, LearningSidebarAtom } from "../../_global/store";
 import { Skeleton } from "../../_global/components/Shimer";
+import { useCompletedModules } from "../hooks/useCompleted";
 
 export const LearningDashboardView = () => {
   const [darkMode] = useAtom(DarkModeAtom);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useAtom(LearningSidebarAtom);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const queries = convertQueryParamsToObject(searchParams.toString());
@@ -29,8 +30,15 @@ export const LearningDashboardView = () => {
     }))
   );
 
+  const mutation = useCompletedModules();
+  
   const { data: module, isFetching } = useDetailModule(moduleIdQs);
-
+  
+  const handleCompleteModule = useCallback(async () => {
+    mutation.mutateAsync({
+      moduleId: module?.data?.id || "",
+    });
+  }, [mutation, module?.data?.id]);
   useEffect(() => {
     setModules(
       classess?.data?.sessions.map((item) => ({ ...item, isOpen: false }))
@@ -168,10 +176,12 @@ export const LearningDashboardView = () => {
         {/* Fixed Navigation Buttons */}
         {module && (
           <div
-            className={`fixed bottom-0 right-0 left-0 md:left-64 transition-all duration-300 ${
+            className={`fixed bottom-0 transition-all duration-300 ${
               sidebarOpen ? "md:left-64" : "md:left-20"
-            } ${
-              darkMode ? "bg-gray-800" : "bg-white"
+            } left-0 right-0 ${
+              darkMode
+                ? "bg-gray-800 border-gray-700"
+                : "bg-white border-gray-200"
             } p-4 border-t shadow-lg flex justify-end gap-4`}
           >
             <Button
@@ -184,17 +194,15 @@ export const LearningDashboardView = () => {
                 }
               }}
               disabled={!getPreviousModule()}
-              // variant="outline"
             >
               Previous
             </Button>
 
-            <Button size="lg">Complete</Button>
-
             <Button
               size="lg"
               variant="secondary"
-              onClick={() => {
+              onClick={async() => {
+                await handleCompleteModule()
                 const nextModule = getNextModule();
                 if (nextModule) {
                   handleClickModule(nextModule.id);
@@ -202,7 +210,7 @@ export const LearningDashboardView = () => {
               }}
               disabled={!getNextModule()}
             >
-              Next
+              {mutation.isPending ? 'Loading...' : 'Next'}
             </Button>
           </div>
         )}

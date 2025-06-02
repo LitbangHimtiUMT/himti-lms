@@ -8,6 +8,7 @@ export type StatusClassess = 'PUBLISH' | 'DRAFT'
 export interface SessionDTO {
   id: string;
   name: string;
+  isCompleted: boolean;
   modules: ModuleDTO[]
 }
 

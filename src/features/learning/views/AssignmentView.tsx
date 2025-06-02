@@ -1,11 +1,14 @@
 import { Calendar, Clock, FileText, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BiLink } from "react-icons/bi";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ModuleDTO } from "../../../core/model/modules";
 import { Button } from "../../_global/components/Button";
 import { formatTime } from "../../_global/lib/format-time";
 import { useDetailAssignment } from "../../dashboard/hooks/assignments/useAssignmentsCreation";
+import { useAtom } from "jotai";
+import { LearningSidebarAtom } from "../../_global/store";
+import { convertQueryParamsToObject } from "../../_global/helper";
 
 interface AssignmentProps {
   modules: ModuleDTO;
@@ -14,10 +17,10 @@ interface AssignmentProps {
 export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
   const [activeTab, setActiveTab] = useState<"active" | "history">("active");
   const [searchQuery, setSearchQuery] = useState("");
-  const {classId} = useParams()
+  const { classId } = useParams();
 
   return (
-    <div className="p-6">
+    <div className="p-6 ">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Assignments</h1>
         <div className="relative w-64">
@@ -142,9 +145,11 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                   {modules?.assignment?.activeSubmission ? (
                     <span
                       className={`px-3 py-1 text-sm rounded-full ${
-                        modules?.assignment?.activeSubmission?.status === "APPROVED"
+                        modules?.assignment?.activeSubmission?.status ===
+                        "APPROVED"
                           ? "bg-green-100 text-green-800"
-                          : modules?.assignment?.activeSubmission?.status === "REJECTED"
+                          : modules?.assignment?.activeSubmission?.status ===
+                            "REJECTED"
                           ? "bg-red-100 text-red-800"
                           : "bg-yellow-100 text-yellow-800"
                       }`}
@@ -202,20 +207,39 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
 
 export const AssignmentDetailView = ({ isHistory = false }) => {
   const { data: assignment } = useDetailAssignment();
+  const [sidebarOpen] = useAtom(LearningSidebarAtom);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const queries = convertQueryParamsToObject(searchParams.toString());
+  useEffect(() => {
+    if (assignment?.data?.module?.id) {
+      setSearchParams({ ...queries, moduleId: assignment?.data?.module?.id });
+    }
+  }, []);
 
   return (
-    <div className="p-6">
+    <div
+      className={`p-4 md:p-6 transition-all duration-300 ${
+        sidebarOpen ? "md:ml-64" : "md:ml-20"
+      } w-full max-w-[1920px] mx-auto`}
+    >
       <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">{assignment?.data?.title}</h1>
-        <p className="text-gray-600">{assignment?.data?.module?.name}</p>
+        <h1 className="text-xl md:text-2xl font-bold mb-2">
+          {assignment?.data?.title}
+        </h1>
+        <p className="text-gray-600 text-sm md:text-base">
+          {assignment?.data?.module?.name}
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
-          <div className="bg-white rounded-lg border p-6 mb-6">
-            <h2 className="text-xl font-semibold mb-4">Assignment Details</h2>
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="w-full lg:w-2/3">
+          <div className="bg-white w-full rounded-lg border p-4 md:p-6 mb-6">
+            <h2 className="text-lg md:text-xl font-semibold mb-4">
+              Assignment Details
+            </h2>
             <div
-              className="prose max-w-none"
+              className="prose max-w-none text-sm md:text-base"
               dangerouslySetInnerHTML={{
                 __html: assignment?.data?.description ?? "",
               }}
@@ -229,7 +253,7 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                   assignment?.data?.activeSubmission ? (
                     <a
                       href={assignment?.data.activeSubmission?.file}
-                      className="text-blue-600 hover:underline flex items-center"
+                      className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -240,7 +264,7 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                     assignment?.data?.activeSubmission && (
                       <a
                         href={assignment?.data?.activeSubmission?.file}
-                        className="text-blue-600 hover:underline flex items-center"
+                        className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
                         download
                       >
                         <FileText size={16} className="mr-2" />
@@ -254,17 +278,21 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
           </div>
 
           {!isHistory ? (
-            <div className="bg-white rounded-lg border p-6">
-              <h2 className="text-xl font-semibold mb-4">Submit Your Work</h2>
+            <div className="bg-white rounded-lg border p-4 md:p-6">
+              <h2 className="text-lg md:text-xl font-semibold mb-4">
+                Submit Your Work
+              </h2>
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Upload Files</label>
+                <label className="block text-gray-700 mb-2 text-sm md:text-base">
+                  Upload Files
+                </label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                  <div className="flex flex-col items-center justify-center py-8">
-                    <FileText size={48} className="text-gray-400 mb-2" />
-                    <p className="text-gray-500">
+                  <div className="flex flex-col items-center justify-center py-4 md:py-8">
+                    <FileText size={32} className="text-gray-400 mb-2" />
+                    <p className="text-gray-500 text-sm md:text-base">
                       Drag and drop files here or click to browse
                     </p>
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="text-xs md:text-sm text-gray-400 mt-1">
                       Maximum file size: 10MB
                     </p>
                   </div>
@@ -272,17 +300,17 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                 </div>
               </div>
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2">
+                <label className="block text-gray-700 mb-2 text-sm md:text-base">
                   Comments (Optional)
                 </label>
                 <textarea
-                  className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm md:text-base"
                   rows={4}
                   placeholder="Add any comments about your submission..."
                 ></textarea>
               </div>
-              <div className="flex justify-between items-center">
-                <div className="text-gray-500 flex items-center">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="text-gray-500 flex items-center text-sm md:text-base">
                   <Clock size={16} className="mr-1" />
                   <span>
                     Due:{" "}
@@ -291,19 +319,23 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                       : "-"}
                   </span>
                 </div>
-                <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <button className="px-4 py-2 md:px-6 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full md:w-auto text-sm md:text-base">
                   Submit Assignment
                 </button>
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-lg border p-6 space-y-6">
+            <div className="bg-white rounded-lg border p-4 md:p-6 space-y-4 md:space-y-6">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Your Submission</h2>
-                <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg md:text-xl font-semibold mb-4">
+                  Your Submission
+                </h2>
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
                   <div>
-                    <p className="font-medium">Submitted on:</p>
-                    <p>
+                    <p className="font-medium text-sm md:text-base">
+                      Submitted on:
+                    </p>
+                    <p className="text-sm md:text-base">
                       {assignment?.data?.activeSubmission?.submittedAt
                         ? formatTime(
                             assignment?.data?.activeSubmission?.submittedAt,
@@ -312,10 +344,10 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                         : "-"}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium">Status:</p>
+                  <div className="text-left md:text-right">
+                    <p className="font-medium text-sm md:text-base">Status:</p>
                     <span
-                      className={`px-3 py-1 rounded-full ${
+                      className={`px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm ${
                         assignment?.data?.activeSubmission?.status ===
                         "APPROVED"
                           ? "bg-green-100 text-green-800"
@@ -330,13 +362,15 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                   </div>
                 </div>
 
-                <div className="border rounded-lg p-4">
-                  <h3 className="font-medium mb-2">Submitted Files</h3>
+                <div className="border rounded-lg p-3 md:p-4">
+                  <h3 className="font-medium mb-2 text-sm md:text-base">
+                    Submitted Files
+                  </h3>
                   <ul className="space-y-2">
                     <li>
                       <a
                         href="#"
-                        className="text-blue-600 hover:underline flex items-center"
+                        className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
                       >
                         <FileText size={16} className="mr-2" />
                         assignment-solution.zip
@@ -345,7 +379,7 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                     <li>
                       <a
                         href="#"
-                        className="text-blue-600 hover:underline flex items-center"
+                        className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
                       >
                         <FileText size={16} className="mr-2" />
                         README.md
@@ -354,150 +388,9 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                   </ul>
                 </div>
               </div>
-
-              {/* <div>
-                <h2 className="text-xl font-semibold mb-4">Feedback</h2>
-                <div className="mb-4">
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className={`h-2.5 rounded-full ${
-                        assignment.score >= 90
-                          ? "bg-green-600"
-                          : assignment.score >= 70
-                          ? "bg-blue-600"
-                          : "bg-red-600"
-                      }`}
-                      style={{
-                        width: `${
-                          (assignment.score / assignment.points) * 100
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <h3 className="font-medium mb-2">Instructor Feedback</h3>
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <p>{assignment.feedback}</p>
-                  </div>
-                </div>
-
-                {assignment.graderComments.length > 0 && (
-                  <div>
-                    <h3 className="font-medium mb-2">Grader Comments</h3>
-                    <ul className="space-y-3">
-                      {assignment.graderComments.map((comment, index) => (
-                        <li
-                          key={index}
-                          className="border-l-4 border-blue-500 pl-4 py-1"
-                        >
-                          <p>{comment.text}</p>
-                          <p className="text-sm text-gray-500">
-                            {comment.timestamp}
-                          </p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div> */}
             </div>
           )}
         </div>
-
-        {/* <div className="space-y-6">
-          <div className="bg-white rounded-lg border p-6">
-            <h2 className="text-xl font-semibold mb-4">
-              Assignment Information
-            </h2>
-            <div className="space-y-3">
-              <div>
-                <p className="text-gray-500">Status</p>
-                <p className="font-medium">
-                  {isHistory ? (
-                    <span className="text-green-600">Submitted & Graded</span>
-                  ) : (
-                    <span className="text-yellow-600">Pending Submission</span>
-                  )}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-500">Points</p>
-                <p className="font-medium">{assignment.points}</p>
-              </div>
-              <div>
-                <p className="text-gray-500">Due Date</p>
-                <p className="font-medium">
-                  {assignment.dueDate} at {assignment.dueTime}
-                </p>
-              </div>
-              {isHistory && (
-                <>
-                  <div>
-                    <p className="text-gray-500">Submitted On</p>
-                    <p className="font-medium">
-                      {assignment.submittedDate} at {assignment.submittedTime}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-gray-500">Final Grade</p>
-                    <p className="font-bold text-xl">
-                      {assignment.score}/{assignment.points}
-                    </p>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-
-          {!isHistory && (
-            <div className="bg-white rounded-lg border p-6">
-              <h2 className="text-xl font-semibold mb-4">
-                Submission Checklist
-              </h2>
-              <ul className="space-y-3">
-                <li className="flex items-start">
-                  <input type="checkbox" className="mt-1 mr-2" />
-                  <span>All required files are included</span>
-                </li>
-                <li className="flex items-start">
-                  <input type="checkbox" className="mt-1 mr-2" />
-                  <span>Code follows the style guidelines</span>
-                </li>
-                <li className="flex items-start">
-                  <input type="checkbox" className="mt-1 mr-2" />
-                  <span>All tests are passing</span>
-                </li>
-                <li className="flex items-start">
-                  <input type="checkbox" className="mt-1 mr-2" />
-                  <span>Documentation is complete</span>
-                </li>
-              </ul>
-            </div>
-          )}
-
-          <div className="bg-white rounded-lg border p-6">
-            <h2 className="text-xl font-semibold mb-4">Need Help?</h2>
-            <ul className="space-y-2">
-              <li>
-                <a href="#" className="text-blue-600 hover:underline">
-                  Assignment Guidelines
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-blue-600 hover:underline">
-                  Course Discussion Forum
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-blue-600 hover:underline">
-                  Schedule Office Hours
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div> */}
       </div>
     </div>
   );

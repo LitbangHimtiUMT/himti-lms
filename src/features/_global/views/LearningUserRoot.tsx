@@ -1,21 +1,28 @@
 import HIMTI from "@core/assets/logo/HIMTI.png";
 import { useAtom } from "jotai";
 import { CheckCircle, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { FaCheckCircle } from "react-icons/fa";
 import { HiDocumentMinus, HiDocumentText } from "react-icons/hi2";
 import { IoChevronForward, IoChevronUp } from "react-icons/io5";
-import { Link, Outlet, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { useDetailClass } from "../../class/hooks/useClasses";
-import { convertQueryParamsToObject } from "../helper";
-import { DarkModeAtom, LearningSidebarAtom } from "../store";
+import { DashboardNavbar } from "../../dashboard/components/navbar";
 import { Skeleton } from "../components/Shimer";
+import { DarkModeAtom, LearningSidebarAtom } from "../store";
 
 export const LearningUserRoot = () => {
   const [darkMode, setDarkMode] = useAtom(DarkModeAtom);
 
   const [sidebarOpen, setSidebarOpen] = useAtom(LearningSidebarAtom);
   const [isMobile, setIsMobile] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { data: classess, isFetching } = useDetailClass();
   const [modules, setModules] = useState(
     classess?.data?.sessions.map((item) => ({
@@ -23,8 +30,9 @@ export const LearningUserRoot = () => {
       isOpen: false,
     }))
   );
-  const queries = convertQueryParamsToObject(searchParams.toString());
   const moduleIdQs = searchParams.get("moduleId") || "";
+  const navigate = useNavigate();
+  const { classId } = useParams();
 
   useEffect(() => {
     const handleResize = () => {
@@ -42,27 +50,32 @@ export const LearningUserRoot = () => {
   useEffect(() => {
     setModules(
       classess?.data?.sessions.map((item, index) => {
-        const isOpen  = moduleIdQs ? item.modules.map(mdl => mdl.id).includes(moduleIdQs) : !index
-        return { ...item, isOpen }
+        const isOpen = moduleIdQs
+          ? item.modules.map((mdl) => mdl.id).includes(moduleIdQs)
+          : !index;
+        return { ...item, isOpen };
       })
     );
   }, [classess?.data?.sessions, moduleIdQs]);
 
   // Toggle module open/close
-  const toggleModule = (index: number) => {
-    const updatedModules = [...(modules || [])];
-    if (updatedModules[index].modules.length) {
-      updatedModules[index].isOpen = !updatedModules[index].isOpen;
-      setModules(updatedModules);
-    }
-  };
+  const toggleModule = useCallback(
+    (index: number) => {
+      const updatedModules = [...(modules || [])];
+      if (updatedModules[index].modules.length) {
+        updatedModules[index].isOpen = !updatedModules[index].isOpen;
+        setModules(updatedModules);
+      }
+    },
+    [modules]
+  );
 
-  const handleClickModule = (moduleId: string) => {
-    setSearchParams({
-      ...queries,
-      moduleId,
-    });
-  };
+  const handleClickModule = useCallback(
+    (moduleId: string) => {
+      navigate(`/learning/${classId}?moduleId=${moduleId}`);
+    },
+    [classId, navigate]
+  );
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -75,184 +88,261 @@ export const LearningUserRoot = () => {
   };
   return (
     <>
+      <DashboardNavbar />
       <div
-        className={`flex min-h-screen h-full w-full ${
-          darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-800"
-        }`}
+        className={`z-[998] fixed flex min-h-screen h-full w-full ${
+          darkMode ? "bg-gray-900 text-gray-100" : "bg-gray-50 text-gray-800"
+        } overflow-y-auto`}
       >
         {/* Sidebar */}
         <div
           className={`fixed z-20 top-0 left-0 bottom-0 w-64 transition-all duration-300 ${
             darkMode ? "bg-gray-800" : "bg-white"
-          } shadow-md ${
+          } shadow-md flex flex-col ${
             sidebarOpen
               ? "translate-x-0"
               : "-translate-x-full md:translate-x-0 md:w-20"
           }`}
         >
-          <div className="p-4 flex items-center justify-between">
+          {/* Sidebar Header (fixed height) */}
+          <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 h-16 flex-shrink-0">
             {sidebarOpen ? (
               <X
                 size={24}
-                className="text-gray-500 cursor-pointer"
+                className="text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
                 onClick={toggleSidebar}
               />
             ) : (
               <Menu
                 size={24}
-                className="text-gray-500 cursor-pointer"
+                className="text-gray-500 dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
                 onClick={toggleSidebar}
               />
             )}
           </div>
 
-          {sidebarOpen && (
-            <>
-              <img src={HIMTI} width={100} className="mx-2" alt="HIMTI" />
-              <div
-                className={`border-b ${
-                  darkMode ? "border-white" : "border-gray-200"
-                }`}
-              >
-                <div
-                  className="p-2 flex items-start justify-between cursor-pointer"
-                  // onClick={() => toggleModule(index)}
-                >
-                  {sidebarOpen ? (
-                    <>
-                      <div className="w-full">
-                        <Link
-                          to={"/dashboard/enrolled-class"}
-                          className="w-full"
-                        >
-                          <div className="w-full px-2 py-2 rounded-lg">
-                            <h3 className="font-medium">Back to Dashboard</h3>
-                          </div>
-                        </Link>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="w-full flex justify-center">
-                      <HiDocumentMinus size={20} />
-                    </div>
-                  )}
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto">
+            {sidebarOpen && (
+              <>
+                {/* Logo and Back Link */}
+                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                  <img src={HIMTI} width={100} className="mx-2" alt="HIMTI" />
                 </div>
-              </div>
-              <div className="p-4 border-b">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Dark Mode</span>
-                  <div
-                    className={`w-12 h-6 rounded-full p-1 cursor-pointer ${
-                      darkMode ? "bg-blue-500" : "bg-gray-300"
-                    }`}
-                    onClick={toggleDarkMode}
-                  >
-                    <div
-                      className={`w-4 h-4 rounded-full bg-white transform transition-transform ${
-                        darkMode ? "translate-x-6" : ""
-                      }`}
-                    />
+                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <Link
+                      to="/dashboard/enrolled-class"
+                      className="block transition-colors"
+                    >
+                      <h3
+                        className={`font-medium ${
+                          darkMode
+                            ? "text-gray-200 dark:text-gray-800"
+                            : "text-gray-800 dark:text-gray-200"
+                        }`}
+                      >
+                        Back to Dashboard
+                      </h3>
+                    </Link>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
+                {/* Dark Mode Toggle */}
+                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`font-medium ${
+                        darkMode
+                          ? "text-gray-200 dark:text-gray-800"
+                          : "text-gray-800 dark:text-gray-200"
+                      }`}
+                    >
+                      Dark Mode
+                    </span>
+                    <div
+                      className={`w-12 h-6 rounded-full p-1 cursor-pointer transition-colors ${
+                        darkMode ? "bg-blue-600" : "bg-gray-300"
+                      }`}
+                      onClick={toggleDarkMode}
+                    >
+                      <div
+                        className={`w-4 h-4 rounded-full bg-white transform transition-transform ${
+                          darkMode ? "translate-x-6" : ""
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
 
-          {/* Course Modules */}
-          <div className="overflow-y-auto h-full pb-20">
-            {isFetching ? (
-              <div className="flex flex-col gap-4 px-2 mt-2">
-                {Array.from({ length: 4 }).map(() => (
-                  <>
-                    <Skeleton width="100%" height="40px" />
-                  </>
-                ))}
-              </div>
-            ) : (
-              (modules || []).map((module, index) => (
-                <div
-                  key={index}
-                  className={`border-b ${
-                    darkMode ? "border-white" : "border-gray-200"
-                  }`}
-                >
+            {/* Course Modules (scrollable) */}
+            <div className="overflow-y-auto">
+              {isFetching ? (
+                <div className="flex flex-col gap-4 px-2 mt-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <Skeleton key={i} width="100%" height="40px" />
+                  ))}
+                </div>
+              ) : (
+                (modules || []).map((module, index) => (
                   <div
-                    className="p-4 flex items-start justify-between cursor-pointer"
-                    onClick={() => toggleModule(index)}
+                    key={index}
+                    className={`border-b ${
+                      darkMode ? "border-gray-700" : "border-gray-200"
+                    }`}
                   >
-                    {sidebarOpen ? (
-                      <>
-                        <div className="flex items-center gap-2 cursor-pointer">
+                    {/* Session Header */}
+                    <div
+                      className={`p-4 flex items-start justify-between cursor-pointer ${
+                        darkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"
+                      } transition-colors`}
+                      onClick={() => toggleModule(index)}
+                    >
+                      {sidebarOpen ? (
+                        <div className="flex items-center gap-2">
                           {module.isOpen ? (
-                            <IoChevronUp size={16} />
+                            <IoChevronUp
+                              size={16}
+                              className="text-gray-500 dark:text-gray-400"
+                            />
                           ) : (
-                            <IoChevronForward size={16} />
+                            <IoChevronForward
+                              size={16}
+                              className="text-gray-500 dark:text-gray-400"
+                            />
                           )}
-                          <h3 className="font-medium">{module.name}</h3>
+                          <div className="flex items-center gap-4">
+                            <h3
+                              className={`font-medium ${
+                                darkMode ? "text-gray-200" : "text-gray-800"
+                              }`}
+                            >
+                              {module.name}
+                            </h3>
+                            {module.isCompleted ? (
+                              <FaCheckCircle
+                                size={16}
+                                className={`${
+                                  module.isCompleted
+                                    ? "text-green-500"
+                                    : "text-gray-500"
+                                } dark:text-gray-400`}
+                              />
+                            ) : null}
+                          </div>
                         </div>
-                      </>
-                    ) : (
-                      <div className="w-full flex justify-center">
-                        <HiDocumentMinus size={20} />
+                      ) : (
+                        <div className="w-full flex justify-center">
+                          {module.isCompleted ? (
+                            <FaCheckCircle
+                              size={20}
+                              className={`${
+                                module.isCompleted
+                                  ? "text-green-500"
+                                  : "text-gray-500"
+                              } dark:text-gray-400`}
+                            />
+                          ) : (
+                            <HiDocumentMinus
+                              size={20}
+                              className={`${
+                                module.isCompleted
+                                  ? "text-green-500"
+                                  : "text-gray-500"
+                              } dark:text-gray-400`}
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Module Items */}
+                    {sidebarOpen && module.isOpen && module.modules && (
+                      <div className="pl-4 pr-2 pb-2">
+                        {module.modules.map((lesson) => {
+                          const isActive = lesson.id === moduleIdQs;
+                          const isCompleted = lesson.isCompleted;
+
+                          const baseStyles = `p-2 rounded-lg mb-2 flex items-center cursor-pointer transition-colors duration-200 ${
+                            darkMode
+                              ? isActive
+                                ? isCompleted
+                                  ? "bg-green-900/30 border-l-4 border-green-500"
+                                  : "bg-blue-900/30 border-l-4 border-blue-500"
+                                : isCompleted
+                                ? "bg-green-900/20 hover:bg-green-900/30"
+                                : "hover:bg-gray-700"
+                              : isActive
+                              ? isCompleted
+                                ? "bg-green-50 border-l-4 border-green-500"
+                                : "bg-blue-50 border-l-4 border-blue-500"
+                              : isCompleted
+                              ? "bg-green-50 hover:bg-green-100"
+                              : "hover:bg-gray-50"
+                          }`;
+
+                          const iconStyles = `w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
+                            darkMode
+                              ? isActive
+                                ? isCompleted
+                                  ? "bg-green-800 text-green-300"
+                                  : "bg-blue-800 text-blue-300"
+                                : isCompleted
+                                ? "bg-green-800/50 text-green-300"
+                                : "bg-gray-700 text-gray-400"
+                              : isActive
+                              ? isCompleted
+                                ? "bg-green-100 text-green-600"
+                                : "bg-blue-100 text-blue-600"
+                              : isCompleted
+                              ? "bg-green-100 text-green-600"
+                              : "bg-gray-200 text-gray-500"
+                          }`;
+
+                          const textStyles = `text-sm font-medium ${
+                            darkMode
+                              ? isActive
+                                ? isCompleted
+                                  ? "text-green-300"
+                                  : "text-blue-300"
+                                : isCompleted
+                                ? "text-green-300"
+                                : "text-gray-300"
+                              : isActive
+                              ? isCompleted
+                                ? "text-green-700"
+                                : "text-blue-700"
+                              : isCompleted
+                              ? "text-green-700"
+                              : "text-gray-700"
+                          }`;
+
+                          return (
+                            <div
+                              key={lesson.id}
+                              className={baseStyles}
+                              onClick={() => handleClickModule(lesson.id)}
+                            >
+                              <div className={iconStyles}>
+                                {isCompleted ? (
+                                  <CheckCircle size={16} />
+                                ) : (
+                                  <HiDocumentText size={16} />
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <h4 className={textStyles}>{lesson.name}</h4>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
-
-                  {sidebarOpen && module.isOpen && module.modules && (
-                    <div className="pl-4 pr-2 pb-2">
-                      {module.modules.map((lesson, i) => {
-                        const isActive = lesson.id === moduleIdQs; // Cek apakah module aktif
-                        return (
-                          <div
-                            key={i}
-                            className={`p-2 rounded-lg mb-2 flex items-center ${
-                              lesson.isCompleted
-                                ? "bg-gray-100"
-                                : "hover:bg-gray-50"
-                            } ${
-                              darkMode
-                                ? isActive
-                                  ? "bg-gray-700 border-l-4 border-blue-500"
-                                  : "hover:bg-gray-700 bg-gray-700"
-                                : isActive
-                                ? "bg-blue-50 border-l-4 border-blue-500"
-                                : "hover:bg-gray-50"
-                            } cursor-pointer transition-colors duration-200`}
-                            onClick={() => handleClickModule(lesson.id)}
-                          >
-                            <div
-                              className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
-                                isActive
-                                  ? "bg-blue-100 text-blue-600"
-                                  : "bg-gray-200 text-gray-500"
-                              }`}
-                            >
-                              {lesson.isCompleted ? (
-                                <CheckCircle
-                                  className="text-green-500"
-                                  size={16}
-                                />
-                              ) : (
-                                <HiDocumentText size={16} />
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <h4
-                                className={`text-sm font-medium ${
-                                  isActive ? "text-blue-600" : ""
-                                }`}
-                              >
-                                {lesson.name}
-                              </h4>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
         </div>
 

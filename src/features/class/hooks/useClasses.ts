@@ -17,7 +17,12 @@ interface Options extends QueryParams {
   path?: string;
 }
 
-type PayloadType = "create" | "update" | "delete" | "join-invitation" | 'publish';
+type PayloadType =
+  | "create"
+  | "update"
+  | "delete"
+  | "join-invitation"
+  | "publish";
 
 interface ClassesCreation {
   type: PayloadType;
@@ -87,12 +92,9 @@ export function useClassesCreation() {
             }
           );
         case "publish":
-          return classesService.publish(
-          undefined,
-            {
-              path: `publish/${id}`,
-            }
-          );
+          return classesService.publish(undefined, {
+            path: `publish/${id}`,
+          });
         default:
           return classesService.post(data, {
             contentType: "form-data",
@@ -132,11 +134,12 @@ export function useClassesCreation() {
 
 export function useDetailClass(by: "id" | "code" = "id") {
   const { id, classId, code } = useParams();
+  console.log({ classId, id });
   return useQuery({
     queryKey: ["classesById", { id, code, classId }],
     queryFn: () =>
       classesService.getById({
-        path: by === "id" ? id || classId : `code/${code}`,
+        path: by === "id" ? classId || id : `code/${code}`,
       }),
     enabled: !!id || !!classId || !!code,
   });

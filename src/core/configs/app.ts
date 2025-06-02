@@ -22,4 +22,5 @@ export const API_ENDPOINT = {
   classes: `${CONFIG_APP.BASE_URL}/lms/class`,
   certificates: `${CONFIG_APP.BASE_URL}/lms/certificates`,
   profile: `${CONFIG_APP.BASE_URL}/profile`,
+  completedModules: `${CONFIG_APP.BASE_URL}/lms/completed-modules`,
 };
