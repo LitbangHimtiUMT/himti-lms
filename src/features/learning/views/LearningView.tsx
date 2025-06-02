@@ -208,7 +208,7 @@ export const LearningDashboardView = () => {
                   handleClickModule(nextModule.id);
                 }
               }}
-              disabled={!getNextModule()}
+              disabled={!getNextModule() || mutation.isPending}
             >
               {mutation.isPending ? 'Loading...' : 'Next'}
             </Button>

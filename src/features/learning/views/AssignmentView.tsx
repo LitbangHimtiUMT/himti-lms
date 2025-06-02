@@ -1,5 +1,5 @@
 import { Calendar, Clock, FileText, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiLink } from "react-icons/bi";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ModuleDTO } from "../../../core/model/modules";
@@ -209,13 +209,24 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
   const { data: assignment } = useDetailAssignment();
   const [sidebarOpen] = useAtom(LearningSidebarAtom);
   const [searchParams, setSearchParams] = useSearchParams();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const queries = convertQueryParamsToObject(searchParams.toString());
+
   useEffect(() => {
     if (assignment?.data?.module?.id) {
       setSearchParams({ ...queries, moduleId: assignment?.data?.module?.id });
     }
   }, []);
+
+  const handleBrowseClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const allowedExtensions = assignment?.data?.allowedFile
+    ?.split(",")
+    .map((ext) => `${ext.trim()}`)
+    .join(",");
 
   return (
     <div
@@ -248,9 +259,9 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
             <div className="mt-6">
               <h3 className="font-medium mb-2">Attachments</h3>
               <ul className="space-y-2">
-                <li>
-                  {assignment?.data?.type === "FILE" &&
-                  assignment?.data?.activeSubmission ? (
+                {assignment?.data?.type === "FILE" &&
+                assignment?.data?.activeSubmission ? (
+                  <li>
                     <a
                       href={assignment?.data.activeSubmission?.file}
                       className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
@@ -260,19 +271,19 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                       <BiLink className="mr-2" />
                       {assignment?.data?.activeSubmission.file}
                     </a>
-                  ) : (
-                    assignment?.data?.activeSubmission && (
-                      <a
-                        href={assignment?.data?.activeSubmission?.file}
-                        className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
-                        download
-                      >
-                        <FileText size={16} className="mr-2" />
-                        {assignment?.data?.activeSubmission.file}
-                      </a>
-                    )
-                  )}
-                </li>
+                  </li>
+                ) : (
+                  assignment?.data?.activeSubmission && (
+                    <a
+                      href={assignment?.data?.activeSubmission?.file}
+                      className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
+                      download
+                    >
+                      <FileText size={16} className="mr-2" />
+                      {assignment?.data?.activeSubmission.file}
+                    </a>
+                  )
+                )}
               </ul>
             </div>
           </div>
@@ -284,9 +295,12 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
               </h2>
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2 text-sm md:text-base">
-                  Upload Files
+                  Upload Files ({allowedExtensions || "Allowed extensions"})
                 </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer"
+                  onClick={handleBrowseClick}
+                >
                   <div className="flex flex-col items-center justify-center py-4 md:py-8">
                     <FileText size={32} className="text-gray-400 mb-2" />
                     <p className="text-gray-500 text-sm md:text-base">
@@ -296,7 +310,13 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
                       Maximum file size: 10MB
                     </p>
                   </div>
-                  <input type="file" className="hidden" multiple />
+                  <input
+                    type="file"
+                    className="hidden"
+                    multiple
+                    accept={allowedExtensions}
+                    ref={fileInputRef}
+                  />
                 </div>
               </div>
               <div className="mb-4">
