@@ -12,7 +12,7 @@ export const useProfile = () => {
   const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY) ?? "";
 
   const query = useQuery({
-    queryKey: ["profile"],
+    queryKey: ["profile", { token, enabled, refreshToken: refreshToken.data }],
     queryFn: () => profileService.get(),
     enabled: !!token,
   });
