@@ -134,7 +134,6 @@ export function useClassesCreation() {
 
 export function useDetailClass(by: "id" | "code" = "id") {
   const { id, classId, code } = useParams();
-  console.log({ classId, id });
   return useQuery({
     queryKey: ["classesById", { id, code, classId }],
     queryFn: () =>

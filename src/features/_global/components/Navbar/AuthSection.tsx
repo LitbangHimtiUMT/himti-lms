@@ -39,15 +39,13 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
               className="w-8 h-8 rounded-full cursor-pointer"
             />
           </div>
-          <>
-            <div
-              className="border border-solid border-red-500 h-8 flex items-center gap-2 rounded-md bg-red-700 hover:bg-red-500 duration-300 px-1 pr-2 cursor-pointer"
-              onClick={() => setShow((prev) => !prev)}
-            >
-              <CiLogout className="text-white" />
-              <Poppins className="text-xs text-white">Logout</Poppins>
-            </div>
-          </>
+          <div
+            className="border border-solid border-red-500 h-8 flex items-center gap-2 rounded-md bg-red-700 hover:bg-red-500 duration-300 px-1 pr-2 cursor-pointer"
+            onClick={() => setShow((prev) => !prev)}
+          >
+            <CiLogout className="text-white" />
+            <Poppins className="text-xs text-white">Logout</Poppins>
+          </div>
         </div>
       ) : (
         <div

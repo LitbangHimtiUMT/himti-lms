@@ -1,14 +1,34 @@
-import { Calendar, Clock, FileText, Search } from "lucide-react";
+import { useAtom } from "jotai";
+import { Calendar, FileText, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { BiLink } from "react-icons/bi";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import {
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaClock,
+  FaCloudUploadAlt,
+  FaDownload,
+  FaFileAlt,
+  FaPaperPlane,
+  FaTimesCircle,
+  FaUser,
+} from "react-icons/fa";
+import { MdChevronLeft } from "react-icons/md";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { ModuleDTO } from "../../../core/model/modules";
 import { Button } from "../../_global/components/Button";
-import { formatTime } from "../../_global/lib/format-time";
-import { useDetailAssignment } from "../../dashboard/hooks/assignments/useAssignmentsCreation";
-import { useAtom } from "jotai";
-import { LearningSidebarAtom } from "../../_global/store";
 import { convertQueryParamsToObject } from "../../_global/helper";
+import { formatTime } from "../../_global/lib/format-time";
+import { LearningSidebarAtom } from "../../_global/store";
+import {
+  useAssignmentsCreation,
+  useDetailAssignment,
+} from "../../dashboard/hooks/assignments/useAssignmentsCreation";
+import { Poppins } from "../../_global/components/Text";
 
 interface AssignmentProps {
   modules: ModuleDTO;
@@ -77,8 +97,10 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                 </div>
                 {modules?.assignment?.activeSubmission ? (
                   <>
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">
-                      {modules.assignment?.activeSubmission?.status}
+                    <span className="px-3 py-0.5 bg-yellow-100 text-yellow-800 border border-solid border-yellow-800 text-sm rounded-full">
+                      <Poppins className="text-sm">
+                        {modules.assignment?.activeSubmission?.status}
+                      </Poppins>
                     </span>
                   </>
                 ) : null}
@@ -144,14 +166,14 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                   </div>
                   {modules?.assignment?.activeSubmission ? (
                     <span
-                      className={`px-3 py-1 text-sm rounded-full ${
+                      className={`px-3 py-1 text-sm rounded-lg border border-solid ${
                         modules?.assignment?.activeSubmission?.status ===
                         "APPROVED"
-                          ? "bg-green-100 text-green-800"
+                          ? "bg-green-100 text-green-800 border-green-500"
                           : modules?.assignment?.activeSubmission?.status ===
                             "REJECTED"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
+                          ? "bg-red-100 text-red-800 border-red-500"
+                          : "bg-yellow-100 text-yellow-800 border-yellow-500"
                       }`}
                     >
                       {modules?.assignment?.activeSubmission?.status}
@@ -210,17 +232,42 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
   const [sidebarOpen] = useAtom(LearningSidebarAtom);
   const [searchParams, setSearchParams] = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { classId } = useParams();
+  const [files, setFiles] = useState<File | string | undefined>(undefined);
 
   const queries = convertQueryParamsToObject(searchParams.toString());
+  const navigate = useNavigate();
+  const moduleId = searchParams.get("moduleId");
 
   useEffect(() => {
     if (assignment?.data?.module?.id) {
       setSearchParams({ ...queries, moduleId: assignment?.data?.module?.id });
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assignment]);
 
   const handleBrowseClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFiles(e.target.files?.[0]);
+    }
+  };
+  const mutation = useAssignmentsCreation();
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    if (files) {
+      formData.append("file", files);
+    }
+    formData.append("assignmentId", assignment?.data?.id ?? "");
+    mutation.mutateAsync({
+      moduleId: assignment?.data?.module?.id ?? "",
+      type: "submit",
+      data: formData,
+    });
   };
 
   const allowedExtensions = assignment?.data?.allowedFile
@@ -228,188 +275,306 @@ export const AssignmentDetailView = ({ isHistory = false }) => {
     .map((ext) => `${ext.trim()}`)
     .join(",");
 
+  const renderSubmissionStatus = () => {
+    const status = assignment?.data?.activeSubmission?.status;
+    if (!status) return null;
+
+    const statusConfig = {
+      APPROVED: {
+        color:
+          "bg-green-100 text-green-800 border border-solid border-green-800",
+        icon: <FaCheckCircle className="mr-1" />,
+      },
+      REJECTED: {
+        color: "bg-red-100 text-red-800 border border-solid border-red-800",
+        icon: <FaTimesCircle className="mr-1" />,
+      },
+      REVIEWED: {
+        color:
+          "bg-yellow-100 border border-solid border-yellow-800 text-yellow-800",
+        icon: <FaClock className="mr-1" />,
+      },
+    };
+
+    return (
+      <div className="flex items-center">
+        {statusConfig[status]?.icon}
+        <span
+          className={`px-2 py-1 rounded-lg text-xs ${statusConfig[status]?.color}`}
+        >
+          {status}
+        </span>
+      </div>
+    );
+  };
+
+  const renderSubmissionForm = () => {
+    if (assignment?.data?.type === "FILE") {
+      return (
+        <>
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-3 font-medium">
+              Upload Files
+            </label>
+            <div
+              className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 transition-colors"
+              onClick={handleBrowseClick}
+            >
+              {files ? (
+                <div className="space-y-3">
+                  <FaCloudUploadAlt
+                    size={48}
+                    className="mx-auto text-blue-400"
+                  />
+                  <p className="font-medium">File Selected</p>
+                  <ul className="text-sm text-gray-600">
+                    {/* {(files).map((file, i) => (
+                      <li key={i} className="truncate">{file.name}</li>
+                    ))} */}
+                  </ul>
+                </div>
+              ) : (
+                <>
+                  <FaCloudUploadAlt
+                    size={48}
+                    className="mx-auto text-gray-400 mb-3"
+                  />
+                  <p className="text-gray-600 mb-1">Drag and drop files here</p>
+                  <p className="text-sm text-gray-500">or click to browse</p>
+                  <p className="text-xs text-gray-400 mt-3">
+                    Allowed: {allowedExtensions || "Any"} | Max size: 10MB
+                  </p>
+                </>
+              )}
+            </div>
+            <input
+              type="file"
+              className="hidden"
+              multiple
+              accept={allowedExtensions}
+              ref={fileInputRef}
+              onChange={handleFileChange}
+            />
+          </div>
+        </>
+      );
+    } else if (assignment?.data?.type === "URL") {
+      return (
+        <div className="mb-6">
+          <label className="block text-gray-700 mb-3 font-medium">
+            Submission URL
+          </label>
+          <input
+            type="url"
+            className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="https://example.com/your-work"
+            onChange={(e) => setFiles(e.target.value as string)}
+          />
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div
       className={`p-4 md:p-6 transition-all duration-300 ${
         sidebarOpen ? "md:ml-64" : "md:ml-20"
       } w-full max-w-[1920px] mx-auto`}
     >
-      <div className="mb-6">
-        <h1 className="text-xl md:text-2xl font-bold mb-2">
-          {assignment?.data?.title}
-        </h1>
-        <p className="text-gray-600 text-sm md:text-base">
-          {assignment?.data?.module?.name}
-        </p>
+      <div
+        className="flex items-center gap-1 mb-6 cursor-pointer"
+        onClick={() =>
+          navigate(
+            `/learning/${classId}${moduleId ? `?moduleId=${moduleId}` : ""}`
+          )
+        }
+      >
+        <MdChevronLeft size={24} />
+        <span className="font-medium">Back to Learning</span>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="w-full lg:w-2/3">
-          <div className="bg-white w-full rounded-lg border p-4 md:p-6 mb-6">
-            <h2 className="text-lg md:text-xl font-semibold mb-4">
-              Assignment Details
-            </h2>
-            <div
-              className="prose max-w-none text-sm md:text-base"
-              dangerouslySetInnerHTML={{
-                __html: assignment?.data?.description ?? "",
-              }}
-            />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-20">
+        {/* Main Assignment Content */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Assignment Header */}
+          <div className="bg-white rounded-lg border p-6 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                  {assignment?.data?.title}
+                </h1>
+                <p className="text-gray-600">
+                  {assignment?.data?.module?.name}
+                </p>
+              </div>
+              {!isHistory && assignment?.data?.dueDate && (
+                <div className="flex items-center text-sm bg-blue-50 text-blue-800 px-3 py-2 rounded-lg">
+                  <FaCalendarAlt className="mr-2" />
+                  <span>Due: {formatTime(assignment.data.dueDate, false)}</span>
+                </div>
+              )}
+            </div>
 
-            <div className="mt-6">
-              <h3 className="font-medium mb-2">Attachments</h3>
-              <ul className="space-y-2">
-                {assignment?.data?.type === "FILE" &&
-                assignment?.data?.activeSubmission ? (
-                  <li>
-                    <a
-                      href={assignment?.data.activeSubmission?.file}
-                      className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <BiLink className="mr-2" />
-                      {assignment?.data?.activeSubmission.file}
-                    </a>
-                  </li>
+            {/* Assignment Metadata */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div>
+                <p className="text-sm text-gray-500">Type</p>
+                <p className="font-medium capitalize">
+                  {assignment?.data?.type?.toLowerCase() || "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Status</p>
+                {isHistory ? (
+                  renderSubmissionStatus()
                 ) : (
-                  assignment?.data?.activeSubmission && (
-                    <a
-                      href={assignment?.data?.activeSubmission?.file}
-                      className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
-                      download
-                    >
-                      <FileText size={16} className="mr-2" />
-                      {assignment?.data?.activeSubmission.file}
-                    </a>
-                  )
+                  <p className="font-medium">Not Submitted</p>
                 )}
-              </ul>
+              </div>
+            </div>
+
+            {/* Assignment Description */}
+            <div className="prose max-w-none">
+              <h3 className="text-lg font-semibold mb-3">Description</h3>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html:
+                    assignment?.data?.description ?? "No description provided",
+                }}
+              />
             </div>
           </div>
 
+          {/* Submission Section */}
           {!isHistory ? (
-            <div className="bg-white rounded-lg border p-4 md:p-6">
-              <h2 className="text-lg md:text-xl font-semibold mb-4">
-                Submit Your Work
-              </h2>
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2 text-sm md:text-base">
-                  Upload Files ({allowedExtensions || "Allowed extensions"})
-                </label>
-                <div
-                  className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer"
-                  onClick={handleBrowseClick}
+            <div className="bg-white rounded-lg border p-6 shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Submit Your Work</h2>
+
+              <div className="mb-6">
+                {renderSubmissionForm()}
+                <input
+                  type="file"
+                  className="hidden"
+                  multiple
+                  accept={allowedExtensions}
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                />
+              </div>
+
+              <div className="flex flex-col-reverse md:flex-row justify-between gap-4">
+                <button
+                  className="px-5 py-2.5 border rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  onClick={() => {
+                    setFiles(undefined);
+                  }}
                 >
-                  <div className="flex flex-col items-center justify-center py-4 md:py-8">
-                    <FileText size={32} className="text-gray-400 mb-2" />
-                    <p className="text-gray-500 text-sm md:text-base">
-                      Drag and drop files here or click to browse
-                    </p>
-                    <p className="text-xs md:text-sm text-gray-400 mt-1">
-                      Maximum file size: 10MB
-                    </p>
-                  </div>
-                  <input
-                    type="file"
-                    className="hidden"
-                    multiple
-                    accept={allowedExtensions}
-                    ref={fileInputRef}
-                  />
-                </div>
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2 text-sm md:text-base">
-                  Comments (Optional)
-                </label>
-                <textarea
-                  className="w-full border rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm md:text-base"
-                  rows={4}
-                  placeholder="Add any comments about your submission..."
-                ></textarea>
-              </div>
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="text-gray-500 flex items-center text-sm md:text-base">
-                  <Clock size={16} className="mr-1" />
-                  <span>
-                    Due:{" "}
-                    {assignment?.data?.dueDate
-                      ? formatTime(assignment?.data?.dueDate, false)
-                      : "-"}
-                  </span>
-                </div>
-                <button className="px-4 py-2 md:px-6 md:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors w-full md:w-auto text-sm md:text-base">
-                  Submit Assignment
+                  Clear
                 </button>
+                <div className="w-48">
+                  <Button
+                    size="lg"
+                    variant={mutation.isPending ? "disabled" : "primary"}
+                    onClick={handleSubmit}
+                  >
+                    <div className="flex items-center">
+                      <FaPaperPlane className="mr-2" />
+                      <Poppins>
+                        {mutation.isPending
+                          ? "Loading..."
+                          : "Submit Assignment"}
+                      </Poppins>
+                    </div>
+                  </Button>
+                </div>
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-lg border p-4 md:p-6 space-y-4 md:space-y-6">
-              <div>
-                <h2 className="text-lg md:text-xl font-semibold mb-4">
-                  Your Submission
-                </h2>
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
-                  <div>
-                    <p className="font-medium text-sm md:text-base">
-                      Submitted on:
-                    </p>
-                    <p className="text-sm md:text-base">
-                      {assignment?.data?.activeSubmission?.submittedAt
-                        ? formatTime(
-                            assignment?.data?.activeSubmission?.submittedAt,
-                            false
-                          )
-                        : "-"}
-                    </p>
-                  </div>
-                  <div className="text-left md:text-right">
-                    <p className="font-medium text-sm md:text-base">Status:</p>
-                    <span
-                      className={`px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm ${
-                        assignment?.data?.activeSubmission?.status ===
-                        "APPROVED"
-                          ? "bg-green-100 text-green-800"
-                          : assignment?.data?.activeSubmission?.status ===
-                            "REJECTED"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      {assignment?.data?.activeSubmission?.status}
-                    </span>
+            <div className="bg-white rounded-lg border p-6 shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Submission Details</h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <h3 className="font-medium mb-3">Submission Information</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-sm text-gray-500">Submitted At</p>
+                      <p className="font-medium">
+                        {assignment?.data?.activeSubmission?.submittedAt
+                          ? formatTime(
+                              assignment.data.activeSubmission.submittedAt,
+                              false
+                            )
+                          : "-"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Status</p>
+                      {renderSubmissionStatus()}
+                    </div>
                   </div>
                 </div>
 
-                <div className="border rounded-lg p-3 md:p-4">
-                  <h3 className="font-medium mb-2 text-sm md:text-base">
-                    Submitted Files
-                  </h3>
-                  <ul className="space-y-2">
-                    <li>
-                      <a
-                        href="#"
-                        className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
-                      >
-                        <FileText size={16} className="mr-2" />
-                        assignment-solution.zip
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="#"
-                        className="text-blue-600 hover:underline flex items-center text-sm md:text-base"
-                      >
-                        <FileText size={16} className="mr-2" />
-                        README.md
-                      </a>
-                    </li>
-                  </ul>
+                {assignment?.data?.activeSubmission?.feedback && (
+                  <div>
+                    <h3 className="font-medium mb-3">Instructor Feedback</h3>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-gray-700">
+                        {assignment.data.activeSubmission.feedback}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <h3 className="font-medium mb-3">Submitted Files</h3>
+                <div className="border rounded-lg divide-y">
+                  {assignment?.data?.activeSubmission?.file ? (
+                    <a
+                      href={assignment.data.activeSubmission.file}
+                      className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <div className="flex items-center">
+                        <FaFileAlt className="text-gray-400 mr-3" />
+                        <span>
+                          {assignment.data.activeSubmission.file
+                            .split("/")
+                            .pop()}
+                        </span>
+                      </div>
+                      <FaDownload className="text-gray-400" />
+                    </a>
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      No files submitted
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           )}
+        </div>
+
+        {/* Sidebar with Additional Info */}
+        <div className="space-y-6">
+          {/* Instructor Info */}
+          <div className="bg-white rounded-lg border p-6 shadow-sm">
+            <h3 className="font-semibold mb-4">Instructor</h3>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <FaUser className="text-gray-500" />
+              </div>
+              <div>
+                <p className="font-medium">
+                  {assignment?.data?.createdBy?.name}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

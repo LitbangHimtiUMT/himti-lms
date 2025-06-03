@@ -64,6 +64,8 @@ export const Group = () => {
 };
 
 export const GroupResponsive = ({ isOpen }: { isOpen: boolean }) => {
+  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
+  const { data: profile, isFetching } = useProfile();
   return (
     <div
       className={`lg:hidden shadow-[0_1px_10px_rgba(0,0,0,0.1)] flex flex-col duration-300 items-center gap-7 absolute left-5 rounded-3xl mt-5 right-5 py-10 bg-white ${
@@ -83,6 +85,13 @@ export const GroupResponsive = ({ isOpen }: { isOpen: boolean }) => {
           </span>
         </Link>
       ))}
+      {token && profile?.data?.email && !isFetching && (
+        <Link to={"/dashboard/enrolled-class"}>
+          <Poppins className={`text-black text-md duration-300`}>
+            Dashboard
+          </Poppins>
+        </Link>
+      )}
       <AuthSection direction="column" />
     </div>
   );

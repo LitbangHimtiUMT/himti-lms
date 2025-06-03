@@ -1,7 +1,7 @@
 import HIMTI from "@core/assets/logo/HIMTI.png";
 import { useAtom } from "jotai";
 import { CheckCircle, Menu, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { HiDocumentMinus, HiDocumentText } from "react-icons/hi2";
 import { IoChevronForward, IoChevronUp } from "react-icons/io5";
@@ -16,21 +16,65 @@ import { useDetailClass } from "../../class/hooks/useClasses";
 import { DashboardNavbar } from "../../dashboard/components/navbar";
 import { Skeleton } from "../components/Shimer";
 import { DarkModeAtom, LearningSidebarAtom } from "../store";
+import { convertQueryParamsToObject } from "../helper";
 
 export const LearningUserRoot = () => {
   const [darkMode, setDarkMode] = useAtom(DarkModeAtom);
 
   const [sidebarOpen, setSidebarOpen] = useAtom(LearningSidebarAtom);
   const [isMobile, setIsMobile] = useState(false);
-  const [searchParams] = useSearchParams();
-  const { data: classess, isFetching } = useDetailClass();
-  const [modules, setModules] = useState(
-    classess?.data?.sessions.map((item) => ({
-      ...item,
-      isOpen: false,
-    }))
-  );
+  const [searchParams, setSearchParams] = useSearchParams();
   const moduleIdQs = searchParams.get("moduleId") || "";
+  const { data: classess, isFetching } = useDetailClass();
+  // Perbaikan 1: Gunakan useMemo untuk inisialisasi awal modules
+  const initialModules = useMemo(() => {
+    return classess?.data?.sessions.map((item, index) => {
+      const isOpen = moduleIdQs
+        ? item.modules.some((mdl) => mdl.id === moduleIdQs)
+        : index === 0; // Hanya buka session pertama jika tidak ada moduleIdQs
+      return { ...item, isOpen };
+    });
+  }, [classess?.data?.sessions, moduleIdQs]);
+
+  const [modules, setModules] = useState(initialModules);
+
+  useEffect(() => {
+    if (initialModules) {
+      setModules(initialModules);
+    }
+  }, [initialModules]);
+
+  // Perbaikan 3: Optimalkan toggleModule
+  const toggleModule = useCallback((index: number) => {
+    setModules((prevModules) => {
+      if (!prevModules) return prevModules;
+
+      // Buat salinan baru dari array modules
+      const updatedModules = [...prevModules];
+
+      // Jika module ini tidak memiliki sub-modules, tidak perlu melakukan apa-apa
+      if (!updatedModules[index].modules.length) {
+        return prevModules;
+      }
+
+      // Tutup semua session lainnya sebelum membuka yang baru (opsional)
+      // Jika ingin hanya satu session terbuka dalam satu waktu
+      if (updatedModules[index].isOpen === false) {
+        updatedModules.forEach((mod, i) => {
+          if (i !== index) mod.isOpen = false;
+        });
+      }
+
+      // Toggle status isOpen untuk module yang diklik
+      updatedModules[index] = {
+        ...updatedModules[index],
+        isOpen: !updatedModules[index].isOpen,
+      };
+
+      return updatedModules;
+    });
+  }, []);
+  const queries = convertQueryParamsToObject(searchParams.toString());
   const navigate = useNavigate();
   const { classId } = useParams();
 
@@ -48,27 +92,14 @@ export const LearningUserRoot = () => {
   }, []);
 
   useEffect(() => {
-    setModules(
-      classess?.data?.sessions.map((item, index) => {
-        const isOpen = moduleIdQs
-          ? item.modules.map((mdl) => mdl.id).includes(moduleIdQs)
-          : !index;
-        return { ...item, isOpen };
-      })
-    );
-  }, [classess?.data?.sessions, moduleIdQs]);
-
-  // Toggle module open/close
-  const toggleModule = useCallback(
-    (index: number) => {
-      const updatedModules = [...(modules || [])];
-      if (updatedModules[index].modules.length) {
-        updatedModules[index].isOpen = !updatedModules[index].isOpen;
-        setModules(updatedModules);
-      }
-    },
-    [modules]
-  );
+    if (!moduleIdQs && modules?.[0]?.modules?.[0]?.id) {
+      setSearchParams({
+        ...queries,
+        moduleId: modules[0].modules[0].id,
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moduleIdQs]); // Empty dependency array
 
   const handleClickModule = useCallback(
     (moduleId: string) => {

@@ -74,7 +74,7 @@ export const TableEnrolledClassessList = () => {
                     {formatRupiah(item.price)}
                   </td>
                   <td className="py-4 px-6">
-                    <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium">
+                    <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] block text-center">
                       {item.category.name}
                     </span>
                   </td>
@@ -100,9 +100,7 @@ export const TableEnrolledClassessList = () => {
                         variant="secondary"
                         size="sm"
                         rounded="lg"
-                        onClick={() =>
-                          navigate(`/learning/${item.id}`)
-                        }
+                        onClick={() => navigate(`/learning/${item.id}`)}
                       >
                         <div className="flex items-center gap-4">
                           <IoDocumentOutline className="text-indigo-600 text-lg" />
@@ -133,12 +131,12 @@ export const TableEnrolledClassessList = () => {
               ))
             ) : !classess?.data?.length && !isFetching ? (
               <tr>
-                  <EmptyState
-                    customMinHeight={400}
-                    colspan={6}
-                    description={["You haven't enrolled in any classes yet"]}
-                    // iconSize={80}
-                  />
+                <EmptyState
+                  customMinHeight={400}
+                  colspan={6}
+                  description={["You haven't enrolled in any classes yet"]}
+                  // iconSize={80}
+                />
               </tr>
             ) : (
               Array.from({ length: 5 }).map((_, index) => (
