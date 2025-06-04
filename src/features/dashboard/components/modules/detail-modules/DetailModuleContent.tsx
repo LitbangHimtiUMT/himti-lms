@@ -10,7 +10,7 @@ import { YoutubeEmbed } from "./EmbededYoutube";
 import { ModuleAttachment } from "./ModuleAttachment";
 import { TableHistorySubmission } from "./TableHistorySubmission";
 
-export type SubmissionStatus = "REVIEWED" | "APPROVED" | "REJECTED";
+export type SubmissionStatus = "REVIEW" | "APPROVE" | "REJECT";
 
 export interface Submission {
   id: string;
@@ -53,74 +53,9 @@ export const DetailModuleContent = () => {
     }
   };
 
-  // const handleSubmitAssignment = () => {
-  //   if (newSubmission.files.length === 0) return;
-
-  //   setIsSubmitting(true);
-
-  //   // Simulasi proses upload
-  //   setTimeout(() => {
-  //     const newHistoryItem: Submission = {
-  //       id: Date.now().toString(),
-  //       name: `Submission ${submissionHistory.length + 1}`,
-  //       files: newSubmission.files.map((file) => ({
-  //         name: file.name,
-  //         size: file.size,
-  //         url: URL.createObjectURL(file),
-  //       })),
-  //       status: "submitted",
-  //       submittedAt: new Date(),
-  //     };
-
-  //     setSubmissionHistory((prev) => [newHistoryItem, ...prev]);
-  //     setNewSubmission({ files: [] });
-  //     setIsSubmitting(false);
-  //   }, 1500);
-  // };
-
-  // const handleRemoveFile = (index: number) => {
-  //   setNewSubmission((prev) => {
-  //     const newFiles = [...prev.files];
-  //     newFiles.splice(index, 1);
-  //     return { ...prev, files: newFiles };
-  //   });
-  // };
+  
 
   return (
-    // <div className="flex flex-col gap-4 mb-4">
-    //   {/* {parse(data?.data?.textModule || "")} */}
-    //   <div
-    //     dangerouslySetInnerHTML={{
-    //       __html:
-    //         type === "assignment"
-    //           ? modules?.data?.assignment?.description || ''
-    //           : modules?.data?.textModule || "",
-    //     }}
-    //     style={{
-    //       padding: "10px",
-    //       whiteSpace: "normal", // memastikan teks bisa turun
-    //       wordBreak: "break-word", // memaksa teks panjang untuk turun
-    //       overflowX: "auto", // jika perlu scroll horizontal (optional)
-    //     }}
-    //   />
-
-    //   <ConditionNode condition={!!modules?.data?.youtubeId}>
-    //     <div className="lg:w-1/2 w-full">
-    //       <YoutubeEmbed videoId={modules?.data?.youtubeId || ""} />
-    //     </div>
-    //   </ConditionNode>
-
-    //   <ConditionNode
-    //     condition={
-    //       !!modules?.data?.file.url &&
-    //       !!modules.data.file.fileName &&
-    //       type !== 'assigment' &&
-    //       !isFetching
-    //     }
-    //   >
-    //     <ModuleAttachment />
-    //   </ConditionNode>
-    // </div>
     <>
       <div
         className={`flex flex-col gap-6 mb-6 ${

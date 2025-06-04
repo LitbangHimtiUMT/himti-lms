@@ -21,8 +21,8 @@ import { MentorViews } from "../../features/mentor/views/MentorViews";
 import { SessionViews } from "../../features/dashboard/views/SessionViews";
 import { ClassDetailView } from "@features/class/views/ClassDetailView";
 import { LearningDashboardView } from "@features/learning/views/LearningView";
-import { AssignmentDetailView } from "../../features/learning/views/AssignmentView";
 import { LearningUserRoot } from "../../features/_global/views/LearningUserRoot";
+import { AssignmentDetailView } from "../../features/learning/views/AssignmentDetailView";
 
 export const router = createBrowserRouter([
   {
@@ -122,7 +122,7 @@ export const router = createBrowserRouter([
         element: <LearningDashboardView />,
       },
       {
-        path: "/learning/:classId/assignment/:id",
+        path: "/learning/:classId/assignment/:assignmentId/:submissionId?",
         element: <AssignmentDetailView />,
       },
     ],

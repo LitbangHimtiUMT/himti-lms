@@ -50,15 +50,15 @@ export const useAssignmentsCreation = () => {
   });
 };
 
-export const useDetailAssignment = () => {
-  const { id } = useParams();
+export const useDetailAssignment = (enabled: boolean = true) => {
+  const { assignmentId } = useParams();
   const query = useQuery({
-    queryKey: ["detail-assignment", { id }],
+    queryKey: ["detail-assignment", { assignmentId, enabled }],
     queryFn: () =>
       assignmentService.getById({
-        path: id,
+        path: assignmentId,
       }),
-    enabled: !!id,
+    enabled: !!assignmentId && enabled,
   });
   return query;
 };

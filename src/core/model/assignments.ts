@@ -24,6 +24,7 @@ export interface AssignmentDTO {
   description: string;
   type: AssignmentType;
   activeSubmission?: SubmissionDTO | null;
+  historySubmission: SubmissionDTO[];
   module?: ModuleDTO;
   createdBy: {
     id: string;

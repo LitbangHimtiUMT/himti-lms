@@ -16,6 +16,7 @@ export const API_ENDPOINT = {
   check: `${CONFIG_APP.BASE_URL}/check`,
   categories: `${CONFIG_APP.BASE_URL}/lms/categories`,
   assignment: `${CONFIG_APP.BASE_URL}/lms/assignments`,
+  submissions: `${CONFIG_APP.BASE_URL}/lms/assignments/submissions`,
   mentors: `${CONFIG_APP.BASE_URL}/lms/mentors`,
   modules: `${CONFIG_APP.BASE_URL}/lms/modules`,
   sessions: `${CONFIG_APP.BASE_URL}/lms/sessions`,
