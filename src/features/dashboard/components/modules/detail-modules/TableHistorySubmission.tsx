@@ -9,15 +9,15 @@ interface TableHistorySubmissionProps {
 
 const getStatusBadge = (status: SubmissionStatus) => {
     const statusClasses = {
-      REVIEWED: 'bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200',
-      REJECTED: 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200',
-      APPROVED: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
+      REVIEW: 'bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-200',
+      REJECT: 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200',
+      APPROVE: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
     };
     
     const statusText:Record<SubmissionStatus, string> = {
-      REVIEWED: 'Review',
-      APPROVED: 'Approve',
-      REJECTED: 'Reject',
+      REVIEW: 'Review',
+      APPROVE: 'Approve',
+      REJECT: 'Reject',
     };
     
     return (
