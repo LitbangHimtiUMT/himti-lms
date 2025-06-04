@@ -85,25 +85,3 @@ export const FormCreateModules = () => {
     </>
   );
 };
-
-{
-  /* <div className="flex items-center gap-2 mt-4 mb-4">
-<Poppins className="text-sm w-1/5">Assignment</Poppins>
-<div className="flex items-center gap-2">
-  <input
-    type="checkbox"
-    defaultChecked
-    className="checkbox rounded-md w-[1.25rem] h-[1.25rem]"
-  />
-  <Poppins className="text-sm">Include</Poppins>
-</div>
-</div>
-<div className="flex flex-col gap-2 lg:w-1/2 w-full">
-<Poppins className="text-sm w-1/5">Due Date</Poppins>
-<DatePicker
-  animate
-  mode="single"
-  onDayClick={(e) => console.log({ e })}
-/>
-</div> */
-}

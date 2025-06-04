@@ -12,7 +12,6 @@ import { useCategories } from "../../../../categories/hooks/useCategories";
 import { dataFetching } from "../../../../_global/components/Dropdown/data-fetching";
 import { useClassesCreation } from "../../../../class/hooks/useClasses";
 
-
 interface ICourseForm {
   name: string;
   description?: string;
@@ -149,7 +148,6 @@ export const FormCreateClassess = () => {
               inputStyle: "addons",
               currency: true,
               onChange: (e) => {
-                console.log({ value: e.target.value });
                 setForm((prev) => ({ ...prev, price: Number(e.target.value) }));
               },
               LeftIcon: (
@@ -162,7 +160,9 @@ export const FormCreateClassess = () => {
             }}
           />
         </div>
-        <Button size="lg">Submit</Button>
+        <Button size="lg" variant={mutation.isPending ? "disabled" : "primary"}>
+          {mutation.isPending ? 'Submitting...' : 'Submit'}
+        </Button>
       </form>
     </div>
   );

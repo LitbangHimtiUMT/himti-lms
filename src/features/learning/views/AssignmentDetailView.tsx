@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useDetailAssignment } from "../../dashboard/hooks/assignments/useAssignmentsCreation";
 import { useSubmissions } from "../hooks/submissions/useSubmissions";
-import { AssignmentDataProps, AssignmentDetailContent } from "./AssignmentView";
+import { AssignmentDataProps, AssignmentDetailContent } from "../components/AssignmentDetailContent";
 
 export const AssignmentDetailView = () => {
   const { submissionId, assignmentId } = useParams();
