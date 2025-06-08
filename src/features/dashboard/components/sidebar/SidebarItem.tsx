@@ -28,7 +28,7 @@ export const SidebarItem: React.FC<ISidebarItemProps> = ({ items, title }) => {
               <div
                 key={index}
                 className={`${
-                  location.pathname === item.path
+                  location.pathname.includes(item.path) && item.path !== '/'
                     ? "bg-[#192d4c] text-white"
                     : ""
                 } p-4 rounded-md text-md cursor-pointer`}

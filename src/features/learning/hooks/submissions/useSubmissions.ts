@@ -1,12 +1,17 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { assignmentService } from "../../../../core/services/assignments";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type SubmissionTypeHooks = "get" | "get-by-assignment";
+interface Approval {
+  submissionId: string;
+  feedback?: string;
+}
 
 export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
   const { submissionId, assignmentId } = useParams();
-
+  const queryClient = useQueryClient();
   const getSubmissions = useQuery({
     queryKey: ["submissions", { submissionId }],
     queryFn: () =>
@@ -26,15 +31,40 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
   });
 
   const approveSubmission = useMutation({
-    mutationFn: () =>
-      assignmentService.submission.getByAssignment({
-        path: `assignment/approve/${assignmentId}`,
+    mutationFn: ({ submissionId }: Approval) =>
+      assignmentService.submission.approval(undefined, {
+        path: `approve/${submissionId}`,
       }),
+    onSuccess: (res) => {
+      toast.success(res.message);
+      queryClient.invalidateQueries({
+        queryKey: ["submission-by-assignment"],
+      });
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const rejectSubmission = useMutation({
+    mutationFn: ({ submissionId, feedback }: Approval) =>
+      assignmentService.submission.approval(
+        { feedback },
+        {
+          path: `reject/${submissionId}`,
+        }
+      ),
+      onSuccess: (res) => {
+        toast.success(res.message);
+        queryClient.invalidateQueries({
+          queryKey: ["submission-by-assignment"],
+        });
+      },
+      onError: (err) => toast.error(err.message),
   });
 
   return {
     get: getSubmissions,
     getByAssignment: getSubmissionsByAssignment,
-    approve: approveSubmission
+    approve: approveSubmission,
+    reject: rejectSubmission,
   };
 };

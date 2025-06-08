@@ -25,7 +25,7 @@ export const DetailSessionView = () => {
             },
             {
               name: "Session",
-              to: `/dashboard/class/${classId}${from ? `?from=${from}` : ""}`,
+              to: `/dashboard/my-class/${classId}${from ? `?from=${from}` : ""}`,
             },
             {
               name: "Detail Session",

@@ -1,6 +1,6 @@
 import { Calendar, FileText } from "lucide-react";
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ModuleDTO } from "../../../core/model/modules";
 import { Button } from "../../_global/components/Button";
 import { Poppins } from "../../_global/components/Text";
@@ -15,23 +15,14 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
   const { classId } = useParams();
 
   const haveActiveAssignment = modules?.assignment?.activeSubmission;
+  const haveApproveSubmission = modules?.assignment?.historySubmission?.find(
+    (item) => item.status === "APPROVE"
+  );
+  const navigate = useNavigate();
   return (
     <div className="p-6 ">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Assignments</h1>
-        {/* <div className="relative w-64">
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={18}
-          />
-          <input
-            type="text"
-            placeholder="Search assignments..."
-            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div> */}
       </div>
 
       <div className="flex border-b mb-6">
@@ -59,10 +50,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
 
       {activeTab === "active" ? (
         <div className="space-y-4">
-          {modules.assignment &&
-          ((!haveActiveAssignment &&
-            !modules?.assignment?.historySubmission?.length) ||
-            haveActiveAssignment) ? (
+          {modules.assignment && !haveApproveSubmission ? (
             <div
               key={modules.assignment.id}
               className="border rounded-lg p-4 hover:shadow-md transition-shadow"
@@ -99,7 +87,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                 </div>
 
                 <Link
-                  to={`/learning/${classId}/assignment/${modules?.assignment.id}`}
+                  to={`/learning/${classId}/assignment/${modules?.assignment.id}?moduleId=${modules?.id}`}
                   className="px-4 py-2 text-white rounded-lg"
                 >
                   <Button
@@ -175,13 +163,19 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                   </div>
                 </div>
 
-                <div className="mt-4 flex justify-end">
-                  <Link
-                    to={`/learning/${classId}/assignment/${modules?.assignment?.id}/${assignment.id}`}
-                    className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-                  >
-                    View Details
-                  </Link>
+                <div className="mt-4 flex justify-end w-full">
+                  <div className="w-1/4">
+                    <Button
+                      variant="secondary"
+                      onClick={() =>
+                        navigate(
+                          `/learning/${classId}/assignment/${modules?.assignment?.id}/${assignment.id}`
+                        )
+                      }
+                    >
+                      View Details
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))

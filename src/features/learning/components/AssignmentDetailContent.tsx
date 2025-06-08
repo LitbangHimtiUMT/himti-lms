@@ -15,9 +15,9 @@ import { Poppins } from "../../_global/components/Text";
 import { UploadFile } from "../../_global/components/UploadFiles";
 import { formatTime } from "../../_global/lib/format-time";
 import { LearningSidebarAtom } from "../../_global/store";
+import { useAssignmentsCreation } from "../../dashboard/hooks/assignments/useAssignmentsCreation";
 import { CardSubmission } from "./submission/CardSubmission";
 import { AssignmentDetailSkeleton } from "./submission/SkeletonSubmission";
-import { useAssignmentsCreation } from "../../dashboard/hooks/assignments/useAssignmentsCreation";
 
 export interface AssignmentDataProps {
   id: string;
@@ -105,9 +105,9 @@ export const AssignmentDetailContent = ({
   const navigate = useNavigate();
   const moduleId = searchParams.get("moduleId");
   const mutation = useAssignmentsCreation();
-  // Derived values
-  const canSubmit =
-    mode === "current" && !data.activeSubmission && !data.isHaveHistory;
+
+  const haveApproveSubmission = data?.submission?.status === "APPROVE";
+  const canSubmit = mode === "current" && !haveApproveSubmission;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -250,13 +250,17 @@ export const AssignmentDetailContent = ({
                 <div className="w-48">
                   <Button
                     size="lg"
-                    variant={mutation.isPending || !files ? "disabled" : "primary"}
+                    variant={
+                      mutation.isPending || !files ? "disabled" : "primary"
+                    }
                     onClick={handleSubmit}
                   >
                     <div className="flex items-center">
                       <FaPaperPlane className="mr-2" />
                       <Poppins>
-                        {mutation.isPending ? "Loading..." : "Submit Assignment"}
+                        {mutation.isPending
+                          ? "Loading..."
+                          : "Submit Assignment"}
                       </Poppins>
                     </div>
                   </Button>

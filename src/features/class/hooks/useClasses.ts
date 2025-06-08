@@ -38,9 +38,11 @@ export function useClasses(options?: Options) {
   const searchQuery =
     options?.search || searchParams.get("search") || undefined;
   const search = useDebounce(searchQuery as string, 500);
+  const token =
+  localStorage.getItem(CONFIG_APP.TOKEN_KEY) || "";
 
   const query = useQuery({
-    queryKey: ["classes", { page, perPage, search, path: options?.path }],
+    queryKey: ["classes", { page, perPage, search, path: options?.path, token }],
     queryFn: () =>
       classesService.get({
         queryParams: {

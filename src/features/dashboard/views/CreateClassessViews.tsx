@@ -12,7 +12,7 @@ export const CreateClassessViews = () => {
           },
           {
             name: "Create Classess",
-            to: `/dashboard/class/create`,
+            to: `/dashboard/my-class/create`,
           },
         ]}
       />

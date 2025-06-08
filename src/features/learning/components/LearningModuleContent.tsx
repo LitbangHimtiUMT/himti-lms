@@ -4,6 +4,7 @@ import { YoutubeEmbed } from "../../dashboard/components/modules/detail-modules/
 import { ModuleDTO } from "../../../core/model/modules";
 import { AssignmentView } from "../views/AssignmentView";
 import { ModuleAttachment } from "../../dashboard/components/modules/detail-modules/ModuleAttachment";
+import { IoDocument } from "react-icons/io5";
 
 interface LearningModuleContentProps {
   module: ModuleDTO;
@@ -31,26 +32,18 @@ export const LearningModuleContent: React.FC<LearningModuleContentProps> = ({
             }}
           />
           <ConditionNode
-            condition={!!module?.file.url && !!module?.file.fileName}
+            condition={!!module?.file.url && !!module.file.fileName}
           >
-            <div className={`bg-white rounded-xl shadow-md overflow-hidden p-6`}>
-              <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-2">
-                <svg
-                  className="w-5 h-5 text-blue-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                  />
-                </svg>
-                Downloadable Materials
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden p-6 border border-gray-100 mt-4">
+              <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-100 text-blue-600">
+                <IoDocument size={20} />
+                </div>
+                <span>Material File</span>
               </h3>
-              <ModuleAttachment />
+              <div className="mt-2">
+                <ModuleAttachment />
+              </div>
             </div>
           </ConditionNode>
         </div>

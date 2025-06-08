@@ -42,7 +42,7 @@ export const useAssignmentsCreation = () => {
       });
       if (vars.type === "submit") {
         queryClient.removeQueries({
-          queryKey: ["moduleById"],
+          queryKey: ["detail-module"],
         });
         navigate(`/learning/${classId}?moduleId=${moduleId}`);
       }

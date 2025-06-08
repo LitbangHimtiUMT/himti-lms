@@ -13,7 +13,7 @@ export const MyClassViews = () => {
         <h1 className="text-3xl font-bold">My Classess</h1>
         <ConditionNode condition={!!profile?.data?.isMentor}>
           <div>
-            <Button size="lg" onClick={() => navigate("/dashboard/class/create")}>
+            <Button size="lg" onClick={() => navigate("/dashboard/my-class/create")}>
               Create Class
             </Button>
           </div>

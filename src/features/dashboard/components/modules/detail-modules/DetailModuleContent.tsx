@@ -1,10 +1,13 @@
-import { FiArrowRight, FiFileText } from "react-icons/fi";
+import { ArrowRight } from "lucide-react";
+import { FiFileText } from "react-icons/fi";
+import { IoDocument } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "../../../../_global/components/Button";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
+import { Skeleton } from "../../../../_global/components/Shimer";
 import { useDetailModule } from "../../../hooks/modules/useModules";
 import { YoutubeEmbed } from "./EmbededYoutube";
 import { ModuleAttachment } from "./ModuleAttachment";
-import { Skeleton } from "../../../../_global/components/Shimer";
 
 export type SubmissionStatus = "REVIEW" | "APPROVE" | "REJECT";
 
@@ -78,15 +81,14 @@ export const DetailModuleContent = () => {
             />
             {/* Tombol View Assignment (hanya muncul jika ini assignment) */}
             <ConditionNode condition={!!modules?.data?.assignment}>
-              <div className="mt-6">
-                <button
-                  onClick={handleViewAssignment}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
+              <div className="mt-6 w-[26%]">
+                <Button variant="primary" size="lg" onClick={handleViewAssignment}>
+                  <div className="flex items-center gap-4">
                   <FiFileText className="w-5 h-5" />
                   <span>View Assignment Details</span>
-                  <FiArrowRight className="w-4 h-4" />
-                </button>
+                  <ArrowRight className="w-5 h-5" />
+                  </div>
+                </Button>
               </div>
             </ConditionNode>
           </div>
@@ -121,20 +123,8 @@ export const DetailModuleContent = () => {
         >
           <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
             <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                />
-              </svg>
-              Downloadable Materials
+              <IoDocument size={20} />
+              Material File
             </h3>
             <ModuleAttachment />
           </div>

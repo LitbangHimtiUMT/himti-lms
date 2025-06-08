@@ -2,6 +2,7 @@ import { CiSearch } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
 import { IoDocumentOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "../../../../_global/components/Badge";
 import { Button } from "../../../../_global/components/Button";
 import { EmptyState } from "../../../../_global/components/Empty";
 import { Input } from "../../../../_global/components/Input";
@@ -11,12 +12,11 @@ import {
   TableBody,
   TableHead,
 } from "../../../../_global/components/Table";
-import { Poppins } from "../../../../_global/components/Text";
 import { formatRupiah } from "../../../../_global/helper";
 import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
 import { useClasses } from "../../../../class/hooks/useClasses";
-import { useGenerateCertificate } from "../../../hooks/certificates/useCertificates";
 import { useProfile } from "../../../../profile/useProfile";
+import { useGenerateCertificate } from "../../../hooks/certificates/useCertificates";
 
 export const TableEnrolledClassessList = () => {
   const navigate = useNavigate();
@@ -35,23 +35,23 @@ export const TableEnrolledClassessList = () => {
     });
 
   return (
-    <div className="flex flex-col gap-6 p-6 bg-white rounded-xl shadow-md border border-gray-100">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-2xl font-bold text-gray-800">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white hidden md:block">
           My Learning Journey
         </h2>
-        <div className="w-full md:w-1/3">
+        <div className="w-full md:w-1/2 lg:w-1/3 min-w-[250px]">
           <Input
-            LeftIcon={<CiSearch className="text-lg text-purple-500" />}
-            placeholder="Find your class..."
+            LeftIcon={<CiSearch className="text-lg text-gray-400" />}
+            placeholder="Search classes..."
             onChange={handleInputChange}
-            className="bg-gray-50 border-0 focus:ring-2 focus:ring-purple-100"
+            className="bg-white dark:bg-gray-800 w-full"
           />
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200">
-        <Table className="min-w-full">
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <Table>
           <TableHead
             field={[
               "Class Name",
@@ -59,118 +59,110 @@ export const TableEnrolledClassessList = () => {
               "Category",
               "Sessions",
               "Progress",
-              "Actions",
+              "",
             ]}
-            className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium"
+            // className="bg-gray-50 dark:bg-gray-800"
           />
-          <TableBody className="divide-y divide-gray-200">
-            {classess?.data?.length && !isFetching ? (
-              (classess?.data ?? [])?.map((item, index) => (
-                <tr key={index} className="hover:bg-gray-100 transition-colors">
-                  <td className="py-4 px-6 font-medium text-gray-900">
-                    <span className="line-clamp-1">{item.name}</span>
-                  </td>
-                  <td className="py-4 px-6 text-black font-medium">
-                    {formatRupiah(item.price)}
-                  </td>
+          <TableBody>
+            {isFetching ? (
+              <tr>
+                <td colSpan={6}>
+                  <div className="p-4 space-y-2">
+                    {Array.from({ length: 5 }).map((_, idx) => (
+                      <Skeleton key={idx} width="100%" height="48px" />
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ) : classess?.data?.length ? (
+              classess.data.map((item, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                >
                   <td className="py-4 px-6">
-                    <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] block text-center">
-                      {item.category.name}
-                    </span>
-                  </td>
-                  <td className="py-4 px-6 text-center text-gray-600">
-                    {item.totalSession}
-                  </td>
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-full bg-gray-100 rounded-full h-2.5">
-                        <div
-                          className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2.5 rounded-full"
-                          style={{ width: `${item.total.precentage}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-sm font-medium min-w-[40px]">
-                        {item.total.precentage}%
-                      </span>
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {item.name}
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        rounded="lg"
-                        onClick={() => navigate(`/learning/${item.id}`)}
-                      >
-                        <div className="flex items-center gap-4">
-                          <IoDocumentOutline className="text-indigo-600 text-lg" />
-                          <Poppins>Detail</Poppins>
-                        </div>
-                      </Button>
+                    <div className="text-gray-700 dark:text-gray-300">
+                      {formatRupiah(item.price)}
+                    </div>
+                  </td>
+                  <td className="py-4 px-6">
+                    <Badge variant="outline" className="capitalize">
+                      {item.category.name}
+                    </Badge>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="text-gray-700 dark:text-gray-300 text-center">
+                      {item.totalSession}
+                    </div>
+                  </td>
+                  <td className="py-4 px-6">
+                      <div className="text-sm font-medium text-center text-gray-700 dark:text-gray-300 min-w-[40px]">
+                        {item.total.precentage}%
+                      </div>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="flex items-center justify-end gap-2">
+                      <div className="w-max">
+                        <Button
+                          tooltip="Detail Class"
+                          size="md"
+                          variant="secondary"
+                          onClick={() => navigate(`/learning/${item.id}`)}
+                        >
+                          <IoDocumentOutline className="text-gray-600 dark:text-gray-300" />
+                        </Button>
+                      </div>
 
                       {item.certificate &&
                       item.progressStatus === "Completed" ? (
-                        <Button variant="success" size="sm" rounded="lg">
-                          <FaEye className="text-lg" />
-                        </Button>
+                        <div className="w-max">
+                          <Button
+                            size="md"
+                            variant="disabled"
+                            tooltip="View Certificate"
+                          >
+                            <FaEye className="text-white" />
+                          </Button>
+                        </div>
                       ) : item.progressStatus === "Completed" &&
                         !item.certificate &&
                         !isMentor ? (
                         <Button
-                          variant="primary"
                           size="sm"
-                          rounded="lg"
                           onClick={() => handleGenerate(item.id)}
                         >
-                          <span className="text-white">Claim Certificate</span>
+                          <span className="text-blue-600 dark:text-blue-400 text-sm font-medium">
+                            Claim Certificate
+                          </span>
                         </Button>
                       ) : null}
                     </div>
                   </td>
                 </tr>
               ))
-            ) : !classess?.data?.length && !isFetching ? (
-              <tr>
-                <EmptyState
-                  customMinHeight={400}
-                  colspan={6}
-                  description={["You haven't enrolled in any classes yet"]}
-                  // iconSize={80}
-                />
-              </tr>
             ) : (
-              Array.from({ length: 5 }).map((_, index) => (
-                <tr key={index} className="border-b border-gray-200">
-                  <td className="py-4 px-6">
-                    <Skeleton width="180px" height="20px" />
-                  </td>
-                  <td className="py-4 px-6">
-                    <Skeleton width="80px" height="20px" />
-                  </td>
-                  <td className="py-4 px-6">
-                    <Skeleton width="100px" height="24px" />
-                  </td>
-                  <td className="py-4 px-6 text-center">
-                    <Skeleton width="40px" height="20px" />
-                  </td>
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-3">
-                      <Skeleton width="120px" height="10px" />
-                      <Skeleton width="40px" height="16px" />
-                    </div>
-                  </td>
-                  <td className="py-4 px-6">
-                    <div className="flex justify-end gap-2">
-                      <Skeleton width="40px" height="40px" />
-                      <Skeleton width="100px" height="40px" />
-                    </div>
-                  </td>
-                </tr>
-              ))
+              <tr>
+                <td colSpan={6}>
+                  <EmptyState
+                    variant="table"
+                    customMinHeight={400}
+                    description={[
+                      "You haven't enrolled in any classes yet",
+                      "Explore available classes to start learning",
+                    ]}
+                  />
+                </td>
+              </tr>
             )}
           </TableBody>
         </Table>
       </div>
+   
     </div>
   );
 };

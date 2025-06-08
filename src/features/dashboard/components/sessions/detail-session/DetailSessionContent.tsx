@@ -10,6 +10,7 @@ import { CreateAssignmentDrawer } from "../../drawer/CreateAssignmentDrawer";
 import { useState } from "react";
 import { useProfile } from "../../../../profile/useProfile";
 import { useDetailClass } from "../../../../class/hooks/useClasses";
+import { TableHead } from "../../../../_global/components/Table";
 
 interface IShowDrawer {
   show: boolean;
@@ -43,17 +44,9 @@ export const DetailSessionContent = () => {
       <div className="w-full rounded-md">
         <div className="overflow-x-auto rounded-md border border-solid border-gray-300">
           <table className="w-full">
-            <thead>
-              <tr className="bg-[#192d4c] text-white">
-                <th className="py-3 px-6 text-left font-medium text-sm">
-                  Title
-                </th>
-                <th className="py-3 px-6 text-left font-medium text-sm">
-                  Have Submission
-                </th>
-                <th className="py-3 px-6 text-left font-medium text-sm"></th>
-              </tr>
-            </thead>
+          <TableHead
+          field={['Title', 'Have Assignment', '']}
+          />
 
             {/* Table Body */}
             <tbody className="bg-gray-50">
@@ -105,7 +98,7 @@ export const DetailSessionContent = () => {
                                   }));
                                   return
                                 }
-                                navigate(`/dashboard/${classId}/${sessionId}/${item.id}?type=assignment`)
+                                navigate(`/dashboard/${classId}/${sessionId}/${item.id}/${item.assignment?.id}`)
                               }}
                             >
                               {item.assignment || !isOwner
@@ -121,7 +114,7 @@ export const DetailSessionContent = () => {
               ) : !modules?.data?.length && !isFetching ? (
                 <EmptyState
                   customMinHeight={400}
-                  colspan={3}
+                  colspan={4}
                   description={["Session not found"]}
                 />
               ) : (

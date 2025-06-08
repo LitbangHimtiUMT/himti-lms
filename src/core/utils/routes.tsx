@@ -79,11 +79,11 @@ export const router = createBrowserRouter([
         element: <EnrolledClassViews />,
       },
       {
-        path: "/dashboard/class/:classId",
+        path: "/dashboard/my-class/:classId",
         element: <SessionViews />,
       },
       {
-        path: "/dashboard/class/create",
+        path: "/dashboard/my-class/create",
         element: <CreateClassessViews />,
       },
       {
