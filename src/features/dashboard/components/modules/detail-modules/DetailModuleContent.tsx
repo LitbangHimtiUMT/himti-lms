@@ -119,7 +119,7 @@ export const DetailModuleContent = () => {
             !isFetchingModules
           }
         >
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden p-6">
+          <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
             <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white flex items-center gap-2">
               <svg
                 className="w-5 h-5 text-blue-500"

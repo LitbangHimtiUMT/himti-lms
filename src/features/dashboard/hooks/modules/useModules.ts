@@ -29,14 +29,16 @@ export const useModules = (id?: string) => {
 
 export const useDetailModule = (id?: string) => {
   const { moduleId } = useParams();
+  const [searchParams] = useSearchParams();
+  const module = searchParams.get("moduleId") || undefined;
   const queryClient = useQueryClient();
   const query = useQuery({
-    queryKey: ["detail-module", { moduleId, id }],
+    queryKey: ["detail-module", { moduleId, id, module }],
     queryFn: () =>
       moduleService.getById({
-        path: moduleId || id,
+        path: moduleId || module || id,
       }),
-    enabled: !!moduleId || !!id,
+    enabled: !!moduleId || !!module || !!id,
   });
 
   useEffect(() => {

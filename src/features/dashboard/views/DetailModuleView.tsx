@@ -31,7 +31,7 @@ export const DetailModuleView = () => {
             ]}
           />
         </div>
-        <DetailModuleContent />
+        <DetailMod uleContent />
       </div>
     </>
   );

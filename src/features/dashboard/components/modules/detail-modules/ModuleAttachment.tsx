@@ -12,8 +12,8 @@ export const ModuleAttachment = () => {
       >
         <div className="flex items-center gap-2">
           <FaFileLines className="text-gray-600" size={28} />
-          <Poppins className="truncate overflow-hidden whitespace-nowrap lg:max-w-[16rem] max-w-[60%] text-sm">
-            {modules?.data?.file.fileName}
+          <Poppins className="truncate overflow-hidden whitespace-nowrap lg:max-w-[16rem] max-w-[60%] text-sm text-black">
+            {modules?.data?.file.fileName || 'Loading...'}
           </Poppins>
         </div>
       </div>
