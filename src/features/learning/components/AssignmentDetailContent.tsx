@@ -119,11 +119,7 @@ export const AssignmentDetailContent = ({
     if (!files) return;
 
     const formData = new FormData();
-    if (typeof files !== "string") {
-      formData.append("file", files);
-    } else {
-      formData.append("url", files);
-    }
+    formData.append("file", files);
     formData.append("assignmentId", data.id);
 
     await mutation.mutateAsync({
