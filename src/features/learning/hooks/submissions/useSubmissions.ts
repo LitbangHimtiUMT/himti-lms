@@ -20,7 +20,7 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
     queryKey: ["submission-by-assignment", { assignmentId }],
     queryFn: () =>
       assignmentService.submission.getByAssignment({
-        path: `/assignment/${assignmentId}`,
+        path: `assignment/${assignmentId}`,
       }),
     enabled: modules.includes("get-by-assignment") && !!assignmentId,
   });
@@ -28,7 +28,7 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
   const approveSubmission = useMutation({
     mutationFn: () =>
       assignmentService.submission.getByAssignment({
-        path: `/assignment/approve/${assignmentId}`,
+        path: `assignment/approve/${assignmentId}`,
       }),
   });
 
