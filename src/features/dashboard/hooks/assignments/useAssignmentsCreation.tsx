@@ -60,5 +60,8 @@ export const useDetailAssignment = (enabled: boolean = true) => {
       }),
     enabled: !!assignmentId && enabled,
   });
-  return query;
+  return {
+    ...query,
+    assignmentData: query?.data?.data
+  };
 };

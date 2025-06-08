@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { Poppins } from "../Text";
 
 interface DialogProps {
   show: boolean;
@@ -19,10 +20,10 @@ export const Dialog: React.FC<DialogProps> = ({ onHide, show, children }) => {
             >
               <div
                 data-dialog="dialog"
-                className="relative w-full sm:min-w-[200px] z-[99999999] sm:max-w-[40%] min-h-10 overflow-auto rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
+                className="relative w-full sm:min-w-[200px] z-[99999999] sm:max-w-[40%] min-h-10 overflow-auto rounded-lg bg-white t ext-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
-                {children}
+                <Poppins>{children}</Poppins>
               </div>
             </div>,
             document.body

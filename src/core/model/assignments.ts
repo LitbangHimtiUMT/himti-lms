@@ -20,6 +20,7 @@ export interface AssignmentDTO {
   title: string;
   isFinalAssigment: boolean;
   dueDate: Date;
+  createdAt: Date
   allowedFile: string | null;
   description: string;
   type: AssignmentType;

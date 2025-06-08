@@ -12,5 +12,7 @@ export const assignmentService = {
   getById: request.get<ApiResponse<AssignmentDTO>>(API_ENDPOINT.assignment),
   submission: {
     getById: request.get<ApiResponse<SubmissionDTO>>(API_ENDPOINT.submissions),
+    getByAssignment: request.get<ApiResponse<SubmissionDTO[]>>(API_ENDPOINT.submissions),
+    approval: request.get<ApiResponse<SubmissionDTO[]>>(API_ENDPOINT.submissions),
   },
 };

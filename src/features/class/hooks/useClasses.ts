@@ -78,9 +78,6 @@ export function useClassesCreation() {
         case "delete":
           return classesService.delete({
             path: id,
-            headers: {
-              [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
-            },
           });
         case "join-invitation":
           return classesService.joinInvitation(

@@ -17,4 +17,9 @@ export interface SubmissionDTO {
     id: string;
     name: string;
   };
+  user: {
+    id: string;
+    name: string;
+    photo: string | null
+  };
 }

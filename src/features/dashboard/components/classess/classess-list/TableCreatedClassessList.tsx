@@ -1,8 +1,12 @@
+import { CiSearch } from "react-icons/ci";
 import { FiLink } from "react-icons/fi";
-import { IoDocumentOutline } from "react-icons/io5";
+import { IoDocumentOutline, IoWarning } from "react-icons/io5";
+import { MdOutlineFileUpload } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Button } from "../../../../_global/components/Button";
 import { EmptyState } from "../../../../_global/components/Empty";
+import { Input } from "../../../../_global/components/Input";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import {
   Table,
@@ -10,21 +14,26 @@ import {
   TableHead,
 } from "../../../../_global/components/Table";
 import { formatRupiah } from "../../../../_global/helper";
+import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
 import {
   useClasses,
   useClassesCreation,
 } from "../../../../class/hooks/useClasses";
-import { Input } from "../../../../_global/components/Input";
-import { CiSearch } from "react-icons/ci";
-import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
-import { toast } from "react-toastify";
-import { MdOutlineFileUpload } from "react-icons/md";
+import { useProfile } from "../../../../profile/useProfile";
+import { BiTrashAlt } from "react-icons/bi";
+import { Dialog } from "../../../../_global/components/Dialog";
+import { ConditionNode } from "../../../../_global/components/ConditionNode";
+import { Poppins } from "../../../../_global/components/Text";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const TableCreatedClassessList = () => {
   const navigate = useNavigate();
   const { data: classess, isFetching } = useClasses();
+  const {data: profile} = useProfile()
 
   const { handleInputChange } = useSearchParamsInput("search");
+  const [dialog, setDialog] = useState<string>('')
 
   const handleCopy = (code: string) => {
     navigator.clipboard
@@ -35,12 +44,24 @@ export const TableCreatedClassessList = () => {
   };
 
   const mutation = useClassesCreation();
+  const queryClient = useQueryClient()
 
   const handlePublishClass = async (id: string) => {
     await mutation.mutateAsync({
       id,
       type: "publish",
     });
+  };
+
+  const handleDeleteClass = async (id: string) => {
+    await mutation.mutateAsync({
+      id,
+      type: "delete",
+    });
+    setDialog('')
+    queryClient.invalidateQueries({
+      queryKey: ['classes']
+    })
   };
 
   return (
@@ -53,7 +74,7 @@ export const TableCreatedClassessList = () => {
         />
       </div>
       <Table>
-        <TableHead field={["Class Name", "Price", "Category", ""]} />
+        <TableHead field={["Class Name", "Price", "Category", "Total Participant",""]} />
         <TableBody>
           {classess?.data?.length && !isFetching ? (
             (classess?.data ?? [])?.map((item, index) => (
@@ -70,6 +91,7 @@ export const TableCreatedClassessList = () => {
                   item.price
                 )}`}</td>
                 <td className="py-4 px-6 text-gray-900">{`${item.category.name}`}</td>
+                <td className="py-4 px-6 text-gray-900">{`${item.totalParticipant}`}</td>
                 <td>
                   <div className="flex items-center gap-2">
                     <div className="w-10">
@@ -102,6 +124,18 @@ export const TableCreatedClassessList = () => {
                         </div>
                       </>
                     ) : null}
+                    {item.creator.id === profile?.data?.id ? (
+                      <>
+                        <div className="w-10">
+                          <Button
+                            variant="danger"
+                            onClick={() => setDialog(item.id)}
+                          >
+                            <BiTrashAlt />
+                          </Button>
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 </td>
               </tr>
@@ -123,6 +157,34 @@ export const TableCreatedClassessList = () => {
           )}
         </TableBody>
       </Table>
+        <ConditionNode condition={!!dialog}>
+          <Dialog onHide={() => setDialog('')} show={!!dialog}>
+            <div className="p-4 flex flex-col gap-4">
+              <div className="flex items-center gap-6">
+                <IoWarning className="text-2xl text-red-600" />
+                <Poppins className="text-md font-medium text-black">
+                  Delete Class
+                </Poppins>
+              </div>
+              <div>
+                <Poppins className="text-sm text-black">
+                  Are you sure you want to delete class? this action will delete
+                  class permanently
+                </Poppins>
+              </div>
+              <div className="flex items-center justify-end">
+                <div className="flex items-center gap-4">
+                  <Button variant="secondary" onClick={() => setDialog('')}>
+                    <Poppins>Cancel</Poppins>
+                  </Button>
+                  <Button variant="danger" onClick={() => handleDeleteClass(dialog)}>
+                    <Poppins>Yes</Poppins>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Dialog>
+        </ConditionNode>
     </div>
   );
 };

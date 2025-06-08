@@ -29,6 +29,7 @@ export interface ClassModel {
   creator: UserModel;
   sessions: SessionDTO[];
   progressStatus: "Completed" | "In Progress";
+  totalParticipant: number
   total: {
     module: number;
     completed: number;
