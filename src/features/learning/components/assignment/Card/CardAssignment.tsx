@@ -5,6 +5,7 @@ import { Badge } from "../../../../_global/components/Badge";
 import { Button } from "../../../../_global/components/Button";
 import { formatTime } from "../../../../_global/lib/format-time";
 import { SubmissionStatus } from "../../../../dashboard/components/modules/detail-modules/DetailModuleContent";
+import { StatusRecord } from "../../../../dashboard/store";
 
 interface CardAssignmentProps {
   title: string;
@@ -34,18 +35,12 @@ export const CardAssignment: React.FC<CardAssignmentProps> = ({
           <div>
             <h3 className="font-semibold text-lg">{title}</h3>
           </div>
-          {isHaveActiveSubmission ? (
+          {isHaveActiveSubmission && status ? (
             <>
               <Badge
                 rounded="full"
                 size="sm"
-                variant={
-                  status === "REVIEW"
-                    ? "warning"
-                    : status === "APPROVE"
-                    ? "success"
-                    : "danger"
-                }
+                variant={StatusRecord[status]}
               >
                 {status}
               </Badge>

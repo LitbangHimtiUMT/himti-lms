@@ -1,10 +1,9 @@
 import React from "react";
 import { FaDownload, FaFileAlt } from "react-icons/fa";
 import { formatTime } from "../../../_global/lib/format-time";
-import {
-  AssignmentDetailViewProps,
-  StatusBadge,
-} from "../AssignmentDetailContent";
+import { AssignmentDetailViewProps } from "../AssignmentDetailContent";
+import { Badge } from "../../../_global/components/Badge";
+import { StatusRecord } from "../../../dashboard/store";
 
 export const CardSubmission: React.FC<AssignmentDetailViewProps> = ({
   data,
@@ -32,7 +31,17 @@ export const CardSubmission: React.FC<AssignmentDetailViewProps> = ({
               </div>
               <div>
                 <p className="text-sm text-gray-500">Status</p>
-                <StatusBadge status={submission?.status} />
+                {submission ? (
+                  <Badge
+                    rounded="full"
+                    size="sm"
+                    variant={StatusRecord[submission?.status]}
+                  >
+                    {submission.status}
+                  </Badge>
+                ) : (
+                  "-"
+                )}
               </div>
             </div>
           </div>
