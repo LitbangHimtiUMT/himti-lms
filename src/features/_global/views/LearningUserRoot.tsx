@@ -7,6 +7,7 @@ import { HiDocumentMinus, HiDocumentText } from "react-icons/hi2";
 import { IoChevronForward, IoChevronUp } from "react-icons/io5";
 import {
   Link,
+  Navigate,
   Outlet,
   useNavigate,
   useParams,
@@ -17,6 +18,7 @@ import { DashboardNavbar } from "../../dashboard/components/navbar";
 import { Skeleton } from "../components/Shimer";
 import { DarkModeAtom, LearningSidebarAtom } from "../store";
 import { convertQueryParamsToObject } from "../helper";
+import { CONFIG_APP } from "../../../core/configs/app";
 
 export const LearningUserRoot = () => {
   const [darkMode, setDarkMode] = useAtom(DarkModeAtom);
@@ -117,6 +119,9 @@ export const LearningUserRoot = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
+    if (!token) return <Navigate to={"/sign-in"} />;
   return (
     <>
       <DashboardNavbar />

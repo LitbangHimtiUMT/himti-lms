@@ -16,16 +16,16 @@ export const LearningRoot: React.FC<LearningRootProps> = ({
   withSidebar = true,
   children,
 }) => {
-  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
   const sidebarOpen = useAtomValue(sidebarAtom);
   const menu = useMenus();
+  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
   if (!token) return <Navigate to={"/sign-in"} />;
 
   return (
     <div className="bg-gray-100">
       <DashboardNavbar />
       <div className="flex relative min-h-screen">
-        {withSidebar && <GeneralSidebar items={menu} />}
+        {withSidebar && <GeneralSidebar isFetching={menu.isFetching} items={menu.menus} />}
         {/* Main Content */}
         <div
           className={`

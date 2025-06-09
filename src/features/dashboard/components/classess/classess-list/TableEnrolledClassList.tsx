@@ -67,7 +67,7 @@ export const TableEnrolledClassessList = () => {
           <TableBody>
             {isFetching ? (
               <tr>
-                <td colSpan={6}>
+                <td colSpan={7}>
                   <div className="p-4 space-y-2">
                     {Array.from({ length: 5 }).map((_, idx) => (
                       <Skeleton key={idx} width="100%" height="48px" />
@@ -159,7 +159,7 @@ export const TableEnrolledClassessList = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={6}>
+                <td colSpan={7}>
                   <EmptyState
                     variant="table"
                     customMinHeight={400}

@@ -1,16 +1,21 @@
-import HIMTI from "../../../../core/assets/logo/HIMTI.png";
 import clsx from "clsx";
 import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import { BsFillPersonVcardFill } from "react-icons/bs";
+import { CgMenuLeft } from "react-icons/cg";
+import HIMTI from "../../../../core/assets/logo/HIMTI.png";
+import { Skeleton } from "../../../_global/components/Shimer";
 import { Poppins } from "../../../_global/components/Text";
+import { useScreen } from "../../../_global/hooks/useScreen";
 import { SidebarItem } from "./SidebarItem";
 import { sidebarAtom } from "./store";
 import { ISidebarProps } from "./types";
-import { CgMenuLeft } from "react-icons/cg";
-import { useScreen } from "../../../_global/hooks/useScreen";
 
-export const GeneralSidebar: React.FC<ISidebarProps> = ({ items, user }) => {
+export const GeneralSidebar: React.FC<ISidebarProps> = ({
+  items,
+  user,
+  isFetching,
+}) => {
   const [show, setShow] = useAtom(sidebarAtom);
   const handleShow = () => setShow((prev) => !prev);
   const screen = useScreen();
@@ -64,13 +69,21 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({ items, user }) => {
             <div className="pt-4 px-5 h-full flex flex-col">
               {/* Scrollable Items */}
               <div className="flex-1 overflow-y-auto flex flex-col gap-4 pb-[230px]">
-                {items?.map((items, index) => (
-                  <SidebarItem
-                    items={items.items}
-                    key={index}
-                    title={items.title}
-                  />
-                ))}
+                {isFetching ? (
+                  <>
+                    {Array.from({ length: 4 }).map(() => (
+                      <Skeleton width="100%" height="3rem" />
+                    ))}
+                  </>
+                ) : (
+                  items?.map((items, index) => (
+                    <SidebarItem
+                      items={items.items}
+                      key={index}
+                      title={items.title}
+                    />
+                  ))
+                )}
               </div>
 
               {/* Fixed User Info */}

@@ -1,7 +1,7 @@
 import { useProfile } from "../../profile/useProfile";
 
 export const useMenus = () => {
-  const { data: profile } = useProfile();
+  const { data: profile, isFetching } = useProfile();
   const isMentor = profile?.data?.isMentor as boolean;
 
   const menu = [
@@ -36,5 +36,8 @@ export const useMenus = () => {
     (group) => isMentor || group.items.length > 1
   );
 
-  return filteredMenu;
+  return {
+    isFetching,
+    menus: filteredMenu,
+  };
 };

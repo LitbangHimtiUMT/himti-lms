@@ -113,7 +113,7 @@ export const TableCreatedClassessList = () => {
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <Badge variant="outline" className="capitalize">
+                    <Badge variant="default" size="sm" className="capitalize">
                       {item.category.name}
                     </Badge>
                   </td>
@@ -124,6 +124,7 @@ export const TableCreatedClassessList = () => {
                   </td>
                   <td className="py-4 px-6">
                     <Badge
+                    size="sm"
                       variant={
                         item.status === "PUBLISH" ? "success" : "secondary"
                       }

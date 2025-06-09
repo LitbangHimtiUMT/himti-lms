@@ -18,6 +18,7 @@ export interface UserProfile {
 }
 
 export interface ISidebarProps {
+  isFetching?: boolean
   items: ISidebarItemProps[];
   user?: UserProfile
 }

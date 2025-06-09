@@ -29,6 +29,7 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
   const { data: participants, isFetching } = useParticipants({
     path: `participant/${classId}`,
     search: searchQuery,
+    enabled: show && !!classId,
   });
 
   return (
@@ -56,21 +57,24 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto py-4">
-          {isFetching ? <>
-          <div className="flex flex-col gap-3 px-3">
-            <Skeleton width="100%" height="3.5rem"/>
-            <Skeleton width="100%" height="3.5rem"/>
-            <Skeleton width="100%" height="3.5rem"/>
-          </div>
-          </> :participants?.data?.length ? (
-            <ul className="space-y-3">
-              {participants?.data?.map((participant) => (
+          {isFetching ? (
+            <>
+              <div className="flex flex-col gap-3 px-3">
+                <Skeleton width="100%" height="3.5rem" />
+                <Skeleton width="100%" height="3.5rem" />
+                <Skeleton width="100%" height="3.5rem" />
+              </div>
+            </>
+          ) : participants?.data?.length ? (
+            <ul className="flex-col gap-3 items-center justify-center">
+              {participants?.data?.map((participant, index) => (
                 <li
                   key={participant.id}
-                  className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
-                  //   onClick={() => handleParticipantClick(participant)}
+                  className={`flex items-center justify-between py-3 transition-colors cursor-pointer ${
+                    index !== participants?.data?.length as number - 1 ? "border-b border-solid border-gray-500" : ""
+                  }`}
                 >
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 hover:bg-gray-50 w-full px-2 rounded-lg">
                     <img
                       src={participant.user.photo || Default}
                       onError={(e) =>
