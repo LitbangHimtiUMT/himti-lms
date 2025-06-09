@@ -58,6 +58,7 @@ export const TableEnrolledClassessList = () => {
               "Price",
               "Category",
               "Sessions",
+              "Status",
               "Progress",
               "",
             ]}
@@ -101,13 +102,25 @@ export const TableEnrolledClassessList = () => {
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                      <div className="text-sm font-medium text-center text-gray-700 dark:text-gray-300 min-w-[40px]">
-                        {item.total.precentage}%
-                      </div>
+                    <Badge
+                      size="sm"
+                      variant={
+                        item.progressStatus === "In Progress"
+                          ? "warning"
+                          : "success"
+                      }
+                    >
+                      {item.progressStatus}
+                    </Badge>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="text-sm font-medium text-center text-gray-700 dark:text-gray-300 min-w-[40px]">
+                      {item.total.precentage}%
+                    </div>
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-end gap-2">
-                      <div className="w-max">
+                      <div className="w-max flex items-center">
                         <Button
                           tooltip="Detail Class"
                           size="md"
@@ -133,12 +146,11 @@ export const TableEnrolledClassessList = () => {
                         !item.certificate &&
                         !isMentor ? (
                         <Button
-                          size="sm"
+                          tooltip="Claim Certificate"
+                          size="md"
                           onClick={() => handleGenerate(item.id)}
                         >
-                          <span className="text-blue-600 dark:text-blue-400 text-sm font-medium">
-                            Claim Certificate
-                          </span>
+                            Claim
                         </Button>
                       ) : null}
                     </div>
@@ -162,7 +174,6 @@ export const TableEnrolledClassessList = () => {
           </TableBody>
         </Table>
       </div>
-   
     </div>
   );
 };

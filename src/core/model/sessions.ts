@@ -11,4 +11,5 @@ export interface SessionDTO {
 
 export interface SessionCreationDTO {
   name: string
+  id?: string
 }

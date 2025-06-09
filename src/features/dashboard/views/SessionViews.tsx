@@ -2,7 +2,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { BreadCrumb } from "../../_global/components/BreadCrumb";
 import { ConditionNode } from "../../_global/components/ConditionNode";
 import { useProfile } from "../../profile/useProfile";
-import { AssignmentTable } from "../components/AssignmentTable";
+import { SessionTable } from "../components/SessionTable";
 import { CreateSession } from "../components/sessions/create-session/CreateSession";
 
 export const SessionViews = () => {
@@ -35,7 +35,7 @@ export const SessionViews = () => {
             </ConditionNode>
           </div>
         </div>
-        <AssignmentTable />
+        <SessionTable />
       </div>
     </>
   );

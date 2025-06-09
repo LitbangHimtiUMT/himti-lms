@@ -35,9 +35,12 @@ export const useSessionsCreation = () => {
             path: classId,
           });
         default:
-          return sessionService.create(data, {
-            path: classId,
-          });
+          return sessionService.update(
+            { name: data?.name || "" },
+            {
+              path: data?.id,
+            }
+          );
       }
     },
     onError: (err) => toast.error(err.message),

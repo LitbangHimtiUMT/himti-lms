@@ -15,11 +15,10 @@ export const LearningModuleContent: React.FC<LearningModuleContentProps> = ({
 }) => {
   return (
     <>
-      <div className="p-6 pb-48">
+      <div className="md:p-6 p-4 pb-48">
         {" "}
-        {/* Tambahkan pb-24 untuk spacing di bawah */}
         <h1 className="text-2xl font-bold mb-2">{module.name}</h1>
-        <div className="p-3">
+        <div className="md:p-3 p-0">
           <ConditionNode condition={!!module.youtubeId}>
             <div>
               <YoutubeEmbed videoId={module?.youtubeId || ""} />

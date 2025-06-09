@@ -18,6 +18,8 @@ import { Skeleton } from "../../../../_global/components/Shimer";
 import { formatTime } from "../../../../_global/lib/format-time";
 import { useSubmissions } from "../../../../learning/hooks/submissions/useSubmissions";
 import { useDetailAssignment } from "../../../hooks/assignments/useAssignmentsCreation";
+import { Table, TableBody, TableHead } from "../../../../_global/components/Table";
+import { Badge } from "../../../../_global/components/Badge";
 
 interface DialogType {
   type: "approve" | "reject";
@@ -44,14 +46,14 @@ export const DetailAssignmentContent = () => {
     );
   }
 
-  const handleApprove = async() => {
+  const handleApprove = async () => {
     setApproval(null);
     approve.mutateAsync({
       submissionId: approval?.submissionId ?? "",
     });
   };
 
-  const handleReject = async() => {
+  const handleReject = async () => {
     setApproval(null);
     reject.mutateAsync({
       submissionId: approval?.submissionId ?? "",
@@ -134,44 +136,13 @@ export const DetailAssignmentContent = () => {
           </h2>
         </div>
 
-        <div className="overflow-x-auto">
+        <>
           {/* Desktop Table */}
-          <table className="hidden sm:table min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Name
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Submitted At
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  File
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Status
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+          <Table className="hidden sm:block">
+            <TableHead
+              field={["Name", "Submitted At", "File / URL", "Status", "Action"]}
+            />
+            <TableBody>
               {submissions?.data?.length ? (
                 submissions?.data?.map((submission) => (
                   <tr key={submission.id}>
@@ -224,17 +195,19 @@ export const DetailAssignmentContent = () => {
                       )}
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs leading-4 font-medium rounded-full ${
+                      <Badge
+                      size="sm"
+                      rounded="full"
+                        variant={
                           submission.status === "APPROVE"
-                            ? "bg-green-100 text-green-800"
+                            ? "success"
                             : submission.status === "REJECT"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
+                            ? "danger"
+                            : "warning"
+                        }
                       >
                         {submission.status}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
                       {submission.status === "REVIEW" && (
@@ -277,8 +250,11 @@ export const DetailAssignmentContent = () => {
                   />
                 </>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
+          {/* <table className="hidden sm:table min-w-full divide-y divide-gray-200">
+           
+          </table> */}
 
           {/* Mobile Cards */}
           <div className="sm:hidden space-y-4">
@@ -391,7 +367,7 @@ export const DetailAssignmentContent = () => {
               </>
             )}
           </div>
-        </div>
+        </>
       </div>
       <ConditionNode condition={!!approval}>
         <>

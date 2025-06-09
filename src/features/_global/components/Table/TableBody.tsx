@@ -7,5 +7,5 @@ interface ITableBodyProps extends PropsWithChildren {
 }
 
 export const TableBody: React.FC<ITableBodyProps> = ({ children, className }) => {
-  return <tbody className={clsx("bg-gray", className)}>{children}</tbody>;
+  return <tbody className={clsx("bg-white divide-y divide-gray-200", className)}>{children}</tbody>;
 };

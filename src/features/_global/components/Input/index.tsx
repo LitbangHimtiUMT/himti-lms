@@ -64,9 +64,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             {...rest}
             value={
-              typeof formatedValue === "number"
-                ? new Intl.NumberFormat("id-ID").format(formatedValue)
-                : formatedValue
+              currency
+                ? typeof formatedValue === "number"
+                  ? new Intl.NumberFormat("id-ID").format(formatedValue)
+                  : formatedValue
+                : rest.value
             }
             onChange={(e) => {
               if (currency) {
@@ -77,9 +79,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 e.target.value = numericValue.toString();
                 setFormatedValue(formatted);
               } else {
-                setFormatedValue(e.target.value);
+                rest.onChange?.(e);
               }
-              rest.onChange?.(e);
             }}
             className={`
           border

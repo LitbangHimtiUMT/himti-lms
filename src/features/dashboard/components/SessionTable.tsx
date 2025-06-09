@@ -1,3 +1,5 @@
+import { useAtom } from "jotai";
+import { BiEditAlt } from "react-icons/bi";
 import { IoDocumentOutline } from "react-icons/io5";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "../../_global/components/Button";
@@ -9,8 +11,9 @@ import { Poppins } from "../../_global/components/Text";
 import { convertQueryParamsToObject } from "../../_global/helper";
 import { useProfile } from "../../profile/useProfile";
 import { useSessions } from "../hooks/sessions/useSessions";
+import { DrawerStateSession } from "../store";
 
-export const AssignmentTable = () => {
+export const SessionTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: profile, isFetching: isFetchingProfile } = useProfile();
   const { classId } = useParams();
@@ -18,6 +21,8 @@ export const AssignmentTable = () => {
   const queries = convertQueryParamsToObject(searchParams.toString());
   const navigate = useNavigate();
   const from = searchParams.get("from");
+
+  const [, setSession] = useAtom(DrawerStateSession);
 
   const handleChangePage = (page: string) =>
     setSearchParams({ ...queries, page });
@@ -56,22 +61,38 @@ export const AssignmentTable = () => {
                       <Poppins className="text-sm">{`${item.progress}%`}</Poppins>
                     </td>
                   )}
-                  <td>
-                    <div className="w-10">
-                      <Button
-                        variant={'secondary'}
-                        onClick={
-                          () =>
+                  <td className="pr-4">
+                    <div className="flex items-center gap-2 justify-end">
+                      <div className="w-10">
+                        <Button
+                          variant={"secondary"}
+                          onClick={() =>
                             navigate(
                               `/dashboard/${classId}/${item.id}${
                                 from ? `?from=${from}` : ""
                               }`
                             )
-                        }
-                      >
-                        {/* {item.isLocked ? <FaLock /> : <IoDocumentOutline />} */}
-                        <IoDocumentOutline />
-                      </Button>
+                          }
+                        >
+                          <IoDocumentOutline />
+                        </Button>
+                      </div>
+                      <div className="w-10">
+                        <Button
+                          variant={"success"}
+                          onClick={() => {
+                            setSession((prev) => ({
+                              show: !prev.show,
+                              data: {
+                                id: item.id,
+                                name: item.name,
+                              },
+                            }));
+                          }}
+                        >
+                          <BiEditAlt />
+                        </Button>
+                      </div>
                     </div>
                   </td>
                 </tr>

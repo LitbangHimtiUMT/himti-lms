@@ -94,11 +94,15 @@ export const NavigationModule = () => {
     return null; // No previous module
   };
 
-  const handleCompleteModule = useCallback(async () => {
-    mutation.mutateAsync({
-      moduleId: module?.data?.id || "",
-    });
-  }, [mutation, module?.data?.id]);
+  const handleCompleteModule = useCallback(
+    async (type: "complete" | "next") => {
+      mutation.mutateAsync({
+        moduleId: module?.data?.id || "",
+        type,
+      });
+    },
+    [mutation, module?.data?.id]
+  );
   useEffect(() => {
     setSessions(
       (classess?.data?.sessions || []).map((item) => ({
@@ -125,27 +129,26 @@ export const NavigationModule = () => {
       >
         <Button
           size="lg"
-          variant="secondary"
+          variant={!getPreviousModule() ? "disabled" : "secondary"}
           onClick={() => {
             const prevModule = getPreviousModule();
             if (prevModule) {
               handleClickModule(prevModule.id);
             }
           }}
-          disabled={!getPreviousModule()}
         >
           Previous
         </Button>
         <Button
           size="lg"
-          onClick={handleCompleteModule}
+          onClick={() => handleCompleteModule("complete")}
           variant={
             !mutation.isPending && !module?.data?.isCompleted
               ? "primary"
               : "disabled"
           }
         >
-          {mutation.isPending
+          {mutation.isPending && mutation.variables?.type === "complete"
             ? "Loading..."
             : `Complete${module?.data?.isCompleted ? "d" : ""}`}
         </Button>
@@ -157,7 +160,7 @@ export const NavigationModule = () => {
           }
           onClick={async () => {
             if (!module?.data?.isCompleted) {
-              await handleCompleteModule();
+              await handleCompleteModule("next");
             }
             const nextModule = getNextModule();
             if (nextModule) {
@@ -165,7 +168,9 @@ export const NavigationModule = () => {
             }
           }}
         >
-          {mutation.isPending ? "Loading..." : "Next"}
+          {mutation.isPending && mutation.variables?.type === "next"
+            ? "Loading..."
+            : "Next"}
         </Button>
       </div>
     </>

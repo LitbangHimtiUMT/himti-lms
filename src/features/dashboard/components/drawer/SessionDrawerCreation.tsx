@@ -9,34 +9,50 @@ import { useSessionsCreation } from "../../hooks/sessions/useSessions";
 interface Props {
   onHide: VoidFunction;
   show: boolean;
+  data?: {
+    id: string;
+    name: string;
+  }
 }
 
-export const CreateSessionDrawer: React.FC<Props> = ({ onHide, show }) => {
+export const SessionDrawerCreation: React.FC<Props> = ({ onHide, show, data }) => {
   const mutation = useSessionsCreation();
   const { classId } = useParams();
 
   const [form, setForm] = useState<SessionCreationDTO>({
-    name: "",
+    name: data?.name || "",
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await mutation.mutateAsync({
-      type: "create",
-      data: form,
-      classId,
-    });
+    if(data) {
+      await mutation.mutateAsync({
+        type: "update",
+        data: {
+          ...form,
+          id: data.id
+        },
+      });
+    } else {
+      await mutation.mutateAsync({
+        type: "create",
+        data: form,
+        classId,
+      });
+    }
     onHide();
     setForm({ name: "" });
   };
 
   return (
     <>
-      {show ? (
-        <Drawer
+       <Drawer
           onHide={() => {
             onHide();
             setForm({ name: "" });
+          }}
+          close={{
+            title: 'Back'
           }}
           show={show}
           style={{
@@ -52,17 +68,17 @@ export const CreateSessionDrawer: React.FC<Props> = ({ onHide, show }) => {
               titleSize="sm"
               inputProps={{
                 onChange: (e) => setForm({ ...form, name: e.target.value }),
+                value: form?.name || data?.name || '',
               }}
             />
             <Button
               type="submit"
               variant={mutation.isPending ? "disabled" : "primary"}
             >
-              {mutation.isPending ? "Loading..." : "Create"}
+              {mutation.isPending ? "Loading..." : data? "Update" : "Create"}
             </Button>
           </form>
         </Drawer>
-      ) : null}
     </>
   );
 };

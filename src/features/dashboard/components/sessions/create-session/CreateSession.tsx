@@ -1,21 +1,22 @@
-import { useState } from "react";
+import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { Button } from "../../../../_global/components/Button";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
-import { CreateSessionDrawer } from "../../drawer/CreateSessionDrawer";
 import { useDetailClass } from "../../../../class/hooks/useClasses";
 import { useProfile } from "../../../../profile/useProfile";
+import { DrawerStateSession } from "../../../store";
+import { SessionDrawerCreation } from "../../drawer/SessionDrawerCreation";
 
 export const CreateSession = () => {
   const {classId, id} = useParams();
   
-  const [show, setShow] = useState<boolean>(false);
+  const [show, setShow] = useAtom(DrawerStateSession);
   const {data: profile} = useProfile()
   const { data: classess } = useDetailClass();
 
   const isOwner = profile?.data?.id === classess?.data?.creator?.id
   
-  const onHide = () => setShow((prev) => !prev);
+  const onHide = () => setShow((prev) => ({...prev, show: !prev.show}));
   return (
     <>
       <ConditionNode condition={(!!classId || !!id) && isOwner}>
@@ -30,7 +31,7 @@ export const CreateSession = () => {
           </Button>
         </div>
       </ConditionNode>
-      <CreateSessionDrawer onHide={onHide} show={show} />
+      <SessionDrawerCreation data={show.data} onHide={onHide} show={show.show}  />
     </>
   );
 };

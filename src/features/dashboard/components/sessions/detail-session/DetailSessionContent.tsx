@@ -1,16 +1,20 @@
+import { useState } from "react";
 import { IoDocumentOutline } from "react-icons/io5";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+  useSearchParams
+} from "react-router-dom";
 import { Button } from "../../../../_global/components/Button";
 import { EmptyState } from "../../../../_global/components/Empty";
 import { Pagination } from "../../../../_global/components/Pagination";
 import { Skeleton } from "../../../../_global/components/Shimer";
+import { Table, TableHead } from "../../../../_global/components/Table";
 import { convertQueryParamsToObject } from "../../../../_global/helper";
+import { useDetailClass } from "../../../../class/hooks/useClasses";
+import { useProfile } from "../../../../profile/useProfile";
 import { useModules } from "../../../hooks/modules/useModules";
 import { CreateAssignmentDrawer } from "../../drawer/CreateAssignmentDrawer";
-import { useState } from "react";
-import { useProfile } from "../../../../profile/useProfile";
-import { useDetailClass } from "../../../../class/hooks/useClasses";
-import { TableHead } from "../../../../_global/components/Table";
 
 interface IShowDrawer {
   show: boolean;
@@ -24,29 +28,24 @@ export const DetailSessionContent = () => {
 
   const { data: classess } = useDetailClass();
 
-
   const { data: profile } = useProfile();
   const [show, setShow] = useState<IShowDrawer>({
     moduleId: "",
     show: false,
   });
   const { data: modules, isFetching } = useModules(sessionId);
-  const from = searchParams.get("from");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChangePage = (page: string) =>
     setSearchParams({ ...queries, page });
 
-  const isOwner = profile?.data?.id === classess?.data?.creator?.id
+  const isOwner = profile?.data?.id === classess?.data?.creator?.id;
 
   return (
     <>
       <div className="w-full rounded-md">
-        <div className="overflow-x-auto rounded-md border border-solid border-gray-300">
-          <table className="w-full">
-          <TableHead
-          field={['Title', 'Have Assignment', '']}
-          />
+          <Table>
+            <TableHead field={["Title", "Have Assignment", ""]} />
 
             {/* Table Body */}
             <tbody className="bg-gray-50">
@@ -66,27 +65,25 @@ export const DetailSessionContent = () => {
                     </td>
                     <td>
                       <div className="flex items-center gap-2 justify-end pr-2">
-                        {!item.isCompleted && !isOwner ? (
-                          <>
-                            <div className="w-2 h-2 rounded-full bg-green-600"></div>
-                          </>
-                        ) : null}
-                        <Link
-                          to={`/dashboard/${classId}/${sessionId}/${item.id}${
-                            from ? `?from=${from}` : ""
-                          }`}
-                        >
-                          <div className="w-10">
-                            <Button variant="secondary">
-                              <IoDocumentOutline />
-                            </Button>
-                          </div>
-                        </Link>
-                        <div>
+                        <div className="w-10 flex items-center">
+                          <Button
+                            variant="secondary"
+                            onClick={() =>
+                              navigate(
+                                `/dashboard/${classId}/${sessionId}/${item.id}`
+                              )
+                            }
+                          >
+                            <IoDocumentOutline />
+                          </Button>
+                        </div>
+                        <div className="flex items-center">
                           {item.assignment || isOwner ? (
                             <Button
                               variant={
-                                item.assignment || !isOwner ? "secondary" : "success"
+                                item.assignment || !isOwner
+                                  ? "secondary"
+                                  : "success"
                               }
                               size="sm"
                               onClick={() => {
@@ -96,9 +93,11 @@ export const DetailSessionContent = () => {
                                     moduleId: item.id,
                                     show: !prev.show,
                                   }));
-                                  return
+                                  return;
                                 }
-                                navigate(`/dashboard/${classId}/${sessionId}/${item.id}/${item.assignment?.id}`)
+                                navigate(
+                                  `/dashboard/${classId}/${sessionId}/${item.id}/${item.assignment?.id}`
+                                );
                               }}
                             >
                               {item.assignment || !isOwner
@@ -127,8 +126,7 @@ export const DetailSessionContent = () => {
                 ))
               )}
             </tbody>
-          </table>
-        </div>
+          </Table>
         {(modules?.meta?.page as number) > 1 && (
           <Pagination
             totalPages={modules?.meta?.totalPages ?? 1}

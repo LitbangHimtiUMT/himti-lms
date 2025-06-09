@@ -10,7 +10,7 @@ export const Table: React.FC<ITableBodyProps> = ({ children, className }) => {
   return (
     <>
       <div className={clsx('overflow-x-auto rounded-md border border-solid border-gray-300', className)}>
-        <table className="w-full ">{children}</table>
+        <table className="w-full">{children}</table>
       </div>
     </>
   );
