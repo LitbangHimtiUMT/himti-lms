@@ -1,6 +1,7 @@
 import { Button } from "../Button";
 import { EmptyState } from "../Empty";
-import { Poppins } from "../Text";
+import { Skeleton } from "../Shimer";
+import { Table, TableBody, TableHead } from "../Table";
 
 interface DefaultKey {
   id: number | string;
@@ -26,21 +27,10 @@ export const MasterTable = <T extends DefaultKey>({
   isLoading,
 }: IMasterTableProps<T>) => {
   return (
-    <div className="border-[1.5px] border-solid border-[#cdcdcd] overflow-auto rounded-md bg-[#fefefe]">
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-solid border-[#ababab]">
-            {title?.map((item, index) => (
-              <th className="p-4 text-left">
-                <Poppins key={index} className="text-medium">
-                  {item}
-                </Poppins>
-              </th>
-            ))}
-            {withAction ? <th></th> : null}
-          </tr>
-        </thead>
-        <tbody className="w-full">
+    <Table>
+      <>
+        <TableHead field={title} />
+        <TableBody>
           {data?.length ? (
             data?.map((item, index) => (
               <tr
@@ -72,8 +62,10 @@ export const MasterTable = <T extends DefaultKey>({
             ))
           ) : isLoading ? (
             <td colSpan={columnTable.length + (withAction ? 1 : 0)}>
-              <div className="w-full h-64 flex items-center justify-center">
-                <Poppins>Loading...</Poppins>
+              <div className="flex flex-col gap-4 mt-4 py-2 px-4">
+                <Skeleton width="100%" height="3rem" />
+                <Skeleton width="100%" height="3rem" />
+                <Skeleton width="100%" height="3rem" />
               </div>
             </td>
           ) : (
@@ -81,12 +73,11 @@ export const MasterTable = <T extends DefaultKey>({
               colspan={columnTable.length + (withAction ? 1 : 0)}
               description={[
                 "Data is not found.",
-                "Create a new data to views of list.",
               ]}
             />
           )}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </>
+    </Table>
   );
 };

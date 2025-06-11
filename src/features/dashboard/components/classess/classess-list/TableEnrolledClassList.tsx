@@ -133,7 +133,7 @@ export const TableEnrolledClassessList = () => {
 
                       {item.certificate &&
                       item.progressStatus === "Completed" ? (
-                        <div className="w-max">
+                        <div className="w-max flex items-center">
                           <Button
                             size="md"
                             variant="disabled"
@@ -148,9 +148,10 @@ export const TableEnrolledClassessList = () => {
                         <Button
                           tooltip="Claim Certificate"
                           size="md"
+                          variant={mutation.isPending ? "disabled" : "primary"}
                           onClick={() => handleGenerate(item.id)}
                         >
-                            Claim
+                          {mutation.isPending ? "Generating..." : "Claim"}
                         </Button>
                       ) : null}
                     </div>

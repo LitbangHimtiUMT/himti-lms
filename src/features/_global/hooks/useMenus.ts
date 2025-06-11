@@ -27,6 +27,11 @@ export const useMenus = () => {
           name: "Enrolled Class",
           path: "/dashboard/enrolled-class",
         },
+        {
+          id: 1.3,
+          name: "Certificates",
+          path: "/dashboard/certificates",
+        },
       ],
     },
   ];

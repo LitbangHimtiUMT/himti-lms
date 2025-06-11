@@ -24,6 +24,7 @@ import { LearningDashboardView } from "@features/learning/views/LearningView";
 import { LearningUserRoot } from "../../features/_global/views/LearningUserRoot";
 import { AssignmentDetailView } from "../../features/learning/views/AssignmentDetailView";
 import { DetailAssignmentView } from "../../features/dashboard/views/DetailAssignmentViews";
+import { CertificatesViews } from "../../features/certificates/views/CertificatesViews";
 
 export const router = createBrowserRouter([
   {
@@ -101,6 +102,10 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard/:classId/:sessionId/:moduleId/:assignmentId",
         element: <DetailAssignmentView />,
+      },
+      {
+        path: "/dashboard/certificates",
+        element: <CertificatesViews />,
       },
     ],
   },
