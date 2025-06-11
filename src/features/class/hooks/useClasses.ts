@@ -111,8 +111,11 @@ export function useClassesCreation() {
         theme: "dark",
       });
 
-      if (vars.type === "join-invitation" || vars.type === "create") {
+      if (vars.type === "join-invitation") {
         navigate(`/dashboard/enrolled-class`);
+      }
+      if (vars.type === "create") {
+        navigate(`/dashboard/my-class`);
       }
 
       queryClient.removeQueries({ queryKey: ["classes"] });

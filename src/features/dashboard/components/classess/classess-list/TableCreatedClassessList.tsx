@@ -44,8 +44,7 @@ export const TableCreatedClassessList = () => {
       .then(() => toast.success("Invitation link copied to clipboard"));
   };
 
-  const [classId, setClassId] = useState('');
-
+  const [classId, setClassId] = useState("");
 
   const handlePublishClass = async (id: string) => {
     await mutation.mutateAsync({ id, type: "publish" });
@@ -124,9 +123,9 @@ export const TableCreatedClassessList = () => {
                   </td>
                   <td className="py-4 px-6">
                     <Badge
-                    size="sm"
+                      size="sm"
                       variant={
-                        item.status === "PUBLISH" ? "success" : "secondary"
+                        item.status === "PUBLISH" ? "success" : "outline"
                       }
                       className="capitalize"
                     >
@@ -139,7 +138,11 @@ export const TableCreatedClassessList = () => {
                         tooltip="Detail Class"
                         size="md"
                         variant="secondary"
-                        onClick={() => navigate(`/dashboard/my-class/${item.id}?from=created`)}
+                        onClick={() =>
+                          navigate(
+                            `/dashboard/my-class/${item.id}?from=created`
+                          )
+                        }
                       >
                         <IoDocumentOutline className="text-gray-600 dark:text-gray-300" />
                       </Button>
@@ -164,10 +167,21 @@ export const TableCreatedClassessList = () => {
                       {item.status === "DRAFT" && (
                         <Button
                           size="md"
+                          variant={
+                            mutation.isPending &&
+                            mutation.variables.type === "publish"
+                              ? "disabled"
+                              : "primary"
+                          }
                           tooltip="Publish Class"
                           onClick={() => handlePublishClass(item.id)}
                         >
-                          <MdOutlinePublishedWithChanges className="text-blue-600 dark:text-blue-400" />
+                          {mutation.isPending &&
+                          mutation.variables.type === "publish" ? (
+                            "..."
+                          ) : (
+                            <MdOutlinePublishedWithChanges className="text-white" />
+                          )}
                         </Button>
                       )}
 
