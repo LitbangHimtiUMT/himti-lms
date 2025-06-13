@@ -37,7 +37,7 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
       show={show}
       onHide={onHide}
       position={position}
-      close={{ title: "Close" }}
+      close={{ title: "back" }}
       style={{
         marginTop: "3rem",
       }}

@@ -45,7 +45,7 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
 
   const mutation = useClassesCreation();
 
-  const handleInviteMentor = async() => {
+  const handleInviteMentor = async () => {
     await mutation.mutateAsync({
       data: {
         classId,
@@ -53,15 +53,24 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
       } as InviteMentorDTO,
       type: "invite-mentor",
     });
-    setMentorId('');
-    setSearchQuery(prev => ({ ...prev, mentor: '' }));
+    setMentorId("");
+    setSearchQuery((prev) => ({ ...prev, mentor: "" }));
+  };
+
+  const handleBack = () => {
+    onHide()
+    setMentorId("");
+    setSearchQuery({
+      classMentor: "",
+      mentor: "",
+    });
   };
 
   return (
     <Drawer
       show={show}
-      onHide={onHide}
-      close={{ title: "Close" }}
+      onHide={handleBack}
+      close={{ title: "Back" }}
       style={{
         marginTop: "3rem",
       }}
@@ -80,13 +89,14 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
               placeholder="Select Mentor"
               onSearch={(e) => setSearchQuery({ ...searchQuery, mentor: e })}
               searchInput
+              inputValue={searchQuery.mentor}
               onChange={(e) => setMentorId(e.value)}
             />
             <Button
               variant={mentorId && !mutation.isPending ? "primary" : "disabled"}
               onClick={handleInviteMentor}
             >
-              {mutation.isPending ? 'Inviting...' : 'Add Mentor'}
+              {mutation.isPending ? "Inviting..." : "Add Mentor"}
             </Button>
           </div>
           <div className="relative mt-3">
