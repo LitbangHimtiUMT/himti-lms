@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { ReactNode } from "react";
 import { Poppins } from "../Text";
 
-type BadgeVariant = 
+export type BadgeVariant = 
   | "default"
   | "primary"
   | "secondary"

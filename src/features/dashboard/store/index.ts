@@ -16,6 +16,15 @@ export const CourseLevelList = [
   },
 ];
 
+export type CourseTypeMap = 'Beginner' | 'Intermediate' | 'Expert'
+export type CourseType = "BEGINNER" | "INTERMEDIATE" | "EXPERT";
+
+export const CourseLevelMapping: Record<CourseType, CourseTypeMap> = {
+  BEGINNER: "Beginner",
+  INTERMEDIATE: "Intermediate",
+  EXPERT: "Expert",
+}
+
 interface DrawerState {
   show: boolean
   data?: {

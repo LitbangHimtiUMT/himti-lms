@@ -1,12 +1,8 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { BreadCrumb } from "../../_global/components/BreadCrumb";
-import { ConditionNode } from "../../_global/components/ConditionNode";
-import { useProfile } from "../../profile/useProfile";
-import { SessionTable } from "../components/SessionTable";
-import { CreateSession } from "../components/sessions/create-session/CreateSession";
+import { DetailClassContent } from "../components/classess/detail-class/DetailClassContent";
 
 export const SessionViews = () => {
-  const { data: profile } = useProfile();
   const { classId } = useParams();
   const [searchParams] = useSearchParams();
   const from = searchParams.get("from");
@@ -28,14 +24,8 @@ export const SessionViews = () => {
               },
             ]}
           />
-          <div className="flex lg:flex-row flex-col lg:items-start justify-between lg:gap-0 gap-4">
-            <h1 className="text-3xl font-bold">Sessions</h1>
-            <ConditionNode condition={!!profile?.data?.isMentor}>
-              <CreateSession />
-            </ConditionNode>
-          </div>
         </div>
-        <SessionTable />
+        <DetailClassContent />
       </div>
     </>
   );

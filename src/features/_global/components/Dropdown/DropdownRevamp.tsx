@@ -16,6 +16,8 @@ interface IDropdownProps {
   onSearch?: (e: string) => void;
   onChange?: (e: ListItem) => void;
   disabled?: boolean;
+  inputValue?: string;
+  reset?: boolean
 }
 
 const initValue: ListItem = {
@@ -32,11 +34,13 @@ export const DropdownRevamp: React.FC<IDropdownProps> = ({
   searchInput = false,
   onSearch,
   disabled,
+  inputValue,
+  reset
 }) => {
   const [show, setShow] = useState(false);
   const [data, setData] = useState(list || []);
   const [isFocused, setIsFocused] = useState(false);
-  const [selected, setSelected] = useState(defaultValue || initValue);
+  const [selected, setSelected] = useState(reset ? initValue : defaultValue);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -57,6 +61,10 @@ export const DropdownRevamp: React.FC<IDropdownProps> = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (reset) setSelected(initValue);
+  }, [reset]);
+
   return (
     <div
       ref={ref}
@@ -75,11 +83,13 @@ export const DropdownRevamp: React.FC<IDropdownProps> = ({
         }`}
       >
         <p
-          className={`text-sm font-poppins ${disabled ? "text-gray-500" : ""} font-medium duration-200 ${
-            !selected.label && placeholder ? "opacity-50" : ""
+          className={`text-sm font-poppins ${
+            disabled ? "text-gray-500" : ""
+          } font-medium duration-200 ${
+            !selected?.label && placeholder ? "opacity-50" : ""
           }`}
         >
-          {defaultValue?.label || selected.label || placeholder || ""}
+          {defaultValue?.label || selected?.label || placeholder || ""}
         </p>
         <MdKeyboardArrowDown
           className={`text-2xl text-gray-500 duration-300 ${
@@ -93,6 +103,7 @@ export const DropdownRevamp: React.FC<IDropdownProps> = ({
             {searchInput && (
               <div className="sticky top-0 bg-white z-20 py-2">
                 <Input
+                  value={inputValue}
                   inputSize="md"
                   placeholder="Search"
                   LeftIcon={

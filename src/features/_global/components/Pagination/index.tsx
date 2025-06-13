@@ -2,7 +2,7 @@ import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { ConditionNode } from "../ConditionNode";
 
-interface IPaginationProps {
+export interface IPaginationProps {
   totalPages: number;
   currentPage: number;
   onPageChange: (page: number) => void;
@@ -34,7 +34,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
         onClick={() => handlePageChange(1)}
         className={`w-9 h-9 ${
           currentPage === 1
-            ? "border border-solid bg-gradient-to-r from-[#4C76A3] to-[#203D5D] shadow-[#466c8e] border-gray-800 rounded-md text-white"
+            ? "border border-solid bg-indigo-500 shadow-[#466c8e] rounded-md text-white"
             : "border border-solid border-gray-800 rounded-md text-black"
         }`}
       >
@@ -53,7 +53,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
           onClick={() => handlePageChange(i)}
           className={`w-9 h-9 ${
             i === totalPages
-              ? "border border-solid bg-gradient-to-r from-[#4C76A3] to-[#203D5D] shadow-[#466c8e] border-gray-800 rounded-md text-white"
+              ? "border border-solid bg-indigo-500 shadow-[#466c8e] border-gray-800 rounded-md text-white"
               : "border border-solid border-gray-800 rounded-md text-black"
           }`}
         >
@@ -73,7 +73,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
           onClick={() => handlePageChange(totalPages)}
           className={`w-9 h-9 ${
             currentPage === totalPages
-              ? "border border-solid bg-gradient-to-r from-[#4C76A3] to-[#203D5D] shadow-[#466c8e] border-gray-800 rounded-md text-white"
+              ? "border border-solid bg-indigo-500 shadow-[#466c8e] rounded-md text-white"
               : "border border-solid border-gray-800 rounded-md text-black"
           }`}
         >

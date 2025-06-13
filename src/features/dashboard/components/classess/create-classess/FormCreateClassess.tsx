@@ -11,6 +11,7 @@ import { Button } from "../../../../_global/components/Button";
 import { useCategories } from "../../../../categories/hooks/useCategories";
 import { dataFetching } from "../../../../_global/components/Dropdown/data-fetching";
 import { useClassesCreation } from "../../../../class/hooks/useClasses";
+import { UploadFile } from "../../../../_global/components/UploadFiles";
 
 interface ICourseForm {
   name: string;
@@ -61,6 +62,13 @@ export const FormCreateClassess = () => {
       type: "create",
       data: formData,
     });
+  };
+
+  const getImagePreview = () => {
+    if (form.thumbnail) {
+      return URL.createObjectURL(form.thumbnail); // untuk preview file baru
+    }
+    return undefined;
   };
 
   return (
@@ -117,13 +125,18 @@ export const FormCreateClassess = () => {
         </div>
 
         <div className="w-full flex flex-col gap-2">
-          <Poppins className="text-sm">File</Poppins>
-          <input
-            type="file"
-            className="file-input"
-            ref={inputRef}
-            accept=".jpg, .jpeg, .png, .webp"
-            multiple={false}
+          {form.thumbnail ? (
+            <img
+              src={getImagePreview()}
+              className="rounded-lg"
+              width="50%"
+              height={"5rem"}
+            />
+          ) : null}
+          <UploadFile
+            file={form.thumbnail}
+            title="Thumbnail"
+            extensions={[".jpg", ".jpeg", ".png", ".webp"]}
             onChange={handleFileChange}
           />
         </div>
@@ -161,7 +174,7 @@ export const FormCreateClassess = () => {
           />
         </div>
         <Button size="lg" variant={mutation.isPending ? "disabled" : "primary"}>
-          {mutation.isPending ? 'Submitting...' : 'Submit'}
+          {mutation.isPending ? "Submitting..." : "Submit"}
         </Button>
       </form>
     </div>

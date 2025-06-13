@@ -9,6 +9,7 @@ import useDebounce from "@features/_global/hooks/useDebounce";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { InviteMentorDTO } from "../../../core/model/classes";
 
 interface Options extends QueryParams {
   page?: number;
@@ -22,11 +23,12 @@ type PayloadType =
   | "update"
   | "delete"
   | "join-invitation"
-  | "publish";
+  | "publish"
+  | "invite-mentor";
 
 interface ClassesCreation {
   type: PayloadType;
-  data?: FormData;
+  data?: FormData | InviteMentorDTO;
   id?: string;
   code?: string;
 }
@@ -38,11 +40,13 @@ export function useClasses(options?: Options) {
   const searchQuery =
     options?.search || searchParams.get("search") || undefined;
   const search = useDebounce(searchQuery as string, 500);
-  const token =
-  localStorage.getItem(CONFIG_APP.TOKEN_KEY) || "";
+  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY) || "";
 
   const query = useQuery({
-    queryKey: ["classes", { page, perPage, search, path: options?.path, token }],
+    queryKey: [
+      "classes",
+      { page, perPage, search, path: options?.path, token },
+    ],
     queryFn: () =>
       classesService.get({
         queryParams: {
@@ -63,7 +67,7 @@ export function useClassesCreation() {
     mutationFn: async ({ data, type, id, code }: ClassesCreation) => {
       switch (type) {
         case "create":
-          return classesService.post(data, {
+          return classesService.post(data as FormData, {
             contentType: "form-data",
             headers: {
               [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
@@ -94,8 +98,12 @@ export function useClassesCreation() {
           return classesService.publish(undefined, {
             path: `publish/${id}`,
           });
+        case "invite-mentor":
+          return classesService.inviteMentor(
+            data as unknown as InviteMentorDTO
+          );
         default:
-          return classesService.post(data, {
+          return classesService.post(data as FormData, {
             contentType: "form-data",
             headers: {
               [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
@@ -117,6 +125,14 @@ export function useClassesCreation() {
       if (vars.type === "create") {
         navigate(`/dashboard/my-class`);
       }
+      if (vars.type === "invite-mentor") {
+        queryClient.invalidateQueries({
+          queryKey: ["mentor-list"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["class-mentors"],
+        });
+      }
 
       queryClient.removeQueries({ queryKey: ["classes"] });
       queryClient.removeQueries({ queryKey: ["classesById"] });
@@ -134,14 +150,14 @@ export function useClassesCreation() {
   return mutation;
 }
 
-export function useDetailClass(by: "id" | "code" = "id") {
+export function useDetailClass(by: "id" | "code" = "id", cId?: string) {
   const { id, classId, code } = useParams();
   return useQuery({
-    queryKey: ["classesById", { id, code, classId }],
+    queryKey: ["classesById", { cId, id, code, classId }],
     queryFn: () =>
       classesService.getById({
-        path: by === "id" ? classId || id : `code/${code}`,
+        path: by === "id" ? cId || classId || id : `code/${code}`,
       }),
-    enabled: !!id || !!classId || !!code,
+    enabled: !!cId || !!id || !!classId || !!code,
   });
 }

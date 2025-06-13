@@ -7,12 +7,19 @@ interface UploadFileProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   file?: File | null;
   extensions?: string[];
+  defaultFile?: {
+    name: string;
+    size: number;
+  };
+  title?: string
 }
 
 export const UploadFile: React.FC<UploadFileProps> = ({
   onChange,
   file,
   extensions,
+  defaultFile,
+  title = 'Upload Files'
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const handleBrowseClick = () => fileInputRef.current?.click();
@@ -24,18 +31,19 @@ export const UploadFile: React.FC<UploadFileProps> = ({
     <>
       <div className="mb-6">
         <label className="block text-gray-700 mb-3 font-medium">
-          Upload Files
+          {title}
         </label>
         <div
           className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 transition-colors"
           onClick={handleBrowseClick}
         >
-          {file ? (
+          {file ?? defaultFile ? (
             <div className="space-y-3">
               <FaCloudUploadAlt size={48} className="mx-auto text-blue-400" />
               <p className="font-medium">File Selected</p>
               <Poppins>
-                {file.name} - {bytesToMB(file.size)} MB
+                {defaultFile ? defaultFile.name : file?.name} -{" "}
+                {bytesToMB(defaultFile ? defaultFile.size : file?.size || 0)} MB
               </Poppins>
             </div>
           ) : (
@@ -47,7 +55,7 @@ export const UploadFile: React.FC<UploadFileProps> = ({
               <p className="text-gray-600 mb-1">Drag and drop files here</p>
               <p className="text-sm text-gray-500">or click to browse</p>
               <p className="text-xs text-gray-400 mt-3">
-                Allowed: {allowedExtensions || "Any"} | Max size: 10MB
+                Allowed: {allowedExtensions || "Any"} | Max size: 2MB
               </p>
             </>
           )}

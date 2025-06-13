@@ -2,6 +2,7 @@ import { File } from "buffer";
 import { CategoriesModel } from "./categories";
 import { UserModel } from "./user";
 import { ModuleDTO } from "./modules";
+import { CourseType } from "../../features/dashboard/store";
 
 export type StatusClassess = 'PUBLISH' | 'DRAFT'
 
@@ -21,10 +22,11 @@ export interface ClassModel {
   isAlreadyJoin: boolean;
   status: StatusClassess;
   code?: string;
-  level: string;
+  level: CourseType;
   category: CategoriesModel;
   totalSession: number
   thumbnail: string;
+  thumbnailFileSize: number;
   price: number;
   creator: UserModel;
   sessions: SessionDTO[];
@@ -59,3 +61,17 @@ export interface JoinInvitationClassDTO {
   code: string;
 }
 
+export interface MentorClassDTO {
+  id: string
+  user: {
+    id: string
+    name: string
+    email: string
+    photo: string | null
+  }
+}
+
+export interface InviteMentorDTO {
+  classId: string
+  mentorId: string
+}

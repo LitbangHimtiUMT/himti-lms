@@ -1,5 +1,5 @@
 export interface MentorDTO {
-  id: number;
+  id: string;
   name: string;
   email: string;
   photo: string | null;

@@ -2,23 +2,20 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { BiCopyAlt, BiTrashAlt } from "react-icons/bi";
 import { CiSearch } from "react-icons/ci";
+import { FaUserGroup } from "react-icons/fa6";
 import { FiEdit2 } from "react-icons/fi";
 import { IoDocumentOutline, IoWarningOutline } from "react-icons/io5";
 import { MdOutlinePublishedWithChanges } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { ClassModel } from "../../../../../core/model/classes";
 import { Badge } from "../../../../_global/components/Badge";
 import { Button } from "../../../../_global/components/Button";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
 import { Dialog } from "../../../../_global/components/Dialog";
-import { EmptyState } from "../../../../_global/components/Empty";
+import { DropdownMenu } from "../../../../_global/components/DropdownMenu";
 import { Input } from "../../../../_global/components/Input";
-import { Skeleton } from "../../../../_global/components/Shimer";
-import {
-  Table,
-  TableBody,
-  TableHead,
-} from "../../../../_global/components/Table";
+import { MasterTable } from "../../../../_global/components/MasterTable";
 import { formatRupiah } from "../../../../_global/helper";
 import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
 import {
@@ -26,8 +23,8 @@ import {
   useClassesCreation,
 } from "../../../../class/hooks/useClasses";
 import { useProfile } from "../../../../profile/useProfile";
-import { FaUserGroup } from "react-icons/fa6";
 import { DrawerParticipants } from "../../drawer/DrawerParticipants";
+import { UpdateClassDrawer } from "../../drawer/UpdateClassDrawer";
 
 export const TableCreatedClassessList = () => {
   const navigate = useNavigate();
@@ -37,6 +34,9 @@ export const TableCreatedClassessList = () => {
   const [dialog, setDialog] = useState<string>("");
   const queryClient = useQueryClient();
   const mutation = useClassesCreation();
+  const [data, setData] = useState<
+    (Omit<ClassModel, "thumbnail"> & { thumbnail: File }) | undefined
+  >(undefined);
 
   const handleCopyInviteLink = (code: string) => {
     navigator.clipboard
@@ -72,7 +72,123 @@ export const TableCreatedClassessList = () => {
         </div>
       </div>
 
-      <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <MasterTable
+        isLoading={isFetching}
+        withAction={false}
+        data={classes?.data || []}
+        title={[
+          "Class Name",
+          "Price",
+          "Category",
+          "Participants",
+          "Status",
+          "",
+        ]}
+        columnTable={[
+          {
+            return: ({ name }) => (
+              <div className="font-medium text-gray-900 dark:text-white">
+                {name}
+              </div>
+            ),
+          },
+          {
+            return: ({ price }) => (
+              <div className="text-gray-700 dark:text-gray-300">
+                {formatRupiah(price)}
+              </div>
+            ),
+          },
+          {
+            return: ({ category }) => (
+              <Badge variant="default" size="sm" className="capitalize">
+                {category.name}
+              </Badge>
+            ),
+          },
+          {
+            return: ({ totalParticipant }) => (
+              <div className="text-gray-700 dark:text-gray-300">
+                {totalParticipant}
+              </div>
+            ),
+          },
+          {
+            return: ({ status }) => (
+              <Badge
+                size="sm"
+                variant={status === "PUBLISH" ? "success" : "outline"}
+                className="capitalize"
+              >
+                {status.toLowerCase()}
+              </Badge>
+            ),
+          },
+          {
+            return: (item) => (
+              <div className="flex items-center justify-center">
+                <DropdownMenu
+                  items={[
+                    {
+                      label: "Detail",
+                      icon: <IoDocumentOutline />,
+                      onClick: () => navigate(`/dashboard/my-class/${item.id}`),
+                    },
+                    {
+                      label: "Copy Invite Link",
+                      icon: <BiCopyAlt />,
+                      onClick: () => handleCopyInviteLink(item.code ?? ""),
+                    },
+                    {
+                      label: "Participants",
+                      icon: (
+                        <FaUserGroup className="text-gray-600 dark:text-gray-300" />
+                      ),
+                      onClick: () => setClassId(item.id),
+                    },
+                    ...(item.status === "DRAFT"
+                      ? [
+                          {
+                            label:
+                              mutation.isPending &&
+                              mutation.variables.type === "publish"
+                                ? "Publishing..."
+                                : "Publish Class",
+                            icon: <MdOutlinePublishedWithChanges />,
+                            onClick: () => handlePublishClass(item.id),
+                            disabled:
+                              mutation.isPending &&
+                              mutation.variables.type === "publish",
+                          },
+                        ]
+                      : []),
+                    ...(item.creator.id === profile?.data?.id
+                      ? [
+                          {
+                            label: "Edit Class",
+                            icon: <FiEdit2 />,
+                            onClick: () =>
+                              setData({
+                                ...item,
+                                thumbnail: item.thumbnail as unknown as File,
+                              }),
+                          },
+                          {
+                            label: "Delete Class",
+                            icon: <BiTrashAlt />,
+                            onClick: () => setDialog(item.id),
+                            variant: "danger" as const,
+                          },
+                        ]
+                      : []),
+                  ]}
+                />
+              </div>
+            ),
+          },
+        ]}
+      />
+      {/* <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
         <Table>
           <TableHead
             field={[
@@ -229,7 +345,7 @@ export const TableCreatedClassessList = () => {
             )}
           </TableBody>
         </Table>
-      </div>
+      </div> */}
 
       <ConditionNode condition={!!dialog}>
         <Dialog onHide={() => setDialog("")} show={!!dialog}>
@@ -267,6 +383,11 @@ export const TableCreatedClassessList = () => {
         show={!!classId}
         title="Participants"
         classId={classId}
+      />
+      <UpdateClassDrawer
+        onHide={() => setData(undefined)}
+        show={!!data}
+        data={data}
       />
     </div>
   );
