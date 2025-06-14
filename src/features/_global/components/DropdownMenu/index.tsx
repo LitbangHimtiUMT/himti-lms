@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiDotsVertical } from "react-icons/hi";
 
@@ -27,6 +27,36 @@ export const DropdownMenu = ({
 
   // Handle click outside to close dropdown
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
+
+  // Calculate dropdown position
+  const getDropdownPosition = () => {
+    if (!buttonRef.current) return { top: 0, left: 0 };
+
+    const rect = buttonRef.current.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+    // Position dropdown below the button
+    const top = rect.bottom + scrollTop + 4; // 4px gap
+    
+    // Calculate left position to keep dropdown within viewport
+    const dropdownWidth = 224; // w-56 = 14rem = 224px
+    const viewportWidth = window.innerWidth;
+    
+    let left = rect.left + scrollLeft;
+    
+    // If dropdown would go outside right edge, align to right
+    if (left + dropdownWidth > viewportWidth) {
+      left = rect.right + scrollLeft - dropdownWidth;
+    }
+    
+    // Ensure minimum left position (don't go negative)
+    left = Math.max(8, left); // 8px minimum margin from left edge
+
+    return { top, left };
+  };
+
+  const position = getDropdownPosition()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -88,11 +118,13 @@ export const DropdownMenu = ({
             ref={dropdownMenuRef}
             className="absolute z-[991] mt-1 w-56 origin-top-left rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200 dark:border-gray-700 transition-all duration-200 transform"
             style={{
-              position: "absolute",
-              top: buttonRef.current?.getBoundingClientRect().bottom ?? 0,
-              left:
-                (buttonRef.current?.getBoundingClientRect().left ?? 0) - 200,
-              minWidth: buttonRef.current?.clientWidth,
+              // position: "absolute",
+              // top: buttonRef.current?.getBoundingClientRect().bottom ?? 0,
+              // left:
+              //   (buttonRef.current?.getBoundingClientRect().left ?? 0) - 200,
+              // minWidth: buttonRef.current?.clientWidth,
+              top: position.top,
+              left: position.left,
             }}
           >
             <div className="py-1">
