@@ -82,15 +82,14 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
           formData.append(key, value as string);
         }
       });
-
       await mutation.mutateAsync({
         type: "update",
         data: formData,
         id: form.id,
       });
-      setForm(undefined)
-      setImage(undefined)
-      setIsFree(false)
+      setForm(undefined);
+      setImage(undefined);
+      setIsFree(false);
       onHide();
     }
   };
@@ -141,7 +140,7 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
         ) : (
           <form
             className="px-5 flex flex-col items-center gap-3"
-              onSubmit={handleSubmit}
+            onSubmit={handleSubmit}
           >
             <InputLabel
               title="Class Name"
@@ -204,9 +203,16 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
             </div>
 
             <div className="w-full flex flex-col gap-2">
-            {getImagePreview() ? <img src={getImagePreview()} className="rounded-lg" width={'100%'} height={'5rem'} /> : null}
+              {getImagePreview() ? (
+                <img
+                  src={getImagePreview()}
+                  className="rounded-lg"
+                  width={"100%"}
+                  height={"5rem"}
+                />
+              ) : null}
               <UploadFile
-              title="Thumbnail"
+                title="Thumbnail"
                 extensions={[".jpg", ".jpeg", ".png"]}
                 onChange={handleFileChange}
                 file={image}

@@ -78,9 +78,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
                 );
                 e.target.value = numericValue.toString();
                 setFormatedValue(formatted);
-              } else {
-                rest.onChange?.(e);
               }
+              rest.onChange?.(e);
             }}
             className={`
           border
