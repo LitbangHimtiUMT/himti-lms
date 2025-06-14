@@ -55,7 +55,9 @@ export const FormCreateClassess = () => {
     const formData = new FormData();
 
     Object.entries(form).forEach(([key, value]) => {
-      formData.append(key, value as string);
+      if (value !== undefined || value !== null || value !== '') {
+        formData.append(key, value as string);
+      }
     });
 
     await mutation.mutateAsync({
