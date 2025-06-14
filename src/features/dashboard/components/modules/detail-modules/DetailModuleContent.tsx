@@ -8,6 +8,8 @@ import { Skeleton } from "../../../../_global/components/Shimer";
 import { useDetailModule } from "../../../hooks/modules/useModules";
 import { YoutubeEmbed } from "./EmbededYoutube";
 import { ModuleAttachment } from "./ModuleAttachment";
+import { CreateAssignmentDrawer } from "../../drawer/CreateAssignmentDrawer";
+import { useState } from "react";
 
 export type SubmissionStatus = "REVIEW" | "APPROVE" | "REJECT";
 
@@ -29,6 +31,10 @@ export const DetailModuleContent = () => {
   const { data: modules, isFetching: isFetchingModules } = useDetailModule();
   const { classId, sessionId, moduleId } = useParams();
   const navigate = useNavigate();
+  const [show, setShow] = useState({
+    show: false,
+    moduleId: "",
+  });
 
   const handleViewAssignment = () => {
     if (modules?.data?.assignment?.id) {
@@ -53,6 +59,22 @@ export const DetailModuleContent = () => {
           isFetchingModules ? "opacity-70" : ""
         }`}
       >
+        {!modules?.data?.assignment && !isFetchingModules ? (
+          <>
+            <div className="flex items-center justify-end">
+              <div className="w-48">
+                <Button
+                  variant="success"
+                  onClick={() =>
+                    setShow({ show: true, moduleId: modules?.data?.id || "" })
+                  }
+                >
+                  Create Assignment
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : null}
         {/* Main Content Card */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
           <div className="p-6 md:p-8">
@@ -82,11 +104,15 @@ export const DetailModuleContent = () => {
             {/* Tombol View Assignment (hanya muncul jika ini assignment) */}
             <ConditionNode condition={!!modules?.data?.assignment}>
               <div className="mt-6 w-[26%]">
-                <Button variant="primary" size="lg" onClick={handleViewAssignment}>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={handleViewAssignment}
+                >
                   <div className="flex items-center gap-4">
-                  <FiFileText className="w-5 h-5" />
-                  <span>View Assignment Details</span>
-                  <ArrowRight className="w-5 h-5" />
+                    <FiFileText className="w-5 h-5" />
+                    <span>View Assignment Details</span>
+                    <ArrowRight className="w-5 h-5" />
                   </div>
                 </Button>
               </div>
@@ -130,6 +156,11 @@ export const DetailModuleContent = () => {
           </div>
         </ConditionNode>
       </div>
+      <CreateAssignmentDrawer
+        show={show.show}
+        onHide={() => setShow({ show: false, moduleId: "" })}
+        moduleId={show.moduleId}
+      />
     </>
   );
 };
