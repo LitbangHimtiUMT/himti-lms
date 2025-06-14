@@ -17,7 +17,8 @@ interface IDropdownProps {
   onChange?: (e: ListItem) => void;
   disabled?: boolean;
   inputValue?: string;
-  reset?: boolean
+  reset?: boolean;
+  withShadow?: boolean;
 }
 
 const initValue: ListItem = {
@@ -35,7 +36,8 @@ export const DropdownRevamp: React.FC<IDropdownProps> = ({
   onSearch,
   disabled,
   inputValue,
-  reset
+  reset,
+  withShadow,
 }) => {
   const [show, setShow] = useState(false);
   const [data, setData] = useState(list || []);
@@ -99,7 +101,14 @@ export const DropdownRevamp: React.FC<IDropdownProps> = ({
       </div>
       {show && (
         <div className="relative z-20">
-          <div className="absolute z-20 overflow-auto max-h-96 flex flex-col gap-1 w-full right-0 bg-white border border-solid border-gray-300 rounded-lg mt-2 px-2 py-2 shadow-[0px_0px_3px_1px_rgba(0,0,0,0.25)]">
+          <div
+            className="absolute z-20 overflow-auto max-h-96 flex flex-col gap-1 w-full right-0 bg-white border border-solid border-gray-300 rounded-lg mt-2 px-2 py-2"
+            style={{
+              boxShadow: withShadow
+                ? "0px 8px 12px 0px rgba(0, 0, 0, 0.08)"
+                : "none",
+            }}
+          >
             {searchInput && (
               <div className="sticky top-0 bg-white z-20 py-2">
                 <Input

@@ -82,8 +82,9 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
           <ConditionNode condition={show}>
             <div className="mt-3 flex flex-col gap-2">
               <DropdownRevamp
+                withShadow
                 list={(mentors?.data || [])?.map((item) => ({
-                  label: item.name,
+                  label: `${item.name} - ${item.email}`,
                   value: item.id,
                 }))}
                 reset={!mentorId}
@@ -134,13 +135,13 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
               {classMentors?.data?.map((item, index) => (
                 <li
                   key={item.id}
-                  className={`flex items-center justify-between py-3 transition-colors cursor-pointer ${
+                  className={`flex items-center justify-between py-1 transition-colors cursor-pointer ${
                     index !== (classMentors?.data?.length as number) - 1
                       ? "border-b border-solid border-gray-500"
                       : ""
                   }`}
                 >
-                  <div className="flex items-center space-x-3 hover:bg-gray-50 w-full px-2 rounded-lg">
+                  <div className="flex items-center space-x-3 hover:bg-gray-50 w-full px-2 py-4 rounded-lg">
                     <img
                       src={item.user.photo || Default}
                       onError={(e) =>

@@ -100,6 +100,7 @@ export const FormCreateClassess = () => {
         <div className="w-full flex flex-col gap-2">
           <Poppins className="text-sm">Level</Poppins>
           <DropdownRevamp
+            withShadow
             list={CourseLevelList}
             onChange={(e) =>
               setForm((prev) => ({ ...prev, level: e.value as ClassLevel }))
@@ -109,6 +110,7 @@ export const FormCreateClassess = () => {
         <div className="w-full flex flex-col gap-2">
           <Poppins className="text-sm">Category</Poppins>
           <DropdownRevamp
+            withShadow
             searchInput
             disabled={isFetching}
             list={dataFetching(
