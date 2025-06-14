@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "../../../_global/components/Button";
 import { useClassesCreation } from "../../../class/hooks/useClasses";
 import { InviteMentorDTO } from "../../../../core/model/classes";
+import { ConditionNode } from "../../../_global/components/ConditionNode";
 
 interface DrawerParticipantsProps {
   show: boolean;
@@ -58,7 +59,7 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
   };
 
   const handleBack = () => {
-    onHide()
+    onHide();
     setMentorId("");
     setSearchQuery({
       classMentor: "",
@@ -78,27 +79,31 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
       <div className="flex flex-col h-full">
         <div className="p-4 border-b">
           <h2 className="text-xl font-semibold">{title}</h2>
-          <div className="mt-3 flex flex-col gap-2">
-            <DropdownRevamp
-              list={(mentors?.data || [])?.map((item) => ({
-                label: item.name,
-                value: item.id,
-              }))}
-              reset={!mentorId}
-              disabled={!!isFetchingMentor}
-              placeholder="Select Mentor"
-              onSearch={(e) => setSearchQuery({ ...searchQuery, mentor: e })}
-              searchInput
-              inputValue={searchQuery.mentor}
-              onChange={(e) => setMentorId(e.value)}
-            />
-            <Button
-              variant={mentorId && !mutation.isPending ? "primary" : "disabled"}
-              onClick={handleInviteMentor}
-            >
-              {mutation.isPending ? "Inviting..." : "Add Mentor"}
-            </Button>
-          </div>
+          <ConditionNode condition={show}>
+            <div className="mt-3 flex flex-col gap-2">
+              <DropdownRevamp
+                list={(mentors?.data || [])?.map((item) => ({
+                  label: item.name,
+                  value: item.id,
+                }))}
+                reset={!mentorId}
+                disabled={!!isFetchingMentor}
+                placeholder="Select Mentor"
+                onSearch={(e) => setSearchQuery({ ...searchQuery, mentor: e })}
+                searchInput
+                inputValue={searchQuery.mentor}
+                onChange={(e) => setMentorId(e.value)}
+              />
+              <Button
+                variant={
+                  mentorId && !mutation.isPending ? "primary" : "disabled"
+                }
+                onClick={handleInviteMentor}
+              >
+                {mutation.isPending ? "Inviting..." : "Add Mentor"}
+              </Button>
+            </div>
+          </ConditionNode>
           <div className="relative mt-3">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
