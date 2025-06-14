@@ -59,9 +59,6 @@ export const TableCreatedClassessList = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white hidden md:block">
-          My Classes
-        </h2>
         <div className="w-full md:w-1/2 lg:w-1/3 min-w-[250px]">
           <Input
             LeftIcon={<CiSearch className="text-lg text-gray-400" />}
