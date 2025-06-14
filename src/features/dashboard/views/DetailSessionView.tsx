@@ -1,17 +1,15 @@
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { BreadCrumb } from "../../_global/components/BreadCrumb";
-import { DetailSessionContent } from "../components/sessions/detail-session/DetailSessionContent";
 import { Button } from "../../_global/components/Button";
 import { ConditionNode } from "../../_global/components/ConditionNode";
 import { useProfile } from "../../profile/useProfile";
-import { useDetailClass } from "../../class/hooks/useClasses";
+import { DetailSessionContent } from "../components/sessions/detail-session/DetailSessionContent";
 
 export const DetailSessionView = () => {
   const { sessionId, classId } = useParams();
   const { data: profile } = useProfile();
   const [searchParams] = useSearchParams();
   const from = searchParams.get("from");
-  const { data: classess } = useDetailClass();
   return (
     <div className="flex flex-col gap-5">
       <div className="flex lg:flex-row flex-col lg:items-start justify-between lg:gap-0 gap-4">
@@ -35,8 +33,7 @@ export const DetailSessionView = () => {
         />
         <ConditionNode
           condition={
-            !!profile?.data?.isMentor &&
-            classess?.data?.creator.id === profile?.data?.id
+            !!profile?.data?.isMentor
           }
         >
           <Link

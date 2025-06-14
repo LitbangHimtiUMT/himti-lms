@@ -11,8 +11,6 @@ import { Pagination } from "../../../../_global/components/Pagination";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { Table, TableHead } from "../../../../_global/components/Table";
 import { convertQueryParamsToObject } from "../../../../_global/helper";
-import { useDetailClass } from "../../../../class/hooks/useClasses";
-import { useProfile } from "../../../../profile/useProfile";
 import { useModules } from "../../../hooks/modules/useModules";
 import { CreateAssignmentDrawer } from "../../drawer/CreateAssignmentDrawer";
 
@@ -26,9 +24,6 @@ export const DetailSessionContent = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queries = convertQueryParamsToObject(searchParams.toString());
 
-  const { data: classess } = useDetailClass();
-
-  const { data: profile } = useProfile();
   const [show, setShow] = useState<IShowDrawer>({
     moduleId: "",
     show: false,
@@ -38,8 +33,6 @@ export const DetailSessionContent = () => {
 
   const handleChangePage = (page: string) =>
     setSearchParams({ ...queries, page });
-
-  const isOwner = profile?.data?.id === classess?.data?.creator?.id;
 
   return (
     <>
@@ -78,10 +71,9 @@ export const DetailSessionContent = () => {
                           </Button>
                         </div>
                         <div className="flex items-center">
-                          {item.assignment || isOwner ? (
                             <Button
                               variant={
-                                item.assignment || !isOwner
+                                item.assignment
                                   ? "secondary"
                                   : "success"
                               }
@@ -100,11 +92,10 @@ export const DetailSessionContent = () => {
                                 );
                               }}
                             >
-                              {item.assignment || !isOwner
+                              {item.assignment
                                 ? "View Assignment"
                                 : "Create Assignment"}
                             </Button>
-                          ) : null}
                         </div>
                       </div>
                     </td>
