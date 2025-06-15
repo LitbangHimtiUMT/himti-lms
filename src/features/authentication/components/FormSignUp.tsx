@@ -48,7 +48,11 @@ export const FormSignUp = () => {
     e.preventDefault();
     if (!validate()) return;
     await mutation.mutateAsync({
-      body: authBody,
+      body: {
+        email: authBody.email,
+        password: authBody.password,
+        name: authBody.name,
+      },
       type: "register",
     });
   };

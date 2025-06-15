@@ -1,4 +1,4 @@
-import { AuthLoginDTO } from "@core/model/auth";
+import { AuthLoginDTO, AuthRegisterDTO } from "@core/model/auth";
 import { authService } from "@core/services/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import { AuthLoginModel } from "@core/model/auth";
 import { CONFIG_APP } from "@core/configs/app";
 
 interface ITypeAuth {
-  body: AuthLoginDTO;
+  body: AuthLoginDTO | AuthRegisterDTO;
   type: "login" | "register";
 }
 
@@ -30,19 +30,19 @@ export function useAuthCreation() {
     mutationFn: ({ body, type }: ITypeAuth) => {
       switch (type) {
         case "login":
-          return authService.login(body, {
+          return authService.login(body as AuthLoginDTO, {
             headers: {
               [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
             },
           });
         case "register":
-          return authService.register(body, {
+          return authService.register(body as AuthRegisterDTO, {
             headers: {
               [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
             },
           });
         default:
-          return authService.login(body, {
+          return authService.login(body as AuthRegisterDTO, {
             headers: {
               [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
             },
