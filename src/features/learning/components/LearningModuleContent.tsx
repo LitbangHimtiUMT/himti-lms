@@ -36,7 +36,7 @@ export const LearningModuleContent: React.FC<LearningModuleContentProps> = ({
             <div className="bg-white rounded-xl shadow-lg overflow-hidden p-6 border border-gray-100 mt-4">
               <h3 className="text-lg font-semibold mb-4 text-gray-800 flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-blue-100 text-blue-600">
-                <IoDocument size={20} />
+                  <IoDocument size={20} />
                 </div>
                 <span>Material File</span>
               </h3>

@@ -15,6 +15,7 @@ interface CardAssignmentProps {
   assignmentId: string;
   moduleId: string;
   type?: "active" | "history";
+  isOpen?: boolean;
 }
 
 export const CardAssignment: React.FC<CardAssignmentProps> = ({
@@ -25,6 +26,7 @@ export const CardAssignment: React.FC<CardAssignmentProps> = ({
   assignmentId,
   moduleId,
   type = "active",
+  isOpen,
 }) => {
   const { classId } = useParams();
   const navigate = useNavigate();
@@ -37,15 +39,13 @@ export const CardAssignment: React.FC<CardAssignmentProps> = ({
           </div>
           {isHaveActiveSubmission && status ? (
             <>
-              <Badge
-                rounded="full"
-                size="sm"
-                variant={StatusRecord[status]}
-              >
+              <Badge rounded="full" size="sm" variant={StatusRecord[status]}>
                 {status}
               </Badge>
             </>
-          ) : null}
+          ) : (
+            "-"
+          )}
         </div>
 
         <div className="mt-4 flex md:flex-row flex-col md:items-center md:gap-0 gap-2 justify-between">
@@ -66,9 +66,19 @@ export const CardAssignment: React.FC<CardAssignmentProps> = ({
                   `/learning/${classId}/assignment/${assignmentId}?moduleId=${moduleId}`
                 )
               }
-              variant={isHaveActiveSubmission ? "secondary" : "primary"}
+              variant={
+                isHaveActiveSubmission
+                  ? "secondary"
+                  : isOpen
+                  ? "primary"
+                  : "disabled"
+              }
             >
-              {isHaveActiveSubmission ? "View Assignment" : "Start Assignment"}
+              {isHaveActiveSubmission
+                ? "View Assignment"
+                : isOpen
+                ? "Start Assignment"
+                : "Assignment Closed"}
             </Button>
           </div>
         </div>

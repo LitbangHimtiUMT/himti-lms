@@ -14,7 +14,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
     (item) => item.status === "APPROVE"
   );
   return (
-    <div className="md:p-6 p-2">
+    <div className="md:p-6 md:pb-48 p-2">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Assignments</h1>
       </div>
@@ -51,6 +51,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                 moduleId={modules.id}
                 title={modules.assignment.title}
                 dueDate={modules.assignment.dueDate}
+                isOpen={modules.assignment.isOpen}
                 isHaveActiveSubmission={!!modules.assignment.activeSubmission}
                 status={modules.assignment.activeSubmission?.status}
               />
@@ -76,6 +77,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
                   assignmentId={modules?.assignment?.id || ""}
                   isHaveActiveSubmission
                   moduleId={modules.id}
+                  isOpen={modules?.assignment?.isOpen}
                   title={modules?.assignment?.title || ""}
                   dueDate={assignment?.submittedAt}
                   status={assignment?.status}

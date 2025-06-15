@@ -3,6 +3,7 @@ import { ModuleDTO, SubmissionDTO } from "./modules";
 export type AssignmentType = "FILE" | "URL";
 
 export interface CreateAssignmentDTO {
+  id?: string;
   title: string;
   description?: string;
   dueDate: Date;
@@ -27,6 +28,7 @@ export interface AssignmentDTO {
   activeSubmission?: SubmissionDTO | null;
   historySubmission: SubmissionDTO[];
   module?: ModuleDTO;
+  isOpen: boolean
   createdBy: {
     id: string;
     name: string;

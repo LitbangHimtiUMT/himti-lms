@@ -6,6 +6,7 @@ import { formatTime } from "../../lib/format-time";
 
 export interface DatePickerProps {
   dropdownState?: (state: boolean) => void;
+  selected?: Date;
 }
 
 export const DatePicker: React.FC<DatePickerProps & DayPickerProps> = ({
@@ -28,6 +29,13 @@ export const DatePicker: React.FC<DatePickerProps & DayPickerProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (rest.selected) {
+      setSelectedDate(rest.selected);
+    }
+  }, [rest.selected]);
+
   return (
     <>
       <div
@@ -72,7 +80,7 @@ export const DatePicker: React.FC<DatePickerProps & DayPickerProps> = ({
                   onDayClick={(date, modifiers, e) => {
                     setSelectedDate(date);
                     rest.onDayClick?.(date, modifiers, e);
-                    setShow(prev => !prev);
+                    setShow((prev) => !prev);
                   }}
                 />
               </div>

@@ -42,17 +42,20 @@ export interface AssignmentDetailViewProps {
   data: AssignmentDataProps;
   onSubmit?: (formData: FormData) => Promise<void>;
   isLoading?: boolean;
+  isOpen?: boolean;
 }
 
 export const AssignmentDetailContent = ({
   mode,
   data,
   isLoading = false,
+  isOpen,
 }: AssignmentDetailViewProps) => {
   const [sidebarOpen] = useAtom(LearningSidebarAtom);
 
   const haveApproveSubmission = data?.submission?.status === "APPROVE";
-  const isSubmit = mode === "current" && !haveApproveSubmission;
+  const isSubmit =
+    mode === "current" && !haveApproveSubmission && !data?.activeSubmission;
 
   if (!data || isLoading) {
     return <AssignmentDetailSkeleton />;
@@ -64,8 +67,14 @@ export const AssignmentDetailContent = ({
         sidebarOpen ? "md:ml-64" : "md:ml-20"
       } w-full max-w-[1920px] mx-auto`}
     >
+      <AssignmentBack />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-20">
-        <HeaderAssignment data={data} mode={mode} isSubmit={isSubmit} />
+        <HeaderAssignment
+          data={data}
+          mode={mode}
+          isSubmit={isSubmit}
+          isOpen={isOpen && !isLoading}
+        />
         <CardInstructor userName={data.createdBy.name || ""} />
       </div>
     </div>

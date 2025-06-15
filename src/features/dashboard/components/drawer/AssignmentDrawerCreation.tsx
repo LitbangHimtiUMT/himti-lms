@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../../_global/components/Button";
 import { DatePicker } from "../../../_global/components/Date";
 import { Drawer } from "../../../_global/components/Drawer";
@@ -11,12 +11,14 @@ import { useAssignmentsCreation } from "../../hooks/assignments/useAssignmentsCr
 interface Props {
   onHide: VoidFunction;
   show: boolean;
-  moduleId: string;
+  moduleId?: string;
+  data?: FormState;
 }
 
 interface FormState {
   title: string;
   dueDate: Date;
+  id?: string;
   description: string;
   allowedFile?: string;
   type: "URL" | "FILE";
@@ -30,10 +32,17 @@ const defaultValue: FormState = {
   allowedFile: undefined,
 };
 
-export const CreateAssignmentDrawer: React.FC<Props> = ({
+const AllowedFileMap: Record<".zip" | ".rar" | ".pdf", string> = {
+  ".rar": "RAR",
+  ".zip": "ZIP",
+  ".pdf": "PDF",
+};
+
+export const AssignmentDrawerCreation: React.FC<Props> = ({
   onHide,
   show,
   moduleId,
+  data,
 }) => {
   const [form, setForm] = useState<FormState>(defaultValue);
 
@@ -43,30 +52,46 @@ export const CreateAssignmentDrawer: React.FC<Props> = ({
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-    await mutation.mutateAsync({
-      type: "create",
-      data: {
-        ...form,
-        allowedFile: form.type === "URL" ? undefined : form.allowedFile,
-      },
-      moduleId,
-    });
+    if (data) {
+      await mutation.mutateAsync({
+        type: "update",
+        data: {
+          ...form,
+          id: data.id,
+          allowedFile: form.type === "URL" ? undefined : form.allowedFile,
+        },
+        moduleId: moduleId ?? "",
+      });
+    } else {
+      await mutation.mutateAsync({
+        type: "create",
+        data: {
+          ...form,
+          allowedFile: form.type === "URL" ? undefined : form.allowedFile,
+        },
+        moduleId: moduleId ?? "",
+      });
+    }
     onHide();
     setForm(defaultValue);
   };
+
+  useEffect(() => {
+    if (show && data) setForm(data);
+  }, [show, data]);
   return (
     <>
       <Drawer
         onHide={onHide}
-        show={!!(show && moduleId)}
+        show={!!show}
         style={{
           marginTop: "3rem",
           minWidth: "600px",
-          paddingBottom: "3rem",
+          paddingBottom: "4rem",
         }}
       >
         <Poppins className="text-left text-lg px-5 mb-5 font-semibold">
-          Create Assignment
+          {data ? "Update" : "Create"} Assignment
         </Poppins>
         <form
           className="px-5 flex flex-col items-center gap-3"
@@ -76,6 +101,7 @@ export const CreateAssignmentDrawer: React.FC<Props> = ({
             title="Title"
             titleSize="sm"
             inputProps={{
+              value: form.title,
               onChange: (e) => setForm({ ...form, title: e.target.value }),
             }}
           />
@@ -87,11 +113,13 @@ export const CreateAssignmentDrawer: React.FC<Props> = ({
               onDayClick={(e) =>
                 setForm((prev) => ({ ...prev, dueDate: new Date(e) }))
               }
+              selected={new Date(form.dueDate)}
             />
           </div>
           <div className="flex flex-col gap-2 w-full">
             <Poppins className="text-sm">Description</Poppins>
             <TextEditor
+            value={form.description}
               onChange={(e) => setForm((prev) => ({ ...prev, description: e }))}
             />
           </div>
@@ -105,6 +133,20 @@ export const CreateAssignmentDrawer: React.FC<Props> = ({
                   type: e.value === "url" ? "URL" : "FILE",
                 }))
               }
+              defaultValue={
+                data && data?.type !== "URL"
+                  ? {
+                      label:
+                        AllowedFileMap[
+                          data.allowedFile as ".zip" | ".rar" | ".pdf"
+                        ] ?? "ZIP",
+                      value: data.allowedFile ?? ".zip",
+                    }
+                  : {
+                      label: "URL",
+                      value: "url",
+                    }
+              }
               list={[
                 {
                   label: "ZIP",
@@ -113,6 +155,10 @@ export const CreateAssignmentDrawer: React.FC<Props> = ({
                 {
                   label: "RAR",
                   value: ".rar",
+                },
+                {
+                  label: "PDF",
+                  value: ".pdf",
                 },
                 {
                   label: "URL",
@@ -126,7 +172,11 @@ export const CreateAssignmentDrawer: React.FC<Props> = ({
             type="submit"
             variant={mutation.isPending ? "disabled" : "primary"}
           >
-            {mutation.isPending ? "Loading..." : "Create Assignment"}
+            {mutation.isPending
+              ? "Loading..."
+              : data
+              ? "Update Assignment"
+              : "Create Assignment"}
           </Button>
         </form>
       </Drawer>

@@ -8,7 +8,7 @@ import { Skeleton } from "../../../../_global/components/Shimer";
 import { useDetailModule } from "../../../hooks/modules/useModules";
 import { YoutubeEmbed } from "./EmbededYoutube";
 import { ModuleAttachment } from "./ModuleAttachment";
-import { CreateAssignmentDrawer } from "../../drawer/CreateAssignmentDrawer";
+import { AssignmentDrawerCreation } from "../../drawer/AssignmentDrawerCreation";
 import { useState } from "react";
 
 export type SubmissionStatus = "REVIEW" | "APPROVE" | "REJECT";
@@ -27,11 +27,16 @@ export interface Submission {
   feedback?: string;
 }
 
+interface DrawerState {
+  show: boolean;
+  moduleId: string;
+}
+
 export const DetailModuleContent = () => {
   const { data: modules, isFetching: isFetchingModules } = useDetailModule();
   const { classId, sessionId, moduleId } = useParams();
   const navigate = useNavigate();
-  const [show, setShow] = useState({
+  const [show, setShow] = useState<DrawerState>({
     show: false,
     moduleId: "",
   });
@@ -156,7 +161,7 @@ export const DetailModuleContent = () => {
           </div>
         </ConditionNode>
       </div>
-      <CreateAssignmentDrawer
+      <AssignmentDrawerCreation
         show={show.show}
         onHide={() => setShow({ show: false, moduleId: "" })}
         moduleId={show.moduleId}

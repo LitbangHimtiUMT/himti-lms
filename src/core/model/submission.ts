@@ -9,6 +9,7 @@ export interface SubmissionDTO {
   createdAt: Date;
   updatedAt: Date;
   assignment: AssignmentDTO;
+  isOpen: boolean
   actionBy: {
     id: string;
     name: string;
