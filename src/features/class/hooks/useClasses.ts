@@ -134,6 +134,10 @@ export function useClassesCreation() {
         });
       }
 
+      if(vars.type === 'delete') {
+        navigate(`/dashboard/my-class`);
+      }
+
       queryClient.removeQueries({ queryKey: ["classes"] });
       queryClient.removeQueries({ queryKey: ["classesById"] });
       return;

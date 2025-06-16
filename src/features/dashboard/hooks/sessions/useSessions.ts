@@ -5,7 +5,7 @@ import { SessionCreationDTO } from "../../../../core/model/sessions";
 import { sessionService } from "../../../../core/services/sessions";
 
 interface CreationPayload {
-  type: "create" | "update";
+  type: "create" | "update" | "delete";
   data?: SessionCreationDTO;
   classId?: string;
 }
@@ -33,6 +33,10 @@ export const useSessionsCreation = () => {
         case "create":
           return sessionService.create(data, {
             path: classId,
+          });
+        case "delete":
+          return sessionService.delete({
+            path: data?.id,
           });
         default:
           return sessionService.update(

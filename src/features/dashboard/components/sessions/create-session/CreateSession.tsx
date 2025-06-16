@@ -42,7 +42,10 @@ export const CreateSession = () => {
       </ConditionNode>
       <SessionDrawerCreation
         data={show.data}
-        onHide={onHide}
+        onHide={() => {
+          onHide()
+          setShow((prev) => ({ ...prev, data: undefined }))
+        }}
         show={show.show}
       />
     </>

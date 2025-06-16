@@ -5,7 +5,10 @@ import { AssignmentDTO, CreateAssignmentDTO } from "../model/assignments";
 import { SubmissionDTO } from "../model/submission";
 
 export const assignmentService = {
-  create: request.post<ApiResponse, CreateAssignmentDTO>(
+  create: request.post<ApiResponse<AssignmentDTO>, CreateAssignmentDTO>(
+    API_ENDPOINT.assignment
+  ),
+  delete: request.delete<ApiResponse<AssignmentDTO>, CreateAssignmentDTO>(
     API_ENDPOINT.assignment
   ),
   update: request.put<ApiResponse, CreateAssignmentDTO>(

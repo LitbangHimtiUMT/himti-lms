@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../../../_global/components/Button";
-import { DatePicker } from "../../../_global/components/Date";
 import { Drawer } from "../../../_global/components/Drawer";
 import { DropdownRevamp } from "../../../_global/components/Dropdown/DropdownRevamp";
 import { InputLabel } from "../../../_global/components/InputLabel";
 import { Poppins } from "../../../_global/components/Text";
 import { TextEditor } from "../../../_global/components/TextEditor";
 import { useAssignmentsCreation } from "../../hooks/assignments/useAssignmentsCreation";
+import { DatePicker } from "../../../_global/components/DatePicker";
 
 interface Props {
   onHide: VoidFunction;
@@ -108,12 +108,10 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
           <div className="flex flex-col gap-2 w-full">
             <Poppins className="text-sm">Due Date</Poppins>
             <DatePicker
-              animate
-              mode="single"
-              onDayClick={(e) =>
-                setForm((prev) => ({ ...prev, dueDate: new Date(e) }))
-              }
-              selected={new Date(form.dueDate)}
+              fullWidth={false}
+              mode="date"
+              placeholder="Pick a date"
+              onChange={(e) => setForm({ ...form, dueDate: e as Date })}
             />
           </div>
           <div className="flex flex-col gap-2 w-full">
@@ -130,7 +128,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
                 setForm((prev) => ({
                   ...prev,
                   allowedFile: e.value,
-                  type: e.value === "url" ? "URL" : "FILE",
+                  type: e.value?.toLowerCase() === "url" ? "URL" : "FILE",
                 }))
               }
               defaultValue={

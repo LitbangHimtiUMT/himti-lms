@@ -11,6 +11,7 @@ export const DetailClassContent = () => {
         <div className="flex flex-col gap-4">
           <HeaderDetailClass />
           <CardDetailClass
+            id={classess?.data?.id || ""}
             name={classess?.data?.name || ""}
             category={classess?.data?.category?.name || ""}
             createdBy={classess?.data?.creator?.name || ""}

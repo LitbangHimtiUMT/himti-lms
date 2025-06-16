@@ -9,6 +9,7 @@ import {
 import {
   IoCheckmarkCircleOutline,
   IoCloseCircleOutline,
+  IoWarningOutline,
 } from "react-icons/io5";
 import { Button } from "../../../../_global/components/Button";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
@@ -17,7 +18,7 @@ import { EmptyState } from "../../../../_global/components/Empty";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { formatTime } from "../../../../_global/lib/format-time";
 import { useSubmissions } from "../../../../learning/hooks/submissions/useSubmissions";
-import { useDetailAssignment } from "../../../hooks/assignments/useAssignmentsCreation";
+import { useAssignmentsCreation, useDetailAssignment } from "../../../hooks/assignments/useAssignmentsCreation";
 import {
   Table,
   TableBody,
@@ -41,6 +42,19 @@ export const DetailAssignmentContent = () => {
     reject,
   } = useSubmissions(["get-by-assignment"]);
   const [approval, setApproval] = useState<DialogType | null>(null);
+
+  const mutation = useAssignmentsCreation()
+
+  const [assignmentId, setAssignmentId] = useState('')
+  const handleDeleteAssignment = async() => {
+    if(assignmentId) {
+      await mutation.mutateAsync({
+        type: 'delete',
+        id: assignmentId
+      })
+      setAssignmentId('')
+    }
+  }
 
   const [show, setShow] = useState(false);
   const onHide = () => setShow((prev) => !prev);
@@ -68,7 +82,6 @@ export const DetailAssignmentContent = () => {
       feedback: approval?.feedback,
     });
   };
-  console.log({ show });
   return (
     <>
       <div className="container mx-auto px-4 py-6 sm:py-8">
@@ -84,7 +97,7 @@ export const DetailAssignmentContent = () => {
             </Button>
           </div>
           <div className="w-full sm:w-auto">
-            <Button variant="danger" className="w-full sm:w-auto">
+            <Button variant="danger" className="w-full sm:w-auto" onClick={() => setAssignmentId(assignment?.id ?? '')}>
               Delete Assignment
             </Button>
           </div>
@@ -495,6 +508,37 @@ export const DetailAssignmentContent = () => {
           type: assignment?.type,
         } : undefined}
       />
+            <ConditionNode condition={!!assignmentId}>
+              <Dialog onHide={() => setAssignmentId("")} show={!!assignmentId}>
+                <div className="p-6 flex flex-col gap-4">
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 rounded-full bg-red-100 text-red-600">
+                      <IoWarningOutline className="text-xl" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
+                        Delete Assignment
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400 mt-1">
+                        This action will permanently delete the assignment and all its
+                        contents. Are you sure you want to continue?
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-3 pt-2">
+                    <Button variant="secondary" onClick={() => setAssignmentId("")}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant={mutation.isPending ? "disabled" : "danger"}
+                      onClick={handleDeleteAssignment}
+                    >
+                      {mutation.isPending ? "Deleting..." : "Delete"}
+                    </Button>
+                  </div>
+                </div>
+              </Dialog>
+            </ConditionNode>
     </>
   );
 };

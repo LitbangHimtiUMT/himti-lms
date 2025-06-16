@@ -21,16 +21,18 @@ interface IMasterTableProps<T extends DefaultKey> {
   columnTable: ColumnTable<T>[];
   pagination?: IPaginationProps;
   onClickItem?: (item: T) => void;
+  notFoundMessage?: string[];
 }
 
 export const MasterTable = <T extends DefaultKey>({
   data,
   title,
-  withAction = true,
+  withAction = false,
   columnTable,
   isLoading,
   pagination,
   onClickItem,
+  notFoundMessage = ["Data is not found."],
 }: IMasterTableProps<T>) => {
   return (
     <div className="flex flex-col">
@@ -75,7 +77,7 @@ export const MasterTable = <T extends DefaultKey>({
             ) : (
               <EmptyState
                 colspan={columnTable.length + (withAction ? 1 : 0)}
-                description={["Data is not found."]}
+                description={notFoundMessage}
               />
             )}
           </TableBody>

@@ -7,4 +7,5 @@ export const sessionService = {
   getByClass: request.get<ApiResponse<SessionDTO[]>>(API_ENDPOINT.sessions),
   create: request.post<ApiResponse, SessionCreationDTO>(API_ENDPOINT.sessions),
   update: request.put<ApiResponse, SessionCreationDTO>(API_ENDPOINT.sessions),
+  delete: request.delete<ApiResponse, SessionCreationDTO>(API_ENDPOINT.sessions),
 };

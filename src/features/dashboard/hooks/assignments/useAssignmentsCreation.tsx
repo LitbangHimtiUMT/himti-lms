@@ -9,23 +9,28 @@ import { assignmentService } from "../../../../core/services/assignments";
 
 interface AssignmentVars {
   type: "create" | "submit" | "update" | "delete";
-  data: CreateAssignmentDTO | FormData;
-  moduleId: string;
+  data?: CreateAssignmentDTO | FormData;
+  moduleId?: string;
+  id?: string;
 }
 
 export const useAssignmentsCreation = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { classId } = useParams();
+  const { classId, sessionId } = useParams();
   const [searchParams] = useSearchParams();
   const moduleId = searchParams.get("moduleId");
   return useMutation({
-    mutationFn: ({ type, data, moduleId }: AssignmentVars) => {
+    mutationFn: ({ type, data, moduleId, id }: AssignmentVars) => {
       const rest = data as CreateAssignmentDTO;
       switch (type) {
         case "create":
           return assignmentService.create(rest, {
             path: moduleId,
+          });
+        case "delete":
+          return assignmentService.delete({
+            path: id,
           });
         case "update":
           return assignmentService.update(
@@ -57,6 +62,9 @@ export const useAssignmentsCreation = () => {
       queryClient.invalidateQueries({
         queryKey: ["modules"],
       });
+      queryClient.removeQueries({
+        queryKey: ["detail-module"],
+      });
       if (vars.type === "submit") {
         queryClient.removeQueries({
           queryKey: ["detail-module"],
@@ -69,12 +77,22 @@ export const useAssignmentsCreation = () => {
         });
         navigate(`/learning/${classId}?moduleId=${moduleId}`);
       }
-      
-      if(vars.type === 'update') {
+
+      if (vars.type === "delete") {
+        navigate(`/dashboard/${classId}/${sessionId}`);
+      }
+
+      if (vars.type === "create") {
+        const data = res.data as AssignmentDTO;
+        navigate(
+          `/dashboard/${classId}/${sessionId}/${vars.moduleId}/${data?.id}`
+        );
+      }
+
+      if (vars.type === "update") {
         queryClient.removeQueries({
           queryKey: ["detail-assignment"],
         });
-        
       }
     },
   });

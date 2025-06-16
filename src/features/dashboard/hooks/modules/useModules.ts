@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { moduleService } from "../../../../core/services/modules";
-import { toast } from "react-toastify";
 import { useEffect } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { moduleService } from "../../../../core/services/modules";
 
 interface ModulesCreationPayload {
   data?: FormData;
   sessionId?: string;
   id?: string;
-  type: "create";
+  type: "create" | 'update' | 'delete';
 }
 
 export const useModules = (id?: string) => {
@@ -65,12 +65,17 @@ export const useModulesCreation = () => {
       data,
       type,
       sessionId: session,
+      id
     }: ModulesCreationPayload) => {
       switch (type) {
         case "create":
           return moduleService.create(data, {
             path: `${session || sessionId}`,
             contentType: "form-data",
+          });
+        case "delete":
+          return moduleService.delete({
+            path: id,
           });
         default:
           return moduleService.create(data, {

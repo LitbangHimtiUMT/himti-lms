@@ -12,10 +12,14 @@ interface Props {
   data?: {
     id: string;
     name: string;
-  }
+  };
 }
 
-export const SessionDrawerCreation: React.FC<Props> = ({ onHide, show, data }) => {
+export const SessionDrawerCreation: React.FC<Props> = ({
+  onHide,
+  show,
+  data,
+}) => {
   const mutation = useSessionsCreation();
   const { classId } = useParams();
 
@@ -25,12 +29,12 @@ export const SessionDrawerCreation: React.FC<Props> = ({ onHide, show, data }) =
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(data) {
+    if (data) {
       await mutation.mutateAsync({
         type: "update",
         data: {
           ...form,
-          id: data.id
+          id: data.id,
         },
       });
     } else {
@@ -42,25 +46,24 @@ export const SessionDrawerCreation: React.FC<Props> = ({ onHide, show, data }) =
     }
     onHide();
     setForm({ name: "" });
-
   };
-
   return (
     <>
-       <Drawer
-          onHide={() => {
-            onHide();
-            setForm({ name: "" });
-          }}
-          close={{
-            title: 'Back'
-          }}
-          show={show}
-          style={{
-            marginTop: "3rem",
-          }}
-        >
-         {show ?  <form
+      <Drawer
+        onHide={() => {
+          onHide();
+          setForm({ name: "" });
+        }}
+        close={{
+          title: "Back",
+        }}
+        show={show}
+        style={{
+          marginTop: "3rem",
+        }}
+      >
+        {show ? (
+          <form
             className="px-5 flex flex-col items-center gap-3"
             onSubmit={handleSubmit}
           >
@@ -69,17 +72,19 @@ export const SessionDrawerCreation: React.FC<Props> = ({ onHide, show, data }) =
               titleSize="sm"
               inputProps={{
                 onChange: (e) => setForm({ ...form, name: e.target.value }),
-                value: form?.name || data?.name || '',
+                value: form?.name || data?.name || "",
+                placeholder: 'Session name',
               }}
             />
             <Button
               type="submit"
               variant={mutation.isPending ? "disabled" : "primary"}
             >
-              {mutation.isPending ? "Loading..." : data? "Update" : "Create"}
+              {mutation.isPending ? "Loading..." : data ? "Update" : "Create"}
             </Button>
-          </form> : null}
-        </Drawer>
+          </form>
+        ) : null}
+      </Drawer>
     </>
   );
 };
