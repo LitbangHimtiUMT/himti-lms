@@ -119,7 +119,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
           <div className="flex flex-col gap-2 w-full">
             <Poppins className="text-sm">Description</Poppins>
             <TextEditor
-            value={form.description}
+              value={form.description}
               onChange={(e) => setForm((prev) => ({ ...prev, description: e }))}
             />
           </div>
@@ -142,10 +142,12 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
                         ] ?? "ZIP",
                       value: data.allowedFile ?? ".zip",
                     }
-                  : {
+                  : data
+                  ? {
                       label: "URL",
                       value: "url",
                     }
+                  : undefined
               }
               list={[
                 {
