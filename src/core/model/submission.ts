@@ -9,7 +9,7 @@ export interface SubmissionDTO {
   createdAt: Date;
   updatedAt: Date;
   assignment: AssignmentDTO;
-  isOpen: boolean
+  isOpen: boolean;
   actionBy: {
     id: string;
     name: string;
@@ -21,6 +21,7 @@ export interface SubmissionDTO {
   user: {
     id: string;
     name: string;
-    photo: string | null
+    photo: string | null;
+    email: string;
   };
 }

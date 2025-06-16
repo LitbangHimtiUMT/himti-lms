@@ -11,20 +11,20 @@ import {
   IoCloseCircleOutline,
   IoWarningOutline,
 } from "react-icons/io5";
+import { Badge } from "../../../../_global/components/Badge";
 import { Button } from "../../../../_global/components/Button";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
 import { Dialog } from "../../../../_global/components/Dialog";
 import { EmptyState } from "../../../../_global/components/Empty";
 import { Skeleton } from "../../../../_global/components/Shimer";
-import { formatTime } from "../../../../_global/lib/format-time";
-import { useSubmissions } from "../../../../learning/hooks/submissions/useSubmissions";
-import { useAssignmentsCreation, useDetailAssignment } from "../../../hooks/assignments/useAssignmentsCreation";
 import {
   Table,
   TableBody,
   TableHead,
 } from "../../../../_global/components/Table";
-import { Badge } from "../../../../_global/components/Badge";
+import { formatTime } from "../../../../_global/lib/format-time";
+import { useSubmissions } from "../../../../learning/hooks/submissions/useSubmissions";
+import { useAssignmentsCreation, useDetailAssignment } from "../../../hooks/assignments/useAssignmentsCreation";
 import { AssignmentDrawerCreation } from "../../drawer/AssignmentDrawerCreation";
 
 interface DialogType {
@@ -69,18 +69,18 @@ export const DetailAssignmentContent = () => {
   }
 
   const handleApprove = async () => {
-    setApproval(null);
-    approve.mutateAsync({
+    await approve.mutateAsync({
       submissionId: approval?.submissionId ?? "",
     });
+    setApproval(null);
   };
 
   const handleReject = async () => {
-    setApproval(null);
-    reject.mutateAsync({
+    await reject.mutateAsync({
       submissionId: approval?.submissionId ?? "",
       feedback: approval?.feedback,
     });
+    setApproval(null);
   };
   return (
     <>
@@ -191,9 +191,12 @@ export const DetailAssignmentContent = () => {
                               {submission?.user?.name?.charAt(0)}
                             </div>
                           )}
-                          <div className="ml-3">
+                          <div className="ml-3 flex flex-col">
                             <div className="text-sm font-medium text-gray-900 line-clamp-1">
                               {submission.user?.name}
+                            </div>
+                            <div className="text-sm font-medium text-gray-900 line-clamp-1">
+                              {submission.user?.email}
                             </div>
                           </div>
                         </div>
