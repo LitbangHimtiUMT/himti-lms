@@ -486,14 +486,14 @@ export const DetailAssignmentContent = () => {
       <AssignmentDrawerCreation
         onHide={onHide}
         show={show}
-        data={{
+        data={show ? {
           description: assignment?.description,
           dueDate: assignment?.dueDate,
           id: assignment?.id,
           allowedFile: assignment?.allowedFile ?? undefined,
           title: assignment?.title,
           type: assignment?.type,
-        }}
+        } : undefined}
       />
     </>
   );
