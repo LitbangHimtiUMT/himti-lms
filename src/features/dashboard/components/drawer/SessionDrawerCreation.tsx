@@ -42,6 +42,7 @@ export const SessionDrawerCreation: React.FC<Props> = ({ onHide, show, data }) =
     }
     onHide();
     setForm({ name: "" });
+
   };
 
   return (
@@ -59,7 +60,7 @@ export const SessionDrawerCreation: React.FC<Props> = ({ onHide, show, data }) =
             marginTop: "3rem",
           }}
         >
-          <form
+         {show ?  <form
             className="px-5 flex flex-col items-center gap-3"
             onSubmit={handleSubmit}
           >
@@ -77,7 +78,7 @@ export const SessionDrawerCreation: React.FC<Props> = ({ onHide, show, data }) =
             >
               {mutation.isPending ? "Loading..." : data? "Update" : "Create"}
             </Button>
-          </form>
+          </form> : null}
         </Drawer>
     </>
   );

@@ -23,6 +23,7 @@ export const AssignmentDetailView = () => {
             mode.assignment ? isFetchingAssignment : isFetchingSubmission
           }
           isOpen={mode.assignment ? assignment?.data?.isOpen : submissions?.data?.isOpen}
+          type={mode.assignment ? assignment?.data?.type : submissions?.data?.assignment?.type}
           data={
             (mode.assignment
               ? {

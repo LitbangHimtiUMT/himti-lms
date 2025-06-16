@@ -145,7 +145,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
                   : data
                   ? {
                       label: "URL",
-                      value: "url",
+                      value: "URL",
                     }
                   : undefined
               }
@@ -164,7 +164,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
                 },
                 {
                   label: "URL",
-                  value: "url",
+                  value: "URL",
                 },
               ]}
             />

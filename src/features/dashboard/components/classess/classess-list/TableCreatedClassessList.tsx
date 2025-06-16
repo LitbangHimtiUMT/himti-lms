@@ -83,8 +83,8 @@ export const TableCreatedClassessList = () => {
         ]}
         columnTable={[
           {
-            return: ({ name }) => (
-              <div className="font-medium text-gray-900 dark:text-white">
+            return: ({ name, id }) => (
+              <div onClick={() => navigate(`/dashboard/my-class/${id}`)} className="font-medium cursor-pointer text-gray-900 dark:text-white hover:underline duration-300 hover:text-light-blue-800">
                 {name}
               </div>
             ),

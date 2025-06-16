@@ -20,6 +20,7 @@ interface IMasterTableProps<T extends DefaultKey> {
   withAction?: boolean;
   columnTable: ColumnTable<T>[];
   pagination?: IPaginationProps;
+  onClickItem?: (item: T) => void;
 }
 
 export const MasterTable = <T extends DefaultKey>({
@@ -29,6 +30,7 @@ export const MasterTable = <T extends DefaultKey>({
   columnTable,
   isLoading,
   pagination,
+  onClickItem,
 }: IMasterTableProps<T>) => {
   return (
     <div className="flex flex-col">
@@ -37,13 +39,10 @@ export const MasterTable = <T extends DefaultKey>({
           <TableHead field={title} />
           <TableBody>
             {data?.length ? (
-              data?.map((item, index) => (
+              data?.map((item) => (
                 <tr
-                  className={`${
-                    index === (data?.length as number) - 1
-                      ? ""
-                      : "border-b border-solid border-[#a5a5a5]"
-                  }`}
+                  onClick={() => onClickItem?.(item)}
+                  className={`hover:bg-gray-500 border-b border-gray-300 last:border-b-0`}
                 >
                   {columnTable.map((column, index) => (
                     <td key={index} className="p-4 bg-gray-100 text-left">
@@ -83,7 +82,7 @@ export const MasterTable = <T extends DefaultKey>({
         </>
       </Table>
       <ConditionNode condition={!!pagination && pagination?.totalPages > 1}>
-        <Pagination {...pagination as IPaginationProps} />
+        <Pagination {...(pagination as IPaginationProps)} />
       </ConditionNode>
     </div>
   );

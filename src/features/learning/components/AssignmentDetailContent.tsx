@@ -40,6 +40,7 @@ export interface AssignmentDataProps {
 export interface AssignmentDetailViewProps {
   mode: "current" | "history";
   data: AssignmentDataProps;
+  type?: 'FILE' | 'URL'
   onSubmit?: (formData: FormData) => Promise<void>;
   isLoading?: boolean;
   isOpen?: boolean;
@@ -50,6 +51,7 @@ export const AssignmentDetailContent = ({
   data,
   isLoading = false,
   isOpen,
+  type,
 }: AssignmentDetailViewProps) => {
   const [sidebarOpen] = useAtom(LearningSidebarAtom);
 
@@ -72,6 +74,7 @@ export const AssignmentDetailContent = ({
         <HeaderAssignment
           data={data}
           mode={mode}
+          type={type || 'URL'}
           isSubmit={isSubmit}
           isOpen={isOpen && !isLoading}
         />

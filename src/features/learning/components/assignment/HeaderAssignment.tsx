@@ -15,6 +15,7 @@ interface HeaderAssignmentProps {
   mode: "current" | "history";
   isSubmit: boolean;
   isOpen?: boolean;
+  type: "FILE" | "URL";
 }
 
 export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
@@ -22,6 +23,7 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
   mode,
   isSubmit,
   isOpen,
+  type,
 }) => {
   const [files, setFiles] = useState<File | string | undefined>(undefined);
   const mutation = useAssignmentsCreation();
@@ -121,7 +123,11 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
               <p className="text-gray-600">{data.module?.name}</p>
             </div>
             {mode === "current" && data.dueDate && (
-              <div className={`flex items-center text-sm ${isOpen ? 'bg-blue-50 text-blue-800' : 'bg-red-50 text-red-800'} px-3 py-2 rounded-lg`}>
+              <div
+                className={`flex items-center text-sm ${
+                  isOpen ? "bg-blue-50 text-blue-800" : "bg-red-50 text-red-800"
+                } px-3 py-2 rounded-lg`}
+              >
                 <FaCalendarAlt className="mr-2" />
                 <span>Due: {formatTime(data.dueDate, false)}</span>
               </div>
@@ -194,6 +200,7 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
           </div>
         ) : (
           <CardSubmission
+            type={type}
             data={data}
             mode={mode}
             isLoading={mutation.isPending}

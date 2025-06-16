@@ -1,5 +1,5 @@
 import React from "react";
-import { FaDownload, FaFileAlt } from "react-icons/fa";
+import { FaDownload, FaFileAlt, FaLink } from "react-icons/fa";
 import { formatTime } from "../../../_global/lib/format-time";
 import { AssignmentDetailViewProps } from "../AssignmentDetailContent";
 import { Badge } from "../../../_global/components/Badge";
@@ -8,6 +8,7 @@ import { StatusRecord } from "../../../dashboard/store";
 export const CardSubmission: React.FC<AssignmentDetailViewProps> = ({
   data,
   mode,
+  type,
 }) => {
   const submission = data.submission;
   return (
@@ -64,15 +65,27 @@ export const CardSubmission: React.FC<AssignmentDetailViewProps> = ({
             {submission?.file ? (
               <a
                 href={submission.file}
-                className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                className={`flex items-center justify-between p-4 hover:bg-gray-50 transition-colors ${
+                  type === "URL" ? "text-blue-500 underline" : ""
+                }`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div className="flex items-center">
-                  <FaFileAlt className="text-gray-400 mr-3" />
-                  <span>{submission.file.split("/").pop()}</span>
+                  {type === "FILE" ? (
+                    <FaFileAlt className="text-gray-400 mr-3" />
+                  ) : null}
+                  <span>
+                    {type === "FILE"
+                      ? submission.file.split("/").pop()
+                      : submission.file}
+                  </span>
                 </div>
-                <FaDownload className="text-gray-400" />
+                {type === "FILE" ? (
+                  <FaDownload className="text-gray-400" />
+                ) : (
+                  <FaLink className="text-gray-400" />
+                )}
               </a>
             ) : (
               <div className="p-4 text-center text-gray-500">
