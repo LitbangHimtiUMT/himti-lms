@@ -21,7 +21,7 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
   const [show, setShow] = useState<boolean>(false);
   return (
     <>
-      {(token && profile?.data) || isFetching  ? (
+      {token || isFetching ? (
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
             {isFetching ? (

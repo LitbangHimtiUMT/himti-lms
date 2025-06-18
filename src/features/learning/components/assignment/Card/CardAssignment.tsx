@@ -15,6 +15,7 @@ interface CardAssignmentProps {
   assignmentId: string;
   moduleId: string;
   type?: "active" | "history";
+  submissionId?: string;
   isOpen?: boolean;
 }
 
@@ -27,6 +28,7 @@ export const CardAssignment: React.FC<CardAssignmentProps> = ({
   moduleId,
   type = "active",
   isOpen,
+  submissionId,
 }) => {
   const { classId } = useParams();
   const navigate = useNavigate();
@@ -63,7 +65,9 @@ export const CardAssignment: React.FC<CardAssignmentProps> = ({
             <Button
               onClick={() =>
                 navigate(
-                  `/learning/${classId}/assignment/${assignmentId}?moduleId=${moduleId}`
+                  `/learning/${classId}/assignment/${assignmentId}${
+                    submissionId ? `/${submissionId}` : ""
+                  }?moduleId=${moduleId}`
                 )
               }
               variant={

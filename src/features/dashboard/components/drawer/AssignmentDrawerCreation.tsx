@@ -44,7 +44,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
   moduleId,
   data,
 }) => {
-  const [form, setForm] = useState<FormState>(defaultValue);
+  const [form, setForm] = useState<FormState>(data || defaultValue);
 
   const mutation = useAssignmentsCreation();
 
@@ -77,8 +77,12 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (show && data) setForm(data);
+    if (show) {
+      console.log({data: data?.dueDate})
+      setForm(data || defaultValue);
+    }
   }, [show, data]);
+  
   return (
     <>
       <Drawer
@@ -108,7 +112,8 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
           <div className="flex flex-col gap-2 w-full">
             <Poppins className="text-sm">Due Date</Poppins>
             <DatePicker
-              initialStartDate={form.dueDate}
+              defaultValue={form?.dueDate}
+
               fullWidth={false}
               mode="date"
               placeholder="Pick a date"

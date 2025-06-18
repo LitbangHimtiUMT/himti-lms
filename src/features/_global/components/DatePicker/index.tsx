@@ -8,8 +8,12 @@ interface DatePickerProps {
   mode?: DatePickerMode;
   range?: boolean;
   onChange?: (date: Date | DateRange) => void;
+  // Legacy props (deprecated but still supported)
   initialStartDate?: Date;
   initialEndDate?: Date;
+  // New value props
+  value?: Date | DateRange;
+  defaultValue?: Date | DateRange;
   className?: string;
   placeholder?: string;
   displayFormat?: string;
@@ -21,8 +25,12 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   mode = "date",
   range = false,
   onChange,
+  // Legacy props
   initialStartDate,
   initialEndDate,
+  // New props
+  value,
+  defaultValue,
   className = "",
   placeholder = "Select date",
   displayFormat = "MMM dd, yyyy",
@@ -31,17 +39,76 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [viewMode, setViewMode] = useState<DatePickerMode>(mode);
-  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(
-    initialStartDate || null
-  );
-  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(
-    initialEndDate || null
-  );
+  // Helper function to validate and convert date
+  const validateDate = (date: Date | undefined | null): Date | null => {
+    if (!date) return null;
+  
+    // Handle case when date is already a Date object
+    if (date instanceof Date) {
+      return isNaN(date.getTime()) ? null : date;
+    }
+    
+    // Handle string dates
+    if (typeof date === 'string') {
+      const parsed = new Date(date);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+    
+    // Handle number timestamps
+    if (typeof date === 'number') {
+      return new Date(date);
+    }
+    
+    return null;
+  };
+
+  // Initialize state based on props
+  const getInitialStartDate = (): Date | null => {
+    // Priority: value > defaultValue > legacy props
+    if (value !== undefined) {
+      if (range && Array.isArray(value)) {
+        return validateDate(value[0]);
+      } else if (!range && !Array.isArray(value)) {
+        return validateDate(value);
+      }
+    }
+    
+    if (defaultValue !== undefined) {
+      if (range && Array.isArray(defaultValue)) {
+        return validateDate(defaultValue[0]);
+      } else if (!range && !Array.isArray(defaultValue)) {
+        const date = validateDate(defaultValue)
+        return date
+      }
+    }
+    
+    // Fallback to legacy props
+    return validateDate(initialStartDate);
+  };
+  
+  const getInitialEndDate = (): Date | null => {
+    if (value !== undefined && range && Array.isArray(value)) {
+      return validateDate(value[1]);
+    }
+    
+    if (defaultValue !== undefined && range && Array.isArray(defaultValue)) {
+      return validateDate(defaultValue[1]);
+    }
+    
+    // Fallback to legacy props
+    return validateDate(initialEndDate);
+  };
+  
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(getInitialStartDate());
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(getInitialEndDate());
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [triggerWidth, setTriggerWidth] = useState(0);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  
+  // Check if component is controlled
+  const isControlled = value !== undefined;
 
   const months = [
     "January",
@@ -62,6 +129,26 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   // Generate years from 1900 to 2100
   const years = Array.from({ length: 201 }, (_, i) => 1900 + i);
+
+  // Update internal state when value prop changes (controlled mode)
+  useEffect(() => {
+    if (isControlled) {
+      if (range && Array.isArray(value)) {
+        const start = validateDate(value[0]);
+        const end = validateDate(value[1]);
+        if (start !== selectedStartDate || end !== selectedEndDate) {
+          setSelectedStartDate(start);
+          setSelectedEndDate(end);
+        }
+      } else if (!range && !Array.isArray(value)) {
+        const date = validateDate(value);
+        if (date !== selectedStartDate) {
+          setSelectedStartDate(date);
+          setSelectedEndDate(null);
+        }
+      }
+    }
+  }, [value, range, isControlled]);
 
   // Close dropdown when clicking outside and measure trigger width
   useEffect(() => {
@@ -92,7 +179,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       window.removeEventListener("resize", measureTrigger);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [fullWidth]);
 
   const navigatePeriod = (direction: number) => {
     const newDate = new Date(currentDate);
@@ -113,27 +200,41 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   };
 
   const selectDate = (day: number) => {
-    const newDate = new Date(Date.UTC(
+    const newDate = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
       day
-    ));
+    );
 
     if (range) {
-      if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-        setSelectedStartDate(newDate);
-        setSelectedEndDate(null);
-        if (onChange) onChange([newDate, null]);
-      } else if (newDate > selectedStartDate) {
-        setSelectedEndDate(newDate);
-        if (onChange) onChange([selectedStartDate, newDate]);
+      const currentStartDate = getCurrentStartDate();
+      const currentEndDate = getCurrentEndDate();
+      
+      if (!currentStartDate || (currentStartDate && currentEndDate)) {
+        const newRange: DateRange = [newDate, null];
+        if (!isControlled) {
+          setSelectedStartDate(newDate);
+          setSelectedEndDate(null);
+        }
+        if (onChange) onChange(newRange);
+      } else if (newDate > currentStartDate) {
+        const newRange: DateRange = [currentStartDate, newDate];
+        if (!isControlled) {
+          setSelectedEndDate(newDate);
+        }
+        if (onChange) onChange(newRange);
       } else {
-        setSelectedEndDate(selectedStartDate);
-        setSelectedStartDate(newDate);
-        if (onChange) onChange([newDate, selectedStartDate]);
+        const newRange: DateRange = [newDate, currentStartDate];
+        if (!isControlled) {
+          setSelectedEndDate(currentStartDate);
+          setSelectedStartDate(newDate);
+        }
+        if (onChange) onChange(newRange);
       }
     } else {
-      setSelectedStartDate(newDate);
+      if (!isControlled) {
+        setSelectedStartDate(newDate);
+      }
       if (onChange) onChange(newDate);
       setIsOpen(false);
     }
@@ -161,6 +262,26 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     return new Date(year, month, 1).getDay();
   };
 
+  // Get current values (for controlled vs uncontrolled mode)
+  const getCurrentStartDate = (): Date | null => {
+    if (isControlled) {
+      if (range && Array.isArray(value)) {
+        return validateDate(value[0]);
+      } else if (!range && !Array.isArray(value)) {
+        return validateDate(value);
+      }
+      return null;
+    }
+    return selectedStartDate;
+  };
+
+  const getCurrentEndDate = (): Date | null => {
+    if (isControlled && range && Array.isArray(value)) {
+      return validateDate(value[1]);
+    }
+    return selectedEndDate;
+  };
+
   const isDateSelected = (day: number): boolean => {
     const date = new Date(
       currentDate.getFullYear(),
@@ -168,29 +289,35 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       day
     );
 
+    const currentStartDate = getCurrentStartDate();
+    const currentEndDate = getCurrentEndDate();
+
     if (!range) {
       return (
-        selectedStartDate !== null &&
-        date.getDate() === selectedStartDate.getDate() &&
-        date.getMonth() === selectedStartDate.getMonth() &&
-        date.getFullYear() === selectedStartDate.getFullYear()
+        currentStartDate !== null &&
+        date.getDate() === currentStartDate.getDate() &&
+        date.getMonth() === currentStartDate.getMonth() &&
+        date.getFullYear() === currentStartDate.getFullYear()
       );
     } else {
-      if (!selectedStartDate) return false;
-      if (!selectedEndDate) {
+      if (!currentStartDate) return false;
+      if (!currentEndDate) {
         return (
-          date.getDate() === selectedStartDate.getDate() &&
-          date.getMonth() === selectedStartDate.getMonth() &&
-          date.getFullYear() === selectedStartDate.getFullYear()
+          date.getDate() === currentStartDate.getDate() &&
+          date.getMonth() === currentStartDate.getMonth() &&
+          date.getFullYear() === currentStartDate.getFullYear()
         );
       }
 
-      return date >= selectedStartDate && date <= selectedEndDate;
+      return date >= currentStartDate && date <= currentEndDate;
     }
   };
 
   const isDateInRange = (day: number): boolean => {
-    if (!range || !selectedStartDate || !hoverDate || selectedEndDate)
+    const currentStartDate = getCurrentStartDate();
+    const currentEndDate = getCurrentEndDate();
+    
+    if (!range || !currentStartDate || !hoverDate || currentEndDate)
       return false;
 
     const date = new Date(
@@ -198,8 +325,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       currentDate.getMonth(),
       day
     );
-    const start = selectedStartDate < hoverDate ? selectedStartDate : hoverDate;
-    const end = selectedStartDate < hoverDate ? hoverDate : selectedStartDate;
+    const start = currentStartDate < hoverDate ? currentStartDate : hoverDate;
+    const end = currentStartDate < hoverDate ? hoverDate : currentStartDate;
 
     return date > start && date < end;
   };
@@ -247,7 +374,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           onClick={() => selectDate(day)}
           onMouseEnter={() =>
             range &&
-            !selectedEndDate &&
+            !getCurrentEndDate() &&
             setHoverDate(
               new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
             )
@@ -262,15 +389,18 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   };
 
   const renderMonths = () => {
+    const currentStartDate = getCurrentStartDate();
+    
     return months.map((month, index) => {
       const isCurrentMonth = currentDate.getMonth() === index;
       const isSelectedMonth =
-        selectedStartDate &&
-        selectedStartDate.getMonth() === index &&
-        isSameMonth(currentDate, selectedStartDate);
+        currentStartDate &&
+        currentStartDate.getMonth() === index &&
+        isSameMonth(currentDate, currentStartDate);
 
       return (
         <button
+          type="button"
           key={month}
           className={`py-2 rounded-md text-sm
             ${isCurrentMonth ? "font-semibold" : ""}
@@ -291,12 +421,14 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       years.indexOf(startYear),
       years.indexOf(startYear) + 10
     );
+    
+    const currentStartDate = getCurrentStartDate();
 
     return displayedYears.map((year) => {
       const isCurrentYear = currentDate.getFullYear() === year;
       const isSelectedYear =
-        selectedStartDate &&
-        selectedStartDate.getFullYear() === year &&
+        currentStartDate &&
+        currentStartDate.getFullYear() === year &&
         currentDate.getFullYear() === year;
 
       return (
@@ -339,16 +471,19 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   };
 
   const formatDisplayDate = (): string => {
+    const currentStartDate = getCurrentStartDate();
+    const currentEndDate = getCurrentEndDate();
+    
     if (range) {
-      if (!selectedStartDate) return placeholder;
-      if (!selectedEndDate) return format(selectedStartDate, displayFormat);
-      return `${format(selectedStartDate, displayFormat)} - ${format(
-        selectedEndDate,
+      if (!currentStartDate) return placeholder;
+      if (!currentEndDate) return format(currentStartDate, displayFormat);
+      return `${format(currentStartDate, displayFormat)} - ${format(
+        currentEndDate,
         displayFormat
       )}`;
     } else {
-      return selectedStartDate
-        ? format(selectedStartDate, displayFormat)
+      return currentStartDate
+        ? format(currentStartDate, displayFormat)
         : placeholder;
     }
   };
@@ -372,7 +507,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           }
           focus:outline-none focus:ring-2 focus:ring-blue-500`}
       >
-        <span className={`${!selectedStartDate ? "text-gray-400" : ""}`}>
+        <span className={`${!getCurrentStartDate() ? "text-gray-400" : ""}`}>
           {formatDisplayDate()}
         </span>
         <svg

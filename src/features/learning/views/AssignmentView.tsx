@@ -74,6 +74,7 @@ export const AssignmentView: React.FC<AssignmentProps> = ({ modules }) => {
             modules?.assignment?.historySubmission?.map((assignment) => (
               <>
                 <CardAssignment
+                  submissionId={assignment.id}
                   assignmentId={modules?.assignment?.id || ""}
                   isHaveActiveSubmission
                   moduleId={modules.id}

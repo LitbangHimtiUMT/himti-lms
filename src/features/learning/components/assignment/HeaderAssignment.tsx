@@ -25,6 +25,7 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
   isOpen,
   type,
 }) => {
+  console.log({data})
   const [files, setFiles] = useState<File | string | undefined>(undefined);
   const mutation = useAssignmentsCreation();
   const renderSubmissionForm = () => {
