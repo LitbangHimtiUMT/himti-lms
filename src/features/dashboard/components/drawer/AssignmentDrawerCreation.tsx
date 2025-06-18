@@ -112,8 +112,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
           <div className="flex flex-col gap-2 w-full">
             <Poppins className="text-sm">Due Date</Poppins>
             <DatePicker
-              defaultValue={form?.dueDate}
-
+              value={form?.dueDate}
               fullWidth={false}
               mode="date"
               placeholder="Pick a date"

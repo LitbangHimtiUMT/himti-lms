@@ -42,23 +42,23 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   // Helper function to validate and convert date
   const validateDate = (date: Date | undefined | null): Date | null => {
     if (!date) return null;
-  
+
     // Handle case when date is already a Date object
     if (date instanceof Date) {
       return isNaN(date.getTime()) ? null : date;
     }
-    
+
     // Handle string dates
-    if (typeof date === 'string') {
+    if (typeof date === "string") {
       const parsed = new Date(date);
       return isNaN(parsed.getTime()) ? null : parsed;
     }
-    
+
     // Handle number timestamps
-    if (typeof date === 'number') {
+    if (typeof date === "number") {
       return new Date(date);
     }
-    
+
     return null;
   };
 
@@ -72,41 +72,45 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         return validateDate(value);
       }
     }
-    
+
     if (defaultValue !== undefined) {
       if (range && Array.isArray(defaultValue)) {
         return validateDate(defaultValue[0]);
       } else if (!range && !Array.isArray(defaultValue)) {
-        const date = validateDate(defaultValue)
-        return date
+        const date = validateDate(defaultValue);
+        return date;
       }
     }
-    
+
     // Fallback to legacy props
     return validateDate(initialStartDate);
   };
-  
+
   const getInitialEndDate = (): Date | null => {
     if (value !== undefined && range && Array.isArray(value)) {
       return validateDate(value[1]);
     }
-    
+
     if (defaultValue !== undefined && range && Array.isArray(defaultValue)) {
       return validateDate(defaultValue[1]);
     }
-    
+
     // Fallback to legacy props
     return validateDate(initialEndDate);
   };
-  
-  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(getInitialStartDate());
-  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(getInitialEndDate());
+
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(
+    getInitialStartDate()
+  );
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(
+    getInitialEndDate()
+  );
   const [hoverDate, setHoverDate] = useState<Date | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [triggerWidth, setTriggerWidth] = useState(0);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  
+
   // Check if component is controlled
   const isControlled = value !== undefined;
 
@@ -201,15 +205,13 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const selectDate = (day: number) => {
     const newDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      day
+      Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), day)
     );
 
     if (range) {
       const currentStartDate = getCurrentStartDate();
       const currentEndDate = getCurrentEndDate();
-      
+
       if (!currentStartDate || (currentStartDate && currentEndDate)) {
         const newRange: DateRange = [newDate, null];
         if (!isControlled) {
@@ -316,7 +318,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   const isDateInRange = (day: number): boolean => {
     const currentStartDate = getCurrentStartDate();
     const currentEndDate = getCurrentEndDate();
-    
+
     if (!range || !currentStartDate || !hoverDate || currentEndDate)
       return false;
 
@@ -390,7 +392,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const renderMonths = () => {
     const currentStartDate = getCurrentStartDate();
-    
+
     return months.map((month, index) => {
       const isCurrentMonth = currentDate.getMonth() === index;
       const isSelectedMonth =
@@ -421,7 +423,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
       years.indexOf(startYear),
       years.indexOf(startYear) + 10
     );
-    
+
     const currentStartDate = getCurrentStartDate();
 
     return displayedYears.map((year) => {
@@ -473,7 +475,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   const formatDisplayDate = (): string => {
     const currentStartDate = getCurrentStartDate();
     const currentEndDate = getCurrentEndDate();
-    
+
     if (range) {
       if (!currentStartDate) return placeholder;
       if (!currentEndDate) return format(currentStartDate, displayFormat);
