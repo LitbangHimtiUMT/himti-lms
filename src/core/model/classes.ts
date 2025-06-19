@@ -5,6 +5,7 @@ import { ModuleDTO } from "./modules";
 import { CourseType } from "../../features/dashboard/store";
 
 export type StatusClassess = 'PUBLISH' | 'DRAFT'
+export type ProgressStatus = "Completed" | "In Progress"
 
 export interface SessionDTO {
   id: string;
@@ -30,7 +31,7 @@ export interface ClassModel {
   price: number;
   creator: UserModel;
   sessions: SessionDTO[];
-  progressStatus: "Completed" | "In Progress";
+  progressStatus: ProgressStatus;
   totalParticipant: number
   total: {
     module: number;

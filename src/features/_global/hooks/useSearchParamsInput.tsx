@@ -27,5 +27,8 @@ export const useSearchParamsInput = (paramKey: string) => {
   return {
     value,
     handleInputChange,
+    fn: (func: (val: string) => void) => func(value), 
+    setSearchParams,
+    queries
   };
 };

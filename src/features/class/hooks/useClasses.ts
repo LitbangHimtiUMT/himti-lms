@@ -37,6 +37,7 @@ export function useClasses(options?: Options) {
   const [searchParams] = useSearchParams();
   const page = options?.page || searchParams.get("page") || 1;
   const perPage = options?.perPage || searchParams.get("perPage") || 10;
+  const categoryId = searchParams.get("categoryId")
   const searchQuery =
     options?.search || searchParams.get("search") || undefined;
   const search = useDebounce(searchQuery as string, 500);
@@ -45,7 +46,7 @@ export function useClasses(options?: Options) {
   const query = useQuery({
     queryKey: [
       "classes",
-      { page, perPage, search, path: options?.path, token },
+      { page, perPage, search, path: options?.path, token, categoryId },
     ],
     queryFn: () =>
       classesService.get({
@@ -53,6 +54,7 @@ export function useClasses(options?: Options) {
           perPage: perPage ? Number(perPage) : undefined,
           page: page ? Number(page) : undefined,
           search,
+          ...categoryId && { categoryId }
         },
         path: options?.path,
       }),

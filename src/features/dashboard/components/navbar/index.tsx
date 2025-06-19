@@ -37,7 +37,7 @@ export const DashboardNavbar = () => {
                   </>
                 ) : (
                   <>
-                    <Poppins className="text-xs">
+                    <Poppins className="text-xs max-w-[140px] truncate overflow-hidden whitespace-nowrap">
                       {profile?.data?.name || "unknown"}
                     </Poppins>
                     <img
@@ -65,7 +65,7 @@ export const DashboardNavbar = () => {
                   onClick={() => setShow((prev) => !prev)}
                 >
                   <CiLogout className="text-white" />
-                  <Poppins className="text-xs text-white">Logout</Poppins>
+                  <Poppins className="text-xs text-white md:block hidden">Logout</Poppins>
                 </div>
               )}
             </div>
