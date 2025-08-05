@@ -8,18 +8,24 @@ interface ModulesCreationPayload {
   data?: FormData;
   sessionId?: string;
   id?: string;
-  type: "create" | 'update' | 'delete';
+  type: "create" | "update" | "delete";
 }
 
 export const useModules = (id?: string) => {
   const [searchParams] = useSearchParams();
   const sessionId = id || searchParams.get("sessionId") || undefined;
+  const page = searchParams.get("page") || undefined;
+  const perPage = searchParams.get("perPage") || undefined;
 
   const query = useQuery({
-    queryKey: ["modules", { sessionId }],
+    queryKey: ["modules", { sessionId, page, perPage }],
     queryFn: () =>
       moduleService.getBySession({
         path: `session/${sessionId}`,
+        queryParams: {
+          page: page ? Number(page) : undefined,
+          perPage: perPage ? Number(perPage) : undefined,
+        },
       }),
     enabled: !!sessionId,
   });
@@ -65,7 +71,7 @@ export const useModulesCreation = () => {
       data,
       type,
       sessionId: session,
-      id
+      id,
     }: ModulesCreationPayload) => {
       switch (type) {
         case "create":
