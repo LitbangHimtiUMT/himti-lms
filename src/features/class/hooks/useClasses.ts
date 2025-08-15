@@ -37,7 +37,7 @@ export function useClasses(options?: Options) {
   const [searchParams] = useSearchParams();
   const page = options?.page || searchParams.get("page") || 1;
   const perPage = options?.perPage || searchParams.get("perPage") || 10;
-  const categoryId = searchParams.get("categoryId")
+  const categoryId = searchParams.get("categoryId");
   const searchQuery =
     options?.search || searchParams.get("search") || undefined;
   const search = useDebounce(searchQuery as string, 500);
@@ -54,7 +54,7 @@ export function useClasses(options?: Options) {
           perPage: perPage ? Number(perPage) : undefined,
           page: page ? Number(page) : undefined,
           search,
-          ...categoryId && { categoryId }
+          ...(categoryId && { categoryId }),
         },
         path: options?.path,
       }),
@@ -136,7 +136,7 @@ export function useClassesCreation() {
         });
       }
 
-      if(vars.type === 'delete') {
+      if (vars.type === "delete") {
         navigate(`/dashboard/my-class`);
       }
 
@@ -158,11 +158,19 @@ export function useClassesCreation() {
 
 export function useDetailClass(by: "id" | "code" = "id", cId?: string) {
   const { id, classId, code } = useParams();
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || undefined;
+  const perPage = searchParams.get("perPage") || undefined;
+
   return useQuery({
-    queryKey: ["classesById", { cId, id, code, classId }],
+    queryKey: ["classesById", { cId, id, code, classId, page, perPage }],
     queryFn: () =>
       classesService.getById({
         path: by === "id" ? cId || classId || id : `code/${code}`,
+        queryParams: {
+          page: page ? Number(page) : undefined,
+          perPage: perPage ? Number(perPage) : undefined,
+        },
       }),
     enabled: !!cId || !!id || !!classId || !!code,
   });
