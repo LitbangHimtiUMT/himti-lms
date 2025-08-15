@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { SessionCreationDTO } from "../../../../core/model/sessions";
 import { sessionService } from "../../../../core/services/sessions";
@@ -12,12 +12,18 @@ interface CreationPayload {
 
 export const useSessions = () => {
   const { classId } = useParams();
-
+const [searchParams] = useSearchParams();
+  const page = searchParams.get("page") || undefined;
+  const perPage = searchParams.get("perPage") || undefined;
   const query = useQuery({
-    queryKey: ["sessions", { classId }],
+    queryKey: ["sessions", { classId, page, perPage }],
     queryFn: () =>
       sessionService.getByClass({
         path: `class/${classId}`,
+        queryParams: {
+           page: page ? Number(page) : undefined,
+          perPage: perPage ? Number(perPage) : undefined,
+        }
       }),
     enabled: !!classId,
   });
