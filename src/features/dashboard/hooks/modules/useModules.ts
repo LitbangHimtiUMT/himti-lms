@@ -1,0 +1,104 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { moduleService } from "../../../../core/services/modules";
+
+interface ModulesCreationPayload {
+  data?: FormData;
+  sessionId?: string;
+  id?: string;
+  type: "create" | "update" | "delete";
+}
+
+export const useModules = (id?: string) => {
+  const [searchParams] = useSearchParams();
+  const sessionId = id || searchParams.get("sessionId") || undefined;
+  const page = searchParams.get("page") || undefined;
+  const perPage = searchParams.get("perPage") || undefined;
+
+  const query = useQuery({
+    queryKey: ["modules", { sessionId, page, perPage }],
+    queryFn: () =>
+      moduleService.getBySession({
+        path: `session/${sessionId}`,
+        queryParams: {
+          page: page ? Number(page) : undefined,
+          perPage: perPage ? Number(perPage) : undefined,
+        },
+      }),
+    enabled: !!sessionId,
+  });
+
+  return query;
+};
+
+export const useDetailModule = (id?: string) => {
+  const { moduleId } = useParams();
+  const [searchParams] = useSearchParams();
+  const module = searchParams.get("moduleId") || undefined;
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: ["detail-module", { moduleId, id, module }],
+    queryFn: () =>
+      moduleService.getById({
+        path: moduleId || module || id,
+      }),
+    enabled: !!moduleId || !!module || !!id,
+  });
+
+  useEffect(() => {
+    queryClient.removeQueries({
+      queryKey: ["sessions"],
+    });
+    queryClient.removeQueries({
+      queryKey: ["modules"],
+    });
+    queryClient.removeQueries({
+      queryKey: ["classes"],
+    });
+  }, [id, queryClient]);
+
+  return query;
+};
+
+export const useModulesCreation = () => {
+  const { sessionId, classId } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: ({
+      data,
+      type,
+      sessionId: session,
+      id,
+    }: ModulesCreationPayload) => {
+      switch (type) {
+        case "create":
+          return moduleService.create(data, {
+            path: `${session || sessionId}`,
+            contentType: "form-data",
+          });
+        case "delete":
+          return moduleService.delete({
+            path: id,
+          });
+        default:
+          return moduleService.create(data, {
+            path: `${session || sessionId}`,
+            contentType: "form-data",
+          });
+      }
+    },
+    onSuccess: (res) => {
+      navigate(`/dashboard/${classId}/${sessionId}`);
+      toast.success(res.message);
+      queryClient.removeQueries({
+        queryKey: ["modules"],
+      });
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  return mutation;
+};

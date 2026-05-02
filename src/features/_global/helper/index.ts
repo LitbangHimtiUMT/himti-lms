@@ -1,12 +1,12 @@
-export const convertQueryParamsToObject = (
+export const convertQueryParamsToObject = <T= Record<string, string>>(
     queryParams: string
-): Record<string, string> => {
+): T => {
     const query = new URLSearchParams(queryParams);
     const object: Record<string, string> = {};
     for (const [key, value] of query) {
         object[key] = value;
     }
-    return object;
+    return object as T;
 }
 
 export const convertObjectToQueryParams = (object?: Record<string, string | number | null | undefined>): string => {
@@ -44,3 +44,15 @@ export const FormatIDTime = (date: Date) => {
     const isoString = localDate.toISOString()
     return isoString
 }
+
+export function formatSize(size: number): string {
+    if (size < 1024) {
+      return `${size} bytes`;
+    } else if (size < 1048576) {
+      return `${(size / 1024).toFixed(2)}KB`;
+    } else if (size < 1073741824) {
+      return `${(size / 1048576).toFixed(2)}MB`;
+    } else {
+      return `${(size / 1073741824).toFixed(2)}GB`;
+    }
+  }

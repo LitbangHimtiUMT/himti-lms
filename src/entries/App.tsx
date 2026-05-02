@@ -6,6 +6,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import "leaflet/dist/leaflet.css";
 import 'react-toastify/dist/ReactToastify.css';
+import "react-day-picker/style.css";
 import { ToastContainer } from "react-toastify";
 
 function App() {

@@ -1,8 +1,16 @@
 export interface AuthLoginModel {
-    access_token?: string
+    accessToken?: string
+    refreshToken?: string
 }
 
-export interface AuthLoginBodyModel {
+export interface AuthLoginDTO {
     email: string,
     password: string
+}
+
+export interface AuthRegisterDTO {
+    name: string,
+    email: string,
+    password: string
+    confirmPassword?: string
 }

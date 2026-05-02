@@ -36,7 +36,7 @@ const CropperImage: React.FC<IProps> = ({
             aspectRatio={4 / 4} // 1080 / 1920 = 9 / 16
             guides={false}
             background={false} // Remove background grid
-            ref={cropperRef}
+            ref={cropperRef} // ref
             viewMode={1} // Restrict the crop box to not exceed the size of the canvas
             minCropBoxWidth={8} // Set minimum width of the crop box
             minCropBoxHeight={8} // Set minimum height of the crop box

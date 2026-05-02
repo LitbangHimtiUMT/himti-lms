@@ -1,161 +1,144 @@
-import AcaraView from "@features/admin/acara/view/acara";
-import AddAcaraView from "@features/admin/acara/view/addAcara";
-import DetailAcaraView from "@features/admin/acara/view/detailAcara";
-import EditAcaraView from "@features/admin/acara/view/editAcara";
-import AddAnggotaView from "@features/admin/anggota/view/addAnggota";
-import { AnggotaView } from "@features/admin/anggota/view/Anggotas";
-import EditAnggotaView from "@features/admin/anggota/view/editAnggota";
-import { AngkatanView } from "@features/admin/angkatan/view/Angkatan";
-import { CreateAngkatanView } from "@features/admin/angkatan/view/CreateAngkatan";
-import { UpdateAngkatanView } from "@features/admin/angkatan/view/UpdateAngkatan";
-import { DefaultView } from "@features/admin/default/Default";
-import AddDosenView from "@features/admin/dosen/view/addDosen";
-import { DosenView } from "@features/admin/dosen/view/Dosen";
-import EditDosenView from "@features/admin/dosen/view/editDosen";
-import AddStrukturalView from "@features/admin/struktural/view/addStruktural";
-import EditStrukturalView from "@features/admin/struktural/view/editStruktural";
-import StrukturalView from "@features/admin/struktural/view/struktural";
-import { UserLoginView } from "@features/admin/user-login/views/UserLogin";
-import { CreateUserView } from "@features/admin/users/view/CreateUser";
-import { UpdateUserView } from "@features/admin/users/view/UpdateUser";
-import { UserView } from "@features/admin/users/view/users";
-import AdminView from "@features/admin/view/Admin";
-import { AttendanceViews } from "@features/attendances/views/AttendanceViews";
-import LoginView from "@features/auth/view/LoginView";
-import { CreateEventMeetingViews } from "@features/event-meeting/views/CreateEventMeetingViews";
-import { CreateMeetingViews } from "@features/event-meeting/views/CreateMeetingViews";
-import { EventMeetingView } from "@features/event-meeting/views/EventMeeting";
-import { EventMeetingDetail } from "@features/event-meeting/views/EventMeetingDetail";
-import { UpdateEventMeetingViews } from "@features/event-meeting/views/UpdateEventMeetingViews";
-import { UpdateMeetingViews } from "@features/event-meeting/views/UpdateMeetingViews";
-import { VersionView } from "@features/version/view/version";
 import { createBrowserRouter } from "react-router-dom";
+import { NotFound } from "../../features/_global/components/NotFound";
+import { RootViews } from "../../features/_global/views";
+import { AuthLayout } from "../../features/_global/views/AuthLayout";
+import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
+import { InvitationRoot } from "../../features/_global/views/InvitationRoot";
+import { Playground } from "../../features/_global/views/playground";
+import { SignInViews } from "../../features/authentication/views/sign-in";
+import { SignUpViews } from "../../features/authentication/views/sign-up";
+import { ClassViews } from "../../features/class/views/ClassViews";
+import { CreateClassessViews } from "../../features/dashboard/views/CreateClassessViews";
+import { CreateModules } from "../../features/dashboard/views/CreateModules";
+import { DetailModuleView } from "../../features/dashboard/views/DetailModuleView";
+import { DetailSessionView } from "../../features/dashboard/views/DetailSessionView";
+import { EnrolledClassViews } from "../../features/dashboard/views/EnrolledClassViews";
+import { MyClassViews } from "../../features/dashboard/views/MyClassViews";
+import { FaqViews } from "../../features/faq/views/FaqViews";
+import { HomeViews } from "../../features/home/views/HomeViews";
+import { InvitationUseCodeViews } from "../../features/invitations/views/InvitationUseCodeViews";
+import { MentorViews } from "../../features/mentor/views/MentorViews";
+import { SessionViews } from "../../features/dashboard/views/SessionViews";
+import { ClassDetailView } from "@features/class/views/ClassDetailView";
+import { LearningDashboardView } from "@features/learning/views/LearningView";
+import { LearningUserRoot } from "../../features/_global/views/LearningUserRoot";
+import { AssignmentDetailView } from "../../features/learning/views/AssignmentDetailView";
+import { DetailAssignmentView } from "../../features/dashboard/views/DetailAssignmentViews";
+import { CertificatesViews } from "../../features/certificates/views/CertificatesViews";
 
 export const router = createBrowserRouter([
   {
-    path: "/admin/login",
-    element: <LoginView />,
-  },
-  {
     path: "/",
-    element: <AdminView />,
+    element: <RootViews />,
     children: [
       {
         path: "/",
-        element: <DefaultView />,
+        element: <HomeViews />,
       },
       {
-        path: "/admin/acara",
-        element: <AcaraView />,
+        path: "/class",
+        element: <ClassViews />,
       },
       {
-        path: "/admin/acara/create",
-        element: <AddAcaraView />,
+        path: "/class-detail",
+        element: <ClassDetailView />,
       },
       {
-        path: "/admin/acara/:id",
-        element: <DetailAcaraView />,
+        path: "/mentors",
+        element: <MentorViews />,
       },
       {
-        path: "/admin/acara/edit/:id",
-        element: <EditAcaraView />,
-      },
-      {
-        path: "/admin/user",
-        element: <UserView />,
-      },
-      {
-        path: "/admin/user/create",
-        element: <CreateUserView />,
-      },
-      {
-        path: "/admin/user/update/:id",
-        element: <UpdateUserView />,
-      },
-      {
-        path: "/admin/anggota",
-        element: <AnggotaView />,
-      },
-      {
-        path: "/admin/anggota/create",
-        element: <AddAnggotaView />,
-      },
-      {
-        path: "/admin/anggota/edit/:id",
-        element: <EditAnggotaView />,
-      },
-      {
-        path: "/admin/dosen",
-        element: <DosenView />,
-      },
-      {
-        path: "/admin/dosen/create",
-        element: <AddDosenView />,
-      },
-      {
-        path: "/admin/dosen/edit/:id",
-        element: <EditDosenView />,
-      },
-      {
-        path: "/admin/struktural",
-        element: <StrukturalView />,
-      },
-      {
-        path: "/admin/struktural/create",
-        element: <AddStrukturalView />,
-      },
-      {
-        path: "/admin/struktural/edit/:id",
-        element: <EditStrukturalView />,
-      },
-      {
-        path: "/admin/angkatan",
-        element: <AngkatanView />,
-      },
-      {
-        path: "/admin/angkatan/create",
-        element: <CreateAngkatanView />,
-      },
-      {
-        path: "/admin/angkatan/update/:id",
-        element: <UpdateAngkatanView />,
-      },
-      {
-        path: "/admin/user-login",
-        element: <UserLoginView />,
-      },
-      {
-        path: "/admin/event-meeting",
-        element: <EventMeetingView />,
-      },
-      {
-        path: "/admin/event-meeting/create",
-        element: <CreateEventMeetingViews />,
-      },
-      {
-        path: "/admin/event-meeting/update/:eventMeetingId",
-        element: <UpdateEventMeetingViews />,
-      },
-      {
-        path: "/admin/event-meeting/:eventMeetingId",
-        element: <EventMeetingDetail />,
-      },
-      {
-        path: "/admin/event-meeting/:eventMeetingId/meeting/create",
-        element: <CreateMeetingViews />,
-      },
-      {
-        path: "/admin/event-meeting/:eventMeetingId/meeting/update/:meetingId",
-        element: <UpdateMeetingViews />,
-      },
-      {
-        path: "/admin/event-meeting/:eventMeetingId/:meetingId",
-        element: <AttendanceViews />,
-      },
-      {
-        path: "/admin/version",
-        element: <VersionView />,
+        path: "/faq",
+        element: <FaqViews />,
       },
     ],
+  },
+  {
+    path: "/",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/sign-in",
+        element: <SignInViews />,
+      },
+      {
+        path: "/sign-up",
+        element: <SignUpViews />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardRoot />,
+    children: [
+      {
+        path: "/dashboard/my-class",
+        element: <MyClassViews />,
+      },
+      {
+        path: "/dashboard/enrolled-class",
+        element: <EnrolledClassViews />,
+      },
+      {
+        path: "/dashboard/my-class/:classId",
+        element: <SessionViews />,
+      },
+      {
+        path: "/dashboard/my-class/create",
+        element: <CreateClassessViews />,
+      },
+      {
+        path: "/dashboard/:classId/:sessionId/create-modules",
+        element: <CreateModules />,
+      },
+      {
+        path: "/dashboard/:classId/:sessionId",
+        element: <DetailSessionView />,
+      },
+      {
+        path: "/dashboard/:classId/:sessionId/:moduleId",
+        element: <DetailModuleView />,
+      },
+      {
+        path: "/dashboard/:classId/:sessionId/:moduleId/:assignmentId",
+        element: <DetailAssignmentView />,
+      },
+      {
+        path: "/dashboard/certificates",
+        element: <CertificatesViews />,
+      },
+    ],
+  },
+  {
+    path: "/invitation",
+    element: <InvitationRoot />,
+    children: [
+      {
+        path: "/invitation/:code",
+        element: <InvitationUseCodeViews />,
+      },
+    ],
+  },
+  {
+    path: "/playground",
+    element: <Playground />,
+  },
+  {
+    path: "/learning",
+    element: <LearningUserRoot />,
+    children: [
+      {
+        path: "/learning/:classId",
+        element: <LearningDashboardView />,
+      },
+      {
+        path: "/learning/:classId/assignment/:assignmentId/:submissionId?",
+        element: <AssignmentDetailView />,
+      },
+    ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);

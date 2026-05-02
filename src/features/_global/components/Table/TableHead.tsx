@@ -1,25 +1,23 @@
-import { Typography } from "@material-tailwind/react";
 import React from "react";
+import { Poppins } from "../Text";
 
 interface ITableHeadProps {
   field: string[];
+  className?: string;
 }
 
-export const TableHead: React.FC<ITableHeadProps> = ({ field }) => {
+export const TableHead: React.FC<ITableHeadProps> = ({ field, className }) => {
   return (
-    <thead>
-      <tr>
+    <thead
+      className={`${className} bg-white dark:bg-gray-900 border-b-4 border-indigo-500`}
+    >
+      <tr className="text-gray-800 dark:text-gray-100">
         {field.map((item, index) => (
           <th
             key={index}
-            className="border-b border-blue-gray-50 py-3 px-5 text-left"
+            className="py-5 px-6 text-left text-sm font-bold tracking-wider uppercase hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all duration-200"
           >
-            <Typography
-              variant="small"
-              className="text-[11px] font-bold uppercase text-blue-gray-400"
-            >
-              {item}
-            </Typography>
+            <Poppins className="text-sm">{item}</Poppins>
           </th>
         ))}
       </tr>

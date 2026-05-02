@@ -6,10 +6,7 @@ export interface UserModel {
   id: string;
   name: string;
   email: string;
-  password: string;
-  role: Role;
-  nim: string;
-  isLogin: boolean;
+  photo: string;
 }
 
 export interface UserDTO {

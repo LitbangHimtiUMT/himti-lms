@@ -1,5 +1,6 @@
 import { convertObjectToQueryParams } from "@features/_global/helper";
 import { ApiOption, MethodTypes, getContentType } from "./types";
+import { CONFIG_APP } from "../../configs/app";
 
 const generateEndpoint = (
   endpoint: string,
@@ -24,12 +25,12 @@ async function createRequest<Res = unknown, Req = unknown>(
   apiOption?: ApiOption,
   body?: Req
 ) {
+  const defaultValue = { ...apiOption };
 
-  const defaultValue = { ...apiOption, }
-
-  const token = localStorage.getItem("token") || ""
+  const token =
+    localStorage.getItem(CONFIG_APP.TOKEN_KEY) || "";
   if (token) {
-    defaultValue.bearerToken = token
+    defaultValue.bearerToken = token;
   }
 
   const res: Response = await fetch(
@@ -39,9 +40,13 @@ async function createRequest<Res = unknown, Req = unknown>(
     {
       method,
       headers: {
-        ...(defaultValue.contentType !== 'form-data' && { "Content-Type": getContentType(defaultValue?.contentType) }),
-        ...(defaultValue?.bearerToken && typeof defaultValue.bearerToken !== "undefined" &&
-          { Authorization: `Bearer ${defaultValue.bearerToken}` }),
+        ...(defaultValue.contentType !== "form-data" && {
+          "Content-Type": getContentType(defaultValue?.contentType),
+        }),
+        ...(defaultValue?.bearerToken &&
+          typeof defaultValue.bearerToken !== "undefined" && {
+            Authorization: `Bearer ${defaultValue.bearerToken}`,
+          }),
         ...defaultValue?.headers,
       },
       body:
@@ -57,25 +62,25 @@ async function createRequest<Res = unknown, Req = unknown>(
   return data as Res;
 }
 
-export const HTTP_REQUEST = {
+export const request = {
   get:
     <Res = unknown, Req = unknown>(endpoint: string) =>
-      (apiOption?: ApiOption) =>
-        createRequest<Res, Req>(endpoint, "GET", apiOption),
+    (apiOption?: ApiOption) =>
+      createRequest<Res, Req>(endpoint, "GET", apiOption),
   post:
     <Res = unknown, Req = unknown>(endpoint: string) =>
-      (body?: Req, apiOption?: ApiOption) =>
-        createRequest<Res, Req>(endpoint, "POST", apiOption, body),
+    (body?: Req, apiOption?: ApiOption) =>
+      createRequest<Res, Req>(endpoint, "POST", apiOption, body),
   put:
     <Res = unknown, Req = unknown>(endpoint: string) =>
-      (body?: Req, apiOption?: ApiOption) =>
-        createRequest<Res, Req>(endpoint, "PUT", apiOption, body),
+    (body?: Req, apiOption?: ApiOption) =>
+      createRequest<Res, Req>(endpoint, "PUT", apiOption, body),
   patch:
     <Res = unknown, Req = unknown>(endpoint: string) =>
-      (body?: Req, apiOption?: ApiOption) =>
-        createRequest<Res, Req>(endpoint, "PATCH", apiOption, body),
+    (body?: Req, apiOption?: ApiOption) =>
+      createRequest<Res, Req>(endpoint, "PATCH", apiOption, body),
   delete:
     <Res = unknown, Req = unknown>(endpoint: string) =>
-      (apiOption?: ApiOption) =>
-        createRequest<Res, Req>(endpoint, "DELETE", apiOption),
+    (apiOption?: ApiOption) =>
+      createRequest<Res, Req>(endpoint, "DELETE", apiOption),
 };
