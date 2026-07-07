@@ -58,7 +58,28 @@ async function createRequest<Res = unknown, Req = unknown>(
           : (body as BodyInit),
     }
   );
-  const data: Res = await res.json();
+  let data: any = null;
+  const contentType = res.headers.get("content-type");
+  
+  if (contentType && contentType.includes("application/json")) {
+    try {
+      data = await res.json();
+    } catch (e) {
+      data = null;
+    }
+  } else {
+    try {
+      const text = await res.text();
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        data = text;
+      }
+    } catch (e) {
+      data = null;
+    }
+  }
+
   if (!res.ok) {
     throw data;
   }
