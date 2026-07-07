@@ -8,7 +8,7 @@ export const useMentors = () => {
     queryFn: () =>
       mentorService.get({
         headers: {
-          [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
+          [CONFIG_APP.HIMTI_HEADER_KEY]: CONFIG_APP.HIMTI_SECRET_KEY,
         },
       }),
   });

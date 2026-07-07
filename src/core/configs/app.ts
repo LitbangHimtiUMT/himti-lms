@@ -25,4 +25,5 @@ export const API_ENDPOINT = {
   profile: `${CONFIG_APP.BASE_URL}/profile`,
   completedModules: `${CONFIG_APP.BASE_URL}/lms/completed-modules`,
   participant: `${CONFIG_APP.BASE_URL}/lms/class-participants`,
+  courseEvaluate: `${CONFIG_APP.BASE_URL}/lms/course/evaluate`,
 };

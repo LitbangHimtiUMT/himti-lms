@@ -32,12 +32,12 @@ interface ClassesCreation {
   id?: string;
   code?: string;
 }
-
 export function useClasses(options?: Options) {
   const [searchParams] = useSearchParams();
   const page = options?.page || searchParams.get("page") || 1;
   const perPage = options?.perPage || searchParams.get("perPage") || 10;
   const categoryId = searchParams.get("categoryId");
+  const level = searchParams.get("level");
   const searchQuery =
     options?.search || searchParams.get("search") || undefined;
   const search = useDebounce(searchQuery as string, 500);
@@ -46,7 +46,7 @@ export function useClasses(options?: Options) {
   const query = useQuery({
     queryKey: [
       "classes",
-      { page, perPage, search, path: options?.path, token, categoryId },
+      { page, perPage, search, path: options?.path, token, categoryId, level },
     ],
     queryFn: () =>
       classesService.get({
@@ -55,8 +55,12 @@ export function useClasses(options?: Options) {
           page: page ? Number(page) : undefined,
           search,
           ...(categoryId && { categoryId }),
+          ...(level && { level }),
         },
         path: options?.path,
+        headers: {
+          [CONFIG_APP.HIMTI_HEADER_KEY]: CONFIG_APP.HIMTI_SECRET_KEY,
+        },
       }),
   });
   return query;
@@ -170,6 +174,9 @@ export function useDetailClass(by: "id" | "code" = "id", cId?: string) {
         queryParams: {
           page: page ? Number(page) : undefined,
           perPage: perPage ? Number(perPage) : undefined,
+        },
+        headers: {
+          [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
         },
       }),
     enabled: !!cId || !!id || !!classId || !!code,

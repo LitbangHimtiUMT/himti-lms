@@ -10,6 +10,7 @@ import { formatRupiah } from "../../../../../_global/helper";
 import { useProfile } from "../../../../../profile/useProfile";
 import { useGenerateCertificate } from "../../../../hooks/certificates/useCertificates";
 import { Poppins } from "../../../../../_global/components/Text";
+import { CONFIG_APP } from "../../../../../../core/configs/app";
 
 interface CardEnrolledClassProps extends ClassModel {}
 
@@ -123,8 +124,19 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
             </Button>
 
             {certificate && progressStatus === "Completed" ? (
-              <Button size="sm" variant="disabled" tooltip="View Certificate">
-                <FaEye className="text-white" />
+              <Button
+                size="sm"
+                variant="secondary"
+                tooltip="View Certificate"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(
+                    `${CONFIG_APP.BASE_URL}/lms/certificates/file?code=${certificate.code}`,
+                    "_blank"
+                  );
+                }}
+              >
+                <FaEye className="text-gray-600 dark:text-gray-300" />
               </Button>
             ) : progressStatus === "Completed" && !certificate && !owner ? (
               <Button

@@ -47,6 +47,9 @@ async function createRequest<Res = unknown, Req = unknown>(
           typeof defaultValue.bearerToken !== "undefined" && {
             Authorization: `Bearer ${defaultValue.bearerToken}`,
           }),
+        ...(CONFIG_APP.HIMTI_HEADER_KEY && CONFIG_APP.HIMTI_SECRET_KEY && {
+          [CONFIG_APP.HIMTI_HEADER_KEY]: CONFIG_APP.HIMTI_SECRET_KEY,
+        }),
         ...defaultValue?.headers,
       },
       body:

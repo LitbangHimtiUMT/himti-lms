@@ -25,6 +25,8 @@ import { LearningUserRoot } from "../../features/_global/views/LearningUserRoot"
 import { AssignmentDetailView } from "../../features/learning/views/AssignmentDetailView";
 import { DetailAssignmentView } from "../../features/dashboard/views/DetailAssignmentViews";
 import { CertificatesViews } from "../../features/certificates/views/CertificatesViews";
+import CoursePage from "@features/course/CoursePage";
+import CourseCatalogPage from "@features/course/CourseCatalogPage";
 
 export const router = createBrowserRouter([
   {
@@ -40,7 +42,7 @@ export const router = createBrowserRouter([
         element: <ClassViews />,
       },
       {
-        path: "/class-detail",
+        path: "/class-detail/:id",
         element: <ClassDetailView />,
       },
       {
@@ -50,6 +52,10 @@ export const router = createBrowserRouter([
       {
         path: "/faq",
         element: <FaqViews />,
+      },
+      {
+        path: "/courses",
+        element: <CourseCatalogPage />,
       },
     ],
   },
@@ -122,6 +128,10 @@ export const router = createBrowserRouter([
   {
     path: "/playground",
     element: <Playground />,
+  },
+  {
+    path: "/course/javascript",
+    element: <CoursePage />,
   },
   {
     path: "/learning",

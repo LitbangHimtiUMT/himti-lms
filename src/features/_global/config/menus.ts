@@ -10,15 +10,15 @@ export const Menus: MenuAdminConfig = [
     to: "/class",
   },
   {
+    name: "Course",
+    to: "/courses",
+  },
+  {
     name: "Mentors",
     to: "/mentors",
   },
   {
     name: "Faq",
     to: "/faq",
-  },
-  {
-    name: "Other",
-    to: "/other",
   },
 ];
