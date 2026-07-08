@@ -22,7 +22,7 @@ export function highlightCode(code: string, lang: string) {
   ) {
     const tokens: string[] = [];
     // Replace comments and strings with placeholder: ___TOKEN_ID___
-    escaped = escaped.replace(/(\/\*[\s\S]*?\*\/)|(\/\/.*)|(["'`])([\s\S]*?)\3/g, (match, g1, g2, g3, g4) => {
+    escaped = escaped.replace(/(\/\*[\s\S]*?\*\/)|(\/\/.*)|(["'`])([\s\S]*?)\3/g, (_, g1, g2, g3, g4) => {
       const id = tokens.length;
       if (g1) {
         tokens.push(`<span class="text-[#6a9955] italic">${g1}</span>`);
@@ -57,7 +57,7 @@ export function highlightCode(code: string, lang: string) {
     escaped = escaped.replace(/\b(\d+)\b/g, '<span class="text-[#b5cea8]">$1</span>');
 
     // Restore tokens
-    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (match, id) => {
+    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (_, id) => {
       return tokens[parseInt(id, 10)];
     });
   } else if (normalizedLang === "html") {
@@ -84,7 +84,7 @@ export function highlightCode(code: string, lang: string) {
     escaped = escaped.replace(/(\/?&gt;)/g, '<span class="text-[#569cd6] font-semibold">$1</span>');
 
     // 5. Restore tokens
-    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (match, id) => {
+    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (_, id) => {
       return tokens[parseInt(id, 10)];
     });
   } else if (normalizedLang === "css") {
@@ -104,7 +104,7 @@ export function highlightCode(code: string, lang: string) {
     escaped = escaped.replace(/(:\s*)([^;]+)/g, '$1<span class="text-[#ce9178]">$2</span>');
 
     // Restore tokens
-    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (match, id) => {
+    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (_, id) => {
       return tokens[parseInt(id, 10)];
     });
   }
