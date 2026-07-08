@@ -20,12 +20,19 @@ export function highlightCode(code: string, lang: string) {
     normalizedLang === "tsx" || 
     normalizedLang === "jsx"
   ) {
-    // Multiline comments: /* ... */
-    escaped = escaped.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="text-[#6a9955] italic">$1</span>');
-    // Single line comments: // ...
-    escaped = escaped.replace(/(\/\/.*)/g, '<span class="text-[#6a9955] italic">$1</span>');
-    // Strings: "..." or '...' or `...`
-    escaped = escaped.replace(/(["'`])(.*?)\1/g, '<span class="text-[#ce9178]">$1$2$1</span>');
+    const tokens: string[] = [];
+    // Replace comments and strings with placeholder: ___TOKEN_ID___
+    escaped = escaped.replace(/(\/\*[\s\S]*?\*\/)|(\/\/.*)|(["'`])([\s\S]*?)\3/g, (match, g1, g2, g3, g4) => {
+      const id = tokens.length;
+      if (g1) {
+        tokens.push(`<span class="text-[#6a9955] italic">${g1}</span>`);
+      } else if (g2) {
+        tokens.push(`<span class="text-[#6a9955] italic">${g2}</span>`);
+      } else {
+        tokens.push(`<span class="text-[#ce9178]">${g3}${g4}${g3}</span>`);
+      }
+      return `___TOKEN_${id}___`;
+    });
     
     // Declaration Keywords (blue)
     const decKeywords = /\b(const|let|var|function|class|interface|type|new|extends|implements|import|export|from|as|default|public|private|protected|readonly|static|get|set)\b/g;
@@ -48,25 +55,58 @@ export function highlightCode(code: string, lang: string) {
 
     // Numbers (light green)
     escaped = escaped.replace(/\b(\d+)\b/g, '<span class="text-[#b5cea8]">$1</span>');
+
+    // Restore tokens
+    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (match, id) => {
+      return tokens[parseInt(id, 10)];
+    });
   } else if (normalizedLang === "html") {
-    // Comments
-    escaped = escaped.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="text-[#6a9955] italic">$1</span>');
-    // Attribute values (strings)
-    escaped = escaped.replace(/(=)(["'])(.*?)\2/g, '$1<span class="text-[#ce9178]">$2$3$2</span>');
-    // HTML tags (blue)
+    const tokens: string[] = [];
+    // 1. Extract comments
+    escaped = escaped.replace(/(&lt;!--[\s\S]*?--&gt;)/g, (match) => {
+      const id = tokens.length;
+      tokens.push(`<span class="text-[#6a9955] italic">${match}</span>`);
+      return `___TOKEN_${id}___`;
+    });
+
+    // 2. Extract attribute values (strings)
+    escaped = escaped.replace(/(["'])([\s\S]*?)\1/g, (match) => {
+      const id = tokens.length;
+      tokens.push(`<span class="text-[#ce9178]">${match}</span>`);
+      return `___TOKEN_${id}___`;
+    });
+
+    // 3. Highlight attributes
+    escaped = escaped.replace(/\s([a-zA-Z0-9-]+)=/g, ' <span class="text-[#9cdcfe]">$1</span>=');
+
+    // 4. HTML tags (blue)
     escaped = escaped.replace(/(&lt;\/?[a-zA-Z0-9:-]+)/g, '<span class="text-[#569cd6] font-semibold">$1</span>');
     escaped = escaped.replace(/(\/?&gt;)/g, '<span class="text-[#569cd6] font-semibold">$1</span>');
-    // Attributes (light blue)
-    escaped = escaped.replace(/\s([a-zA-Z0-9-]+)=/g, ' <span class="text-[#9cdcfe]">$1</span>=');
+
+    // 5. Restore tokens
+    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (match, id) => {
+      return tokens[parseInt(id, 10)];
+    });
   } else if (normalizedLang === "css") {
+    const tokens: string[] = [];
     // Comments
-    escaped = escaped.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="text-[#6a9955] italic">$1</span>');
+    escaped = escaped.replace(/(\/\*[\s\S]*?\*\/)/g, (match) => {
+      const id = tokens.length;
+      tokens.push(`<span class="text-[#6a9955] italic">${match}</span>`);
+      return `___TOKEN_${id}___`;
+    });
+
     // Selectors (yellow-orange)
     escaped = escaped.replace(/([a-zA-Z0-9.-_#\s]+)(?=\s*\{)/g, '<span class="text-[#dcdcaa] font-semibold">$1</span>');
     // Properties (light blue)
     escaped = escaped.replace(/([a-zA-Z-]+)(?=\s*:)/g, '<span class="text-[#9cdcfe]">$1</span>');
     // Values (orange-brown or green for numbers)
     escaped = escaped.replace(/(:\s*)([^;]+)/g, '$1<span class="text-[#ce9178]">$2</span>');
+
+    // Restore tokens
+    escaped = escaped.replace(/___TOKEN_(\d+)___/g, (match, id) => {
+      return tokens[parseInt(id, 10)];
+    });
   }
   return escaped;
 }
