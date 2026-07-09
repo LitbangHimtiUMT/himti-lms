@@ -51,7 +51,7 @@ export const MentorViews = () => {
             </Link>
             <Link
               to="/"
-              className="px-6 py-3 rounded-full bg-white/10 border border-white/25 backdrop-blur-sm text-white font-semibold text-sm hover:bg-white/20 transition-all duration-300"
+              className="px-6 py-3 rounded-full bg-white border border-white/25 text-gray-900 font-semibold text-sm hover:bg-gray-100 transition-all duration-300"
             >
               Beranda
             </Link>

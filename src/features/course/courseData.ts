@@ -1,10 +1,10 @@
-import modul1 from "../../../modul-1-dasar-javascript.md?raw";
-import modul2 from "../../../modul-2-pengambilan-keputusan.md?raw";
-import modul3 from "../../../modul-3-function-dan-loop.md?raw";
-import modul4 from "../../../modul-4-array-dan-object.md?raw";
-import modul5 from "../../../modul-5-dom-dan-event.md?raw";
-import modul6 from "../../../modul-6-dom-lanjutan.md?raw";
-import modul7 from "../../../modul-7-proyek-akhir.md?raw";
+import modul1 from "../../core/modul/fundamental-js/modul-1-dasar-javascript.md?raw";
+import modul2 from "../../core/modul/fundamental-js/modul-2-pengambilan-keputusan.md?raw";
+import modul3 from "../../core/modul/fundamental-js/modul-3-function-dan-loop.md?raw";
+import modul4 from "../../core/modul/fundamental-js/modul-4-array-dan-object.md?raw";
+import modul5 from "../../core/modul/fundamental-js/modul-5-dom-dan-event.md?raw";
+import modul6 from "../../core/modul/fundamental-js/modul-6-dom-lanjutan.md?raw";
+import modul7 from "../../core/modul/fundamental-js/modul-7-proyek-akhir.md?raw";
 
 export interface ModuleData {
   id: string;
