@@ -53,7 +53,7 @@ export const courseCatalog: CourseCatalogItem[] = [
     id: "react-fundamentals",
     title: "React Fundamentals",
     description:
-      "Bangun antarmuka web dinamis dengan React — komponen, props, state, hooks, dan manajemen routing modern.",
+      "Pelajari dasar-dasar React JS — mulai dari konsep komponen, sintaks JSX, pengiriman data props, hingga styling menggunakan Tailwind CSS.",
     category: "web-dev",
     categoryLabel: "Web Development",
     level: "Menengah",
