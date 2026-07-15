@@ -1,5 +1,3 @@
-// src/features/course/catalogData.ts
-
 export type CourseCategory = "all" | "web-dev" | "mobile-dev" | "cybersecurity" | "networking" | "ui-ux";
 
 export interface CourseCatalogItem {
@@ -59,10 +57,10 @@ export const courseCatalog: CourseCatalogItem[] = [
     category: "web-dev",
     categoryLabel: "Web Development",
     level: "Menengah",
-    moduleCount: 8,
+    moduleCount: 7,
     thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&q=80&fit=crop",
     path: "/course/react",
-    isAvailable: false,
+    isAvailable: true,
   },
   {
     id: "flutter-basics",

@@ -15,10 +15,10 @@ import {
   X,
   Bookmark
 } from "lucide-react";
-import { courseModules } from "./courseData";
 import { renderMarkdown } from "./utils/markdownUtils";
 import { useCourse } from "./hooks/useCourse";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 // ============================================
 // MAIN PAGE COMPONENT
@@ -53,10 +53,15 @@ export default function CoursePage() {
     progressPercent,
     showResetModal,
     setShowResetModal,
+    courseInfo,
+    courseModules,
   } = useCourse();
 
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const isAllCompleted = Object.keys(completedModules).length === totalModules && totalModules > 0;
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-850 flex flex-col font-sans selection:bg-[#3966bf]/20 selection:text-slate-900">
+    <div className="h-screen bg-slate-50 text-slate-850 flex flex-col font-sans selection:bg-[#3966bf]/20 selection:text-slate-900 overflow-hidden">
       {/* ============================================
           TOP HEADER
           ============================================ */}
@@ -96,8 +101,8 @@ export default function CoursePage() {
           )}
 
           <div>
-            <h1 className="text-md md:text-lg font-bold text-slate-900 tracking-tight">Fundamental JavaScript</h1>
-            <p className="text-[10px] text-slate-500 font-medium tracking-wider uppercase">Web Development Course</p>
+            <h1 className="text-md md:text-lg font-bold text-slate-900 tracking-tight">{courseInfo.title}</h1>
+            <p className="text-[10px] text-slate-500 font-medium tracking-wider uppercase">{courseInfo.category}</p>
           </div>
         </div>
 
@@ -151,7 +156,7 @@ export default function CoursePage() {
       {/* ============================================
           MAIN WRAPPER LAYOUT
           ============================================ */}
-      <div className="flex-1 flex relative">
+      <div className="flex-1 flex overflow-hidden relative">
 
         {/* ============================================
             LEFT PANEL: MODULE LIST SIDEBAR
@@ -163,7 +168,7 @@ export default function CoursePage() {
             onClick={() => setLeftSidebarOpen(false)}
           />
         )}
-        <aside className={`fixed md:sticky top-[69px] bottom-0 left-0 bg-white border-r border-slate-200 p-5 flex flex-col gap-4 z-40 md:z-10 transition-all duration-300 transform ${isSidebarCollapsed
+        <aside className={`fixed md:sticky top-0 bottom-0 left-0 bg-white border-r border-slate-200 p-5 flex flex-col gap-4 z-40 md:z-10 transition-all duration-300 transform h-full ${isSidebarCollapsed
             ? "md:w-0 md:p-0 md:border-r-0 md:overflow-hidden md:translate-x-0"
             : "w-80"
           } ${leftSidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
@@ -385,7 +390,7 @@ export default function CoursePage() {
             onClick={() => setRightSidebarOpen(false)}
           />
         )}
-        <aside className={`fixed lg:sticky top-[69px] bottom-0 right-0 w-72 bg-white border-l border-slate-200 p-6 flex flex-col gap-5 z-40 lg:z-10 transition-all duration-300 transform ${rightSidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
+        <aside className={`fixed lg:sticky top-0 bottom-0 right-0 w-72 bg-white border-l border-slate-200 p-6 flex flex-col gap-5 z-40 lg:z-10 transition-all duration-300 transform h-full ${rightSidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
           }`}>
           <div className="flex justify-between items-center border-b border-slate-100 pb-3.5">
             <h2 className="text-xs font-black uppercase tracking-widest text-slate-400">Daftar Isi Modul</h2>

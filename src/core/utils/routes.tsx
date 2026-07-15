@@ -130,7 +130,7 @@ export const router = createBrowserRouter([
     element: <Playground />,
   },
   {
-    path: "/course/javascript",
+    path: "/course/:courseId",
     element: <CoursePage />,
   },
   {

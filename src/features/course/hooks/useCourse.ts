@@ -1,10 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
-import { courseModules } from "../courseData";
+import { useParams } from "react-router-dom";
+import { coursesCatalogData } from "../courseData";
 import { extractTOC } from "../utils/markdownUtils";
 import { API_ENDPOINT } from "../../../core/configs/app";
 
 export function useCourse() {
+  const { courseId = "javascript" } = useParams<{ courseId: string }>();
+  
+  const courseInfo = coursesCatalogData[courseId] || coursesCatalogData.javascript;
+  const courseModules = courseInfo.modules;
+
   const [activeModuleIndex, setActiveModuleIndex] = useState<number>(0);
   const [unlockedModules, setUnlockedModules] = useState<string[]>(["modul-1"]);
   const [completedModules, setCompletedModules] = useState<Record<string, { score: number; feedback: string }>>({});
@@ -27,23 +33,32 @@ export function useCourse() {
   const contentRef = useRef<HTMLDivElement>(null);
   const mainScrollRef = useRef<HTMLElement>(null);
 
-  // Load progress from localStorage on mount
+  const unlockedKey = `himti_unlocked_${courseId}`;
+  const completedKey = `himti_completed_${courseId}`;
+
+  // Load progress from localStorage on mount or when courseId changes
   useEffect(() => {
-    const savedUnlocked = localStorage.getItem("himti_unlocked_modules");
-    const savedCompleted = localStorage.getItem("himti_completed_modules");
+    const savedUnlocked = localStorage.getItem(unlockedKey);
+    const savedCompleted = localStorage.getItem(completedKey);
 
     if (savedUnlocked) {
       setUnlockedModules(JSON.parse(savedUnlocked));
+    } else {
+      setUnlockedModules(["modul-1"]);
     }
     if (savedCompleted) {
       setCompletedModules(JSON.parse(savedCompleted));
+    } else {
+      setCompletedModules({});
     }
-  }, []);
+    setActiveModuleIndex(0);
+    setEvalResult(null);
+  }, [courseId, unlockedKey, completedKey]);
 
   // Save progress to localStorage whenever it changes
   const saveProgress = (newUnlocked: string[], newCompleted: typeof completedModules) => {
-    localStorage.setItem("himti_unlocked_modules", JSON.stringify(newUnlocked));
-    localStorage.setItem("himti_completed_modules", JSON.stringify(newCompleted));
+    localStorage.setItem(unlockedKey, JSON.stringify(newUnlocked));
+    localStorage.setItem(completedKey, JSON.stringify(newCompleted));
     setUnlockedModules(newUnlocked);
     setCompletedModules(newCompleted);
   };
@@ -52,7 +67,9 @@ export function useCourse() {
   useEffect(() => {
     setStudentAnswer("");
     setEvalResult(null);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (mainScrollRef.current) {
+      mainScrollRef.current.scrollTo({ top: 0 });
+    }
   }, [activeModuleIndex, activeModule]);
 
   // TOC active scroll highlight listener
@@ -100,6 +117,7 @@ export function useCourse() {
 
     if (isPassed) {
       toast.success(`Selamat! Nilai Anda ${score}. Modul berikutnya terbuka! 🎉`);
+      setStudentAnswer("");
 
       const newCompleted = {
         ...completedModules,
@@ -190,8 +208,8 @@ export function useCourse() {
   };
 
   const handleResetProgress = () => {
-    localStorage.removeItem("himti_unlocked_modules");
-    localStorage.removeItem("himti_completed_modules");
+    localStorage.removeItem(unlockedKey);
+    localStorage.removeItem(completedKey);
     setUnlockedModules(["modul-1"]);
     setCompletedModules({});
     setActiveModuleIndex(0);
@@ -232,5 +250,7 @@ export function useCourse() {
     progressPercent,
     showResetModal,
     setShowResetModal,
+    courseInfo,
+    courseModules,
   };
 }

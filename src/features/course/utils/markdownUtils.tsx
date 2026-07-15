@@ -184,14 +184,18 @@ export function renderMarkdown(markdown: string) {
           );
         }
         
-        const imgMatch = text.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
+        const imgMatch = text.match(/!\[([^\]]*)\]\(([^)]+)\)/);
         if (imgMatch) {
+          const imgUrl = imgMatch[2];
+          const imgAlt = imgMatch[1];
+          const remainingText = text.replace(imgMatch[0], "").trim().replace(/^\*|\*$/g, ""); // Clean up markdown italics around caption
+          
           return (
-            <div key={idx} className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-white flex flex-col items-center">
-              <img src={imgMatch[2]} alt={imgMatch[1]} className="max-w-full h-auto object-cover" />
-              {imgMatch[1] && (
-                <span className="text-xs text-slate-500 py-2 font-medium tracking-wide uppercase border-t border-slate-200 w-full text-center bg-slate-50 select-none">
-                  {imgMatch[1]}
+            <div key={idx} className="my-6 rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-white flex flex-col items-center w-full">
+              <img src={imgUrl} alt={imgAlt} className="max-w-full h-auto object-cover" />
+              {(remainingText || imgAlt) && (
+                <span className="text-xs text-slate-500 py-2.5 px-4 font-medium tracking-wide border-t border-slate-200 w-full text-center bg-slate-50 select-none">
+                  {remainingText || imgAlt}
                 </span>
               )}
             </div>
