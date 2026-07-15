@@ -18,7 +18,6 @@ import {
 import { renderMarkdown } from "./utils/markdownUtils";
 import { useCourse } from "./hooks/useCourse";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 // ============================================
 // MAIN PAGE COMPONENT
@@ -57,8 +56,6 @@ export default function CoursePage() {
     courseModules,
   } = useCourse();
 
-  const [showCertificateModal, setShowCertificateModal] = useState(false);
-  const isAllCompleted = Object.keys(completedModules).length === totalModules && totalModules > 0;
 
   return (
     <div className="h-screen bg-slate-50 text-slate-850 flex flex-col font-sans selection:bg-[#3966bf]/20 selection:text-slate-900 overflow-hidden">
