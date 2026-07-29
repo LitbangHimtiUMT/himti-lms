@@ -7,6 +7,7 @@ import { InvitationRoot } from "../../features/_global/views/InvitationRoot";
 import { Playground } from "../../features/_global/views/playground";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
+import { ForgotPasswordViews } from "../../features/authentication/views/forgot-password/ForgotPasswordViews";
 import { ClassViews } from "../../features/class/views/ClassViews";
 import { CreateClassessViews } from "../../features/dashboard/views/CreateClassessViews";
 import { CreateModules } from "../../features/dashboard/views/CreateModules";
@@ -70,6 +71,10 @@ export const router = createBrowserRouter([
       {
         path: "/sign-up",
         element: <SignUpViews />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordViews />,
       },
     ],
   },

@@ -4,6 +4,7 @@ import { InputLabel } from "../../_global/components/InputLabel";
 import { useState } from "react";
 import { useAuthCreation } from "../hooks/useAuth";
 import { AuthLoginDTO } from "@core/model/auth";
+import { Link } from "react-router-dom";
 
 const InitialValue = {
   email: "",
@@ -110,6 +111,11 @@ export const FormSignIn = () => {
                   errorText: errors.password,
                 }}
               />
+            </div>
+            <div className="lg:w-[75%] w-full flex justify-end">
+              <Link to="/forgot-password" className="text-sm font-bold text-black hover:underline uppercase tracking-tight">
+                Lupa Password?
+              </Link>
             </div>
             <div className="lg:w-[75%] w-full">
               <Button
