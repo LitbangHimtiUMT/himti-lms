@@ -14,6 +14,14 @@ import reactModul5 from "../../core/modul/fundamental-reactjs/modul-5-styling-ta
 import reactModul6 from "../../core/modul/fundamental-reactjs/modul-6-landing-page-dan-spa.md?raw";
 import reactModul7 from "../../core/modul/fundamental-reactjs/modul-7-praktik-dan-troubleshooting.md?raw";
 
+import modernReactModul1 from "../../core/modul/modern-react-app/modul-1-modern-react-overview.md?raw";
+import modernReactModul2 from "../../core/modul/modern-react-app/modul-2-react-hooks.md?raw";
+import modernReactModul3 from "../../core/modul/modern-react-app/modul-3-react-router.md?raw";
+import modernReactModul4 from "../../core/modul/modern-react-app/modul-4-component-library.md?raw";
+import modernReactModul5 from "../../core/modul/modern-react-app/modul-5-public-api-integration.md?raw";
+import modernReactModul6 from "../../core/modul/modern-react-app/modul-6-gemini-ai-integration.md?raw";
+import modernReactModul7 from "../../core/modul/modern-react-app/modul-7-mini-project.md?raw";
+
 export interface ModuleData {
   id: string;
   title: string;
@@ -141,6 +149,65 @@ export const reactCourseModules: ModuleData[] = [
   }
 ];
 
+export const modernReactCourseModules: ModuleData[] = [
+  {
+    id: "modul-1",
+    title: "Modul 1: Modern React Application Overview",
+    order: 1,
+    markdown: modernReactModul1,
+    question: "Sebutkan 3 komponen utama dalam arsitektur aplikasi React modern selain komponen UI visual biasa!",
+    criteria: "Menyebutkan Routing (React Router), API Integration (Fetch API), Component Library (shadcn/ui), atau AI Integration (Gemini API)."
+  },
+  {
+    id: "modul-2",
+    title: "Modul 2: React Hooks (useState & useEffect)",
+    order: 2,
+    markdown: modernReactModul2,
+    question: "Jelaskan kegunaan utama useState dan kegunaan array dependensi kosong [] di useEffect!",
+    criteria: "Menyebutkan useState untuk mengelola data state dinamis, dan array kosong [] agar efek samping/fetch hanya dipicu sekali di awal."
+  },
+  {
+    id: "modul-3",
+    title: "Modul 3: React Router",
+    order: 3,
+    markdown: modernReactModul3,
+    question: "Jelaskan perbedaan kegunaan antara komponen Link dan NavLink pada React Router v7!",
+    criteria: "Menjelaskan bahwa Link digunakan untuk navigasi biasa, sedangkan NavLink memiliki kemampuan deteksi status aktif/style aktif secara otomatis."
+  },
+  {
+    id: "modul-4",
+    title: "Modul 4: Component Library (shadcn/ui)",
+    order: 4,
+    markdown: modernReactModul4,
+    question: "Mengapa industri modern lebih memilih menggunakan Component Library (seperti shadcn/ui) dibanding menulis CSS dari awal?",
+    criteria: "Menyebutkan faktor kecepatan/efisiensi pengerjaan, konsistensi desain, aksesibilitas, responsivitas, atau kemudahan kustomisasi."
+  },
+  {
+    id: "modul-5",
+    title: "Modul 5: Public API Integration",
+    order: 5,
+    markdown: modernReactModul5,
+    question: "Sebutkan token autentikasi Bearer dan parameter query limit & q yang digunakan untuk mencari negara di REST Countries API v5!",
+    criteria: "Menyebutkan token 'rc_live_11b0d9a0acf547ebb9533897f54cacfa' dan parameter query 'limit=...' dan 'q=...'."
+  },
+  {
+    id: "modul-6",
+    title: "Modul 6: Gemini AI Integration",
+    order: 6,
+    markdown: modernReactModul6,
+    question: "Sebutkan nama package SDK resmi yang digunakan untuk integrasi Gemini AI di aplikasi React modern dan bagaimana cara menyimpan API Key secara aman di environment variables!",
+    criteria: "Menyebutkan package '@google/genai' dan penyimpanan menggunakan file '.env' dengan prefix 'VITE_GEMINI_API_KEY' atau sejenisnya."
+  },
+  {
+    id: "modul-7",
+    title: "Modul 7: Mini Project (AI Country Explorer)",
+    order: 7,
+    markdown: modernReactModul7,
+    question: "Sebutkan tema mini project Modern React App yang ingin Anda bangun, serta tuliskan minimal 3 kriteria wajib fitur yang akan diimplementasikan!",
+    criteria: "Menyebutkan tema aplikasi (seperti Country Explorer, AI Study Assistant, dll) dan fitur wajib (seperti multi-page routing, component library, API integration, atau AI)."
+  }
+];
+
 export const coursesCatalogData: Record<string, { title: string; category: string; modules: ModuleData[] }> = {
   javascript: {
     title: "Fundamental JavaScript",
@@ -151,5 +218,10 @@ export const coursesCatalogData: Record<string, { title: string; category: strin
     title: "React Fundamentals",
     category: "Web Development Course",
     modules: reactCourseModules,
+  },
+  "modern-react": {
+    title: "Modern React Application",
+    category: "Web Development Course",
+    modules: modernReactCourseModules,
   }
 };

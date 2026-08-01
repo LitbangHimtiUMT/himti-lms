@@ -63,6 +63,19 @@ export const courseCatalog: CourseCatalogItem[] = [
     isAvailable: true,
   },
   {
+    id: "modern-react",
+    title: "Modern React Application",
+    description:
+      "Bangun aplikasi React modern kelas produksi menggunakan React Router v7, komponen shadcn/ui, integrasi REST Countries API v5, dan kecerdasan buatan Gemini AI.",
+    category: "web-dev",
+    categoryLabel: "Web Development",
+    level: "Lanjutan",
+    moduleCount: 7,
+    thumbnail: "https://media.licdn.com/dms/image/v2/D4E12AQH1ywRCsKjaGw/article-cover_image-shrink_720_1280/B4EZpYrTlTHUBI-/0/1762424351288?e=2147483647&v=beta&t=LoXU_XzZCUHVPkQ1NYPeuPlPnL0IohWOEpO9CcDfBPs",
+    path: "/course/modern-react",
+    isAvailable: true,
+  },
+  {
     id: "flutter-basics",
     title: "Flutter Mobile Development",
     description:
