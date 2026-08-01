@@ -72,7 +72,7 @@ Secara bawaan, React mengusung arsitektur **Single Page Application (SPA)**. Art
 3. React me-render halaman pertama di layar.
 4. Ketika kalian mengklik tombol menu "Tentang", React **tidak memuat ulang halaman** (tidak ada layar berkedip putih/reload browser), melainkan langsung menyembunyikan komponen lama dan menampilkan komponen "Tentang" secara instan menggunakan JavaScript.
 
-![SPA Illustration](https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80)
+![SPA Illustration](https://miro.medium.com/v2/resize:fit:1400/0*3BVwPmNoBv9JSxqr.png)
 *Ilustrasi: Kecepatan rendering komponen antarmuka modern tanpa reload halaman.*
 
 ### Keuntungan & Tantangan SPA
