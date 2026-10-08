@@ -22,6 +22,13 @@ import modernReactModul5 from "../../core/modul/modern-react-app/modul-5-public-
 import modernReactModul6 from "../../core/modul/modern-react-app/modul-6-gemini-ai-integration.md?raw";
 import modernReactModul7 from "../../core/modul/modern-react-app/modul-7-mini-project.md?raw";
 
+import modernWebModul1 from "../../core/modul/modern-web-toko-online/modul-1-struktur-semantik.md?raw";
+import modernWebModul2 from "../../core/modul/modern-web-toko-online/modul-2-design-tokens.md?raw";
+import modernWebModul3 from "../../core/modul/modern-web-toko-online/modul-3-layout-flexbox-grid.md?raw";
+import modernWebModul4 from "../../core/modul/modern-web-toko-online/modul-4-komponen-micro-interaction.md?raw";
+import modernWebModul5 from "../../core/modul/modern-web-toko-online/modul-5-responsive-dark-mode.md?raw";
+import modernWebModul6 from "../../core/modul/modern-web-toko-online/modul-6-proyek-akhir-publish.md?raw";
+
 export interface ModuleData {
   id: string;
   title: string;
@@ -208,6 +215,57 @@ export const modernReactCourseModules: ModuleData[] = [
   }
 ];
 
+export const modernWebCourseModules: ModuleData[] = [
+  {
+    id: "modul-1",
+    title: "Modul 1: Struktur Semantik & Persiapan Proyek",
+    order: 1,
+    markdown: modernWebModul1,
+    question: "Sebutkan 4 tag semantik HTML5 yang dipakai untuk menyusun kerangka toko online beserta fungsi singkatnya masing-masing, dan sebutkan tag yang cocok untuk membungkus satu kartu produk!",
+    criteria: "Menyebutkan minimal 4 dari header, nav, main, section, article, footer beserta fungsi yang benar (misalnya header = bagian atas halaman, nav = menu navigasi, main = isi utama, section = bagian bertema, footer = bagian bawah), dan menyebut article sebagai pembungkus satu kartu produk."
+  },
+  {
+    id: "modul-2",
+    title: "Modul 2: Design Tokens & Tipografi",
+    order: 2,
+    markdown: modernWebModul2,
+    question: "Tuliskan CSS untuk mendefinisikan variabel warna --utama dengan nilai #C2410C di :root, lalu gunakan variabel itu sebagai warna teks class .eyebrow!",
+    criteria: "Harus memakai :root { --utama: #C2410C; } dan .eyebrow { color: var(--utama); }, yaitu selector :root, nama variabel berawalan dua tanda hubung (--), dan fungsi var()."
+  },
+  {
+    id: "modul-3",
+    title: "Modul 3: Layout Modern dengan Flexbox & Grid",
+    order: 3,
+    markdown: modernWebModul3,
+    question: "Tuliskan CSS Grid agar deretan kartu produk otomatis menyesuaikan jumlah kolom tanpa media query (lebar minimal tiap kolom 260px) dengan jarak antar kartu 24px!",
+    criteria: "Harus memakai display: grid, gap: 24px, dan grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))."
+  },
+  {
+    id: "modul-4",
+    title: "Modul 4: Komponen & Micro-interaction",
+    order: 4,
+    markdown: modernWebModul4,
+    question: "Tuliskan CSS agar foto produk di dalam .thumb membesar 5% saat kartu .product di-hover, dengan perubahan halus 0.3 detik dan foto tidak keluar dari bingkainya!",
+    criteria: "Harus memakai .thumb { overflow: hidden; }, .thumb img { transition: transform 0.3s; }, dan .product:hover .thumb img { transform: scale(1.05); }."
+  },
+  {
+    id: "modul-5",
+    title: "Modul 5: Responsive & Dark Mode",
+    order: 5,
+    markdown: modernWebModul5,
+    question: "Tuliskan media query agar variabel --bg berubah menjadi #14110F saat perangkat memakai mode gelap, lalu jelaskan mengapa CSS variables membuat dark mode lebih mudah dibuat!",
+    criteria: "Harus memakai @media (prefers-color-scheme: dark) { :root { --bg: #14110F; } } dan menjelaskan bahwa cukup mengganti nilai variabel di satu tempat sehingga semua elemen yang memakai var(--bg) ikut berubah."
+  },
+  {
+    id: "modul-6",
+    title: "Modul 6: Proyek Akhir & Publish",
+    order: 6,
+    markdown: modernWebModul6,
+    question: "Sebutkan 3 hal yang harus diperiksa sebelum toko online dipublikasikan dan 1 cara mempublikasikan website statis secara gratis!",
+    criteria: "Menyebutkan minimal 3 pemeriksaan (tampil rapi di HP/responsive, link WhatsApp dan gambar berfungsi, tidak ada error di Console, title dan meta description terisi, teks terbaca di dark mode, atau atribut alt pada gambar) dan 1 layanan publikasi gratis seperti Netlify Drop, GitHub Pages, atau Vercel."
+  }
+];
+
 export const coursesCatalogData: Record<string, { title: string; category: string; modules: ModuleData[] }> = {
   javascript: {
     title: "Fundamental JavaScript",
@@ -223,5 +281,10 @@ export const coursesCatalogData: Record<string, { title: string; category: strin
     title: "Modern React Application",
     category: "Web Development Course",
     modules: modernReactCourseModules,
+  },
+  "modern-web": {
+    title: "Modern Web: Toko Online",
+    category: "Web Development Course",
+    modules: modernWebCourseModules,
   }
 };

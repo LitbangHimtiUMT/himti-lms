@@ -50,6 +50,19 @@ export const courseCatalog: CourseCatalogItem[] = [
     isAvailable: false,
   },
   {
+    id: "modern-web-toko-online",
+    title: "Modern Web: Toko Online",
+    description:
+      "Bangun toko online thrift fashion hanya dengan HTML dan CSS modern: tag semantik, design tokens, Flexbox dan Grid, kartu produk dengan animasi halus, responsive, dark mode, hingga publish online.",
+    category: "web-dev",
+    categoryLabel: "Web Development",
+    level: "Menengah",
+    moduleCount: 6,
+    thumbnail: "https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=600&q=80&fit=crop",
+    path: "/course/modern-web",
+    isAvailable: true,
+  },
+  {
     id: "react-fundamentals",
     title: "React Fundamentals",
     description:
