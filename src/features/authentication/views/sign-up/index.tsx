@@ -7,7 +7,7 @@ export const SignUpViews = () => {
       <div className="flex flex-1 items-center justify-center px-6 py-14">
         <FormSignUp />
       </div>
-      <AuthBrandPanel />
+      <AuthBrandPanel variant="signup" />
     </div>
   );
 };

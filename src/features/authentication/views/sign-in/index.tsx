@@ -7,7 +7,7 @@ export const SignInViews = () => {
       <div className="flex flex-1 items-center justify-center px-6 py-14">
         <FormSignIn />
       </div>
-      <AuthBrandPanel />
+      <AuthBrandPanel variant="signin" />
     </div>
   );
 };
