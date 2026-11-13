@@ -1,7 +1,7 @@
 import { BreadCrumb } from "../../_global/components/BreadCrumb";
-import { FormCreateClassess } from "../components/classess/create-classess/FormCreateClassess";
+import { FormCreateClasses } from "../components/classes/create-classes/FormCreateClasses";
 
-export const CreateClassessViews = () => {
+export const CreateClassesViews = () => {
   return (
     <div className="flex flex-col gap-5">
       <BreadCrumb
@@ -11,12 +11,12 @@ export const CreateClassessViews = () => {
             to: "/dashboard/my-class",
           },
           {
-            name: "Create Classess",
+            name: "Create Classes",
             to: `/dashboard/my-class/create`,
           },
         ]}
       />
-      <FormCreateClassess />
+      <FormCreateClasses />
     </div>
   );
 };

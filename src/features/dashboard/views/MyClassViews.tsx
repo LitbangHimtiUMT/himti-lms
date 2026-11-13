@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../_global/components/Button";
 import { ConditionNode } from "../../_global/components/ConditionNode";
 import { useProfile } from "../../profile/useProfile";
-import { TableCreatedClassessList } from "../components/classess/classess-list/TableCreatedClassessList";
+import { TableCreatedClassesList } from "../components/classes/classes-list/TableCreatedClassesList";
 
 export const MyClassViews = () => {
   const { data: profile } = useProfile();
@@ -10,7 +10,7 @@ export const MyClassViews = () => {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex lg:flex-row flex-col lg:items-start justify-between lg:gap-0 gap-4">
-        <h1 className="text-3xl font-bold">My Classess</h1>
+        <h1 className="text-3xl font-bold">My Classes</h1>
         <ConditionNode condition={!!profile?.data?.isMentor}>
           <div>
             <Button
@@ -22,7 +22,7 @@ export const MyClassViews = () => {
           </div>
         </ConditionNode>
       </div>
-      <TableCreatedClassessList />
+      <TableCreatedClassesList />
     </div>
   );
 };

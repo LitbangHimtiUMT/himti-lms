@@ -27,16 +27,16 @@ export const LearningUserRoot = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const moduleIdQs = searchParams.get("moduleId") || "";
-  const { data: classess, isFetching } = useDetailClass();
+  const { data: classes, isFetching } = useDetailClass();
   // Perbaikan 1: Gunakan useMemo untuk inisialisasi awal modules
   const initialModules = useMemo(() => {
-    return classess?.data?.sessions.map((item, index) => {
+    return classes?.data?.sessions.map((item, index) => {
       const isOpen = moduleIdQs
         ? item.modules.some((mdl) => mdl.id === moduleIdQs)
         : index === 0; // Hanya buka session pertama jika tidak ada moduleIdQs
       return { ...item, isOpen };
     });
-  }, [classess?.data?.sessions, moduleIdQs]);
+  }, [classes?.data?.sessions, moduleIdQs]);
 
   const [modules, setModules] = useState(initialModules);
 

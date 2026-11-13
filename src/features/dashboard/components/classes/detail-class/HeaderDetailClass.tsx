@@ -15,7 +15,7 @@ import { IoWarningOutline } from "react-icons/io5";
 
 export const HeaderDetailClass = () => {
   const { isFetching } = useProfile();
-  const { data: classess } = useDetailClass();
+  const { data: classes } = useDetailClass();
   const [show, setShow] = useState({
     participant: false,
     mentor: false,
@@ -24,8 +24,8 @@ export const HeaderDetailClass = () => {
   const mutation = useClassesCreation();
 
   const handleDeleteClass = async () => {
-    if (classess?.data?.id) {
-      await mutation.mutateAsync({ id: classess?.data?.id, type: "delete" });
+    if (classes?.data?.id) {
+      await mutation.mutateAsync({ id: classes?.data?.id, type: "delete" });
       setShow((prev) => ({ ...prev, delete: !prev.delete }));
     }
   };
@@ -87,7 +87,7 @@ export const HeaderDetailClass = () => {
         </div>
       </div>
       <DrawerParticipants
-        classId={classess?.data?.id || ""}
+        classId={classes?.data?.id || ""}
         onHide={() =>
           setShow((prev) => ({ ...prev, participant: !prev.participant }))
         }

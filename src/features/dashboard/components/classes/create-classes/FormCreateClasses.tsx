@@ -22,7 +22,7 @@ interface ICourseForm {
   thumbnail?: File;
 }
 
-export const FormCreateClassess = () => {
+export const FormCreateClasses = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isFree, setIsFree] = useState<boolean>(false);
   const [form, setForm] = useState<ICourseForm>({

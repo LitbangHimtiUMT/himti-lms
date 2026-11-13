@@ -1,6 +1,6 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { BreadCrumb } from "../../_global/components/BreadCrumb";
-import { DetailClassContent } from "../components/classess/detail-class/DetailClassContent";
+import { DetailClassContent } from "../components/classes/detail-class/DetailClassContent";
 
 export const SessionViews = () => {
   const { classId } = useParams();
