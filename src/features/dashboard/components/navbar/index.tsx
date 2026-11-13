@@ -9,10 +9,14 @@ import { sidebarAtom } from "../sidebar/store";
 
 interface DashboardNavbarProps {
   onToggleCollapse?: () => void;
+  withSidebar?: boolean;
+  collapsed?: boolean;
 }
 
 export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   onToggleCollapse,
+  withSidebar = false,
+  collapsed = false,
 }) => {
   const { data: profile, isFetching } = useProfile();
   const role = profile?.data?.isMentor
@@ -31,7 +35,11 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
     )?.name;
 
   return (
-    <nav className="sticky top-0 z-50 h-16 border-b border-slate-200 bg-white">
+    <nav
+      className={`sticky top-0 z-50 h-16 border-b border-slate-200 bg-white transition-all duration-300 ${
+        withSidebar ? (collapsed ? "lg:ml-[76px]" : "lg:ml-[260px]") : ""
+      }`}
+    >
       <div className="flex h-full items-center gap-3.5 px-6">
         <button
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 lg:hidden"

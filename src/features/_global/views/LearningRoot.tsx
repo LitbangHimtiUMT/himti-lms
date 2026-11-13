@@ -24,7 +24,11 @@ export const LearningRoot: React.FC<LearningRootProps> = ({
 
   return (
     <div className="bg-gray-100">
-      <DashboardNavbar onToggleCollapse={onToggleCollapse} />
+      <DashboardNavbar
+        onToggleCollapse={onToggleCollapse}
+        withSidebar={withSidebar}
+        collapsed={collapsed}
+      />
       <div className="flex relative min-h-screen">
         {withSidebar && (
           <GeneralSidebar

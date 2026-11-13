@@ -53,7 +53,11 @@ export const SidebarItem: React.FC<ISidebarItemProps> = ({
               } ${collapsed ? "lg:justify-center lg:px-0" : ""}`}
             >
               {isActive && (
-                <span className="absolute -left-4 bottom-[9px] top-[9px] w-[3px] rounded-r bg-[#3966bf]" />
+                <span
+                  className={`absolute -left-4 bottom-[9px] top-[9px] w-[3px] rounded-r bg-[#3966bf] ${
+                    collapsed ? "lg:-left-3" : ""
+                  }`}
+                />
               )}
               <Icon size={20} className="shrink-0" />
               <span className={collapsed ? "lg:hidden" : ""}>{item.name}</span>
