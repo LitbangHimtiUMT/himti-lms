@@ -504,7 +504,7 @@ export const ForgotPasswordViews: React.FC = () => {
         </div>
       </div>
 
-      <AuthBrandPanel />
+      <AuthBrandPanel variant="forgot" />
     </div>
   );
 };
