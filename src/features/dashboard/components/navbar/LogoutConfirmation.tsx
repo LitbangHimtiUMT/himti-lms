@@ -20,6 +20,7 @@ export const LogoutConfirmation: React.FC<LogoutConfirmationProps> = ({
   const handleConfirmLogout = () => {
     onHide();
     localStorage.removeItem(CONFIG_APP.TOKEN_KEY);
+    localStorage.removeItem(CONFIG_APP.REFRESH_TOKEN_KEY);
     navigate("/");
   };
 
