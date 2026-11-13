@@ -1,14 +1,30 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaEye, FaEyeSlash, FaArrowLeft, FaCheckCircle } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaArrowLeft } from "react-icons/fa";
+import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { request } from "@core/libs/api/config";
 import { CONFIG_APP } from "@core/configs/app";
-import Family from "@core/assets/family.png";
-import { Button } from "../../../_global/components/Button";
 import { InputLabel } from "../../../_global/components/InputLabel";
+import { AuthBrandPanel } from "../../components/AuthBrandPanel";
 
 const API_BASE = CONFIG_APP.BASE_URL;
+
+const STEP_LABELS = ["Email", "Verifikasi", "Password Baru", "Selesai"];
+
+const STEP_TITLES: Record<number, string> = {
+  1: "Lupa Password",
+  2: "Verifikasi OTP",
+  3: "Password Baru",
+  4: "Selesai",
+};
+
+const STEP_LEADS: Record<number, string> = {
+  1: "Masukkan email yang terdaftar. Kami kirim kode verifikasi ke email kamu.",
+  2: "Masukkan 6 digit kode yang kami kirim ke email kamu.",
+  3: "Buat password baru untuk akun kamu.",
+  4: "Password kamu sudah diperbarui.",
+};
 
 export const ForgotPasswordViews: React.FC = () => {
   const navigate = useNavigate();
@@ -20,7 +36,7 @@ export const ForgotPasswordViews: React.FC = () => {
   const [otpValues, setOtpValues] = useState<string[]>(Array(6).fill(""));
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  
+
   // Loading & Error States
   const [isLoading, setIsLoading] = useState(false);
   const [errorEmail, setErrorEmail] = useState("");
@@ -84,7 +100,7 @@ export const ForgotPasswordViews: React.FC = () => {
 
     try {
       const response: any = await request.post(`${API_BASE}/auth/otp`)({ email });
-      
+
       if (response && response.data) {
         setOtpKey(response.data.key);
         toast.success("Kode OTP berhasil dikirim ke email Anda!");
@@ -211,11 +227,10 @@ export const ForgotPasswordViews: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col-reverse lg:flex-row">
+    <div className="flex min-h-screen flex-col-reverse bg-white lg:flex-row">
       {/* Form Section */}
-      <div className="w-full flex items-center justify-center z-20 p-6 lg:mt-0">
-        <div className="lg:w-[75%] w-full max-w-md bg-white p-10 rounded-xl flex flex-col gap-6 shadow-xl border border-gray-100">
-          
+      <div className="flex flex-1 items-center justify-center px-6 py-14">
+        <div className="w-full max-w-[400px]">
           {/* Back to Sign-in / Step back */}
           {step < 4 && (
             <button
@@ -227,45 +242,84 @@ export const ForgotPasswordViews: React.FC = () => {
                   setStep((prev) => (prev - 1) as any);
                 }
               }}
-              className="flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-black transition-colors self-start mb-2"
+              className="mb-7 inline-flex items-center gap-2 self-start text-[13.5px] font-medium text-slate-500 transition-colors duration-200 hover:text-slate-900"
             >
-              <FaArrowLeft />
-              {step === 1 ? "Kembali ke Login" : "Langkah Sebelumnya"}
+              <FaArrowLeft size={14} />
+              {step === 1 ? "Kembali masuk" : "Langkah Sebelumnya"}
             </button>
           )}
 
           {/* Header Title */}
-          <div className="flex flex-col gap-2">
-            <h1 className="lg:text-4xl text-2xl font-semibold text-gray-800">
-              {step === 1 && "Lupa Password"}
-              {step === 2 && "Verifikasi OTP"}
-              {step === 3 && "Sandi Baru"}
-              {step === 4 && "Sukses!"}
-            </h1>
-            <p className="text-sm text-gray-500 font-medium">
-              {step === 1 && "Masukkan email terdaftar Anda untuk mengirim kode OTP."}
-              {step === 2 && `Masukkan 6-digit kode OTP yang dikirim ke email ${email}.`}
-              {step === 3 && "Buat kata sandi baru untuk mengamankan akun Anda."}
-              {step === 4 && "Kata sandi Anda berhasil diperbarui."}
-            </p>
+          <h1 className="text-[28px] font-semibold tracking-[-0.02em] text-slate-900">
+            {STEP_TITLES[step]}
+          </h1>
+          <p className="mt-2 text-sm leading-[1.6] text-slate-500">
+            {STEP_LEADS[step]}
+          </p>
+
+          {/* Step Indicator */}
+          <div className="mb-1 mt-[26px] flex items-start">
+            {STEP_LABELS.map((label, index) => {
+              const stepNumber = index + 1;
+              const isDone = stepNumber < step;
+              const isNow = stepNumber === step;
+              return (
+                <div
+                  key={label}
+                  className="relative flex flex-1 flex-col items-center gap-[7px] text-center"
+                >
+                  {index > 0 && (
+                    <span className="absolute left-[-50%] top-[14px] h-[1.5px] w-full bg-slate-200" />
+                  )}
+                  <span
+                    className={`relative z-[1] flex h-7 w-7 items-center justify-center rounded-full border text-[12.5px] font-semibold transition-colors duration-200 ${
+                      isDone
+                        ? "border-[#3966bf] bg-[#3966bf] text-white"
+                        : isNow
+                        ? "border-2 border-[#3966bf] bg-white text-[#3966bf]"
+                        : "border-slate-200 bg-slate-100 text-slate-500"
+                    }`}
+                  >
+                    {isDone ? <Check size={14} strokeWidth={3} /> : stepNumber}
+                  </span>
+                  <span
+                    className={`text-[11.5px] font-medium ${
+                      isDone
+                        ? "text-slate-700"
+                        : isNow
+                        ? "font-semibold text-slate-900"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           {/* Error Banner */}
           {errorMessage && (
-            <div className="p-3 bg-red-50 text-red-500 rounded-lg text-sm border border-red-200 font-medium">
-              ⚠️ {errorMessage}
+            <div className="mt-[26px] rounded-xl border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-500">
+              {errorMessage}
             </div>
           )}
 
           {/* --- STEP 1: INPUT EMAIL --- */}
           {step === 1 && (
-            <form onSubmit={handleRequestOtp} className="flex flex-col gap-6">
+            <form
+              onSubmit={handleRequestOtp}
+              className="mt-[26px] flex flex-col gap-[18px]"
+            >
               <InputLabel
                 title="Email"
+                titleClassName="text-[13px] font-medium text-slate-700"
                 inputProps={{
                   type: "email",
-                  rounded: "full",
-                  borderColor: "normal",
+                  rounded: "xl",
+                  inputSize: "lg",
+                  borderColor: "slate",
+                  focusRing: true,
                   placeholder: "Masukkan email terdaftar",
                   placeholderColor: "normal",
                   value: email,
@@ -277,25 +331,27 @@ export const ForgotPasswordViews: React.FC = () => {
                   errorText: errorEmail,
                 }}
               />
-              <div className="mt-2">
-                <Button
-                  rounded="full"
-                  size="lg"
-                  variant={isLoading ? "disabled" : "primary"}
-                  type="submit"
-                >
-                  {isLoading ? "Mengirim..." : "Kirim OTP"}
-                </Button>
-              </div>
+              <button
+                className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#3966bf] text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#2b4f9c] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isLoading}
+                type="submit"
+              >
+                {isLoading ? "Mengirim..." : "Kirim OTP"}
+              </button>
             </form>
           )}
 
           {/* --- STEP 2: INPUT OTP & TIMER --- */}
           {step === 2 && (
-            <form onSubmit={handleValidateOtp} className="flex flex-col gap-6">
-              <div className="flex flex-col gap-3">
-                <label className="text-sm font-semibold text-gray-700">Kode OTP 6-Digit</label>
-                <div className="flex justify-between gap-2">
+            <form
+              onSubmit={handleValidateOtp}
+              className="mt-[26px] flex flex-col gap-[18px]"
+            >
+              <div className="flex flex-col gap-2">
+                <label className="text-[13px] font-medium text-slate-700">
+                  Kode OTP 6-Digit
+                </label>
+                <div className="flex gap-2.5">
                   {Array(6)
                     .fill(null)
                     .map((_, index) => (
@@ -309,58 +365,73 @@ export const ForgotPasswordViews: React.FC = () => {
                         value={otpValues[index]}
                         onChange={(e) => handleOtpChange(index, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                        className={`w-12 h-12 border ${
-                          errorOtp ? "border-red-500" : "border-[#DADADA]"
-                        } focus:border-blue-500 focus:outline-none rounded-lg text-center font-bold text-lg bg-white transition-colors`}
+                        className={`h-[52px] w-full rounded-xl border text-center text-[19px] font-semibold transition-colors duration-200 focus:outline-none focus:ring-[3px] focus:ring-[rgba(57,102,191,0.15)] ${
+                          errorOtp
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-slate-300 bg-white focus:border-[#3966bf]"
+                        }`}
                       />
                     ))}
                 </div>
                 {errorOtp && (
-                  <span className="text-xs text-red-500 font-semibold">{errorOtp}</span>
+                  <span className="text-xs font-semibold text-red-500">
+                    {errorOtp}
+                  </span>
                 )}
               </div>
 
               {/* Timer & Resend OTP */}
-              <div className="flex items-center justify-between py-2 border-t border-b border-gray-100 my-2">
-                <div className="flex items-center gap-1.5 text-sm font-semibold text-gray-500">
-                  <span>Sisa Waktu:</span>
-                  <span className={timeLeft > 0 ? "text-blue-500 font-bold" : "text-red-500 font-bold"}>
+              <div className="flex items-center justify-between text-[13px] text-slate-500">
+                <span>
+                  Kode berlaku{" "}
+                  <b
+                    className={
+                      timeLeft > 0
+                        ? "font-semibold text-slate-900"
+                        : "font-semibold text-red-500"
+                    }
+                  >
                     {formatTime(timeLeft)}
-                  </span>
-                </div>
+                  </b>
+                </span>
 
                 {timeLeft === 0 && (
                   <button
                     type="button"
                     onClick={handleResendOtp}
                     disabled={isLoading}
-                    className="text-sm font-bold text-[#4C76A3] hover:text-[#203D5D] transition-colors"
+                    className="font-semibold text-[#3966bf] transition-colors duration-200 hover:text-[#2b4f9c] disabled:opacity-60"
                   >
                     Kirim Ulang OTP
                   </button>
                 )}
               </div>
 
-              <Button
-                rounded="full"
-                size="lg"
-                variant={isLoading || timeLeft === 0 ? "disabled" : "primary"}
+              <button
+                className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#3966bf] text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#2b4f9c] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isLoading || timeLeft === 0}
                 type="submit"
               >
                 {isLoading ? "Memvalidasi..." : "Verifikasi"}
-              </Button>
+              </button>
             </form>
           )}
 
           {/* --- STEP 3: RESET PASSWORD BARU --- */}
           {step === 3 && (
-            <form onSubmit={handleResetPassword} className="flex flex-col gap-6">
+            <form
+              onSubmit={handleResetPassword}
+              className="mt-[26px] flex flex-col gap-[18px]"
+            >
               <InputLabel
                 title="Password Baru"
+                titleClassName="text-[13px] font-medium text-slate-700"
                 inputProps={{
                   type: showPassword ? "text" : "password",
-                  rounded: "full",
-                  borderColor: "normal",
+                  rounded: "xl",
+                  inputSize: "lg",
+                  borderColor: "slate",
+                  focusRing: true,
                   placeholder: "Minimal 8 karakter",
                   placeholderColor: "normal",
                   value: password,
@@ -377,10 +448,13 @@ export const ForgotPasswordViews: React.FC = () => {
 
               <InputLabel
                 title="Konfirmasi Password Baru"
+                titleClassName="text-[13px] font-medium text-slate-700"
                 inputProps={{
                   type: showConfirmPassword ? "text" : "password",
-                  rounded: "full",
-                  borderColor: "normal",
+                  rounded: "xl",
+                  inputSize: "lg",
+                  borderColor: "slate",
+                  focusRing: true,
                   placeholder: "Ulangi password",
                   placeholderColor: "normal",
                   value: confirmPassword,
@@ -395,51 +469,42 @@ export const ForgotPasswordViews: React.FC = () => {
                 }}
               />
 
-              <div className="mt-2">
-                <Button
-                  rounded="full"
-                  size="lg"
-                  variant={isLoading ? "disabled" : "primary"}
-                  type="submit"
-                >
-                  {isLoading ? "Menyimpan..." : "Simpan & Reset Password"}
-                </Button>
-              </div>
+              <button
+                className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#3966bf] text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#2b4f9c] disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isLoading}
+                type="submit"
+              >
+                {isLoading ? "Menyimpan..." : "Simpan & Reset Password"}
+              </button>
             </form>
           )}
 
           {/* --- STEP 4: SUCCESS SCREEN --- */}
           {step === 4 && (
-            <div className="flex flex-col items-center gap-6 py-4">
-              <FaCheckCircle className="text-green-500 text-6xl animate-bounce" />
-              <p className="text-center font-medium text-gray-700">
-                Password Anda telah berhasil diatur ulang. Silakan login kembali dengan password baru Anda.
+            <div className="flex flex-col items-center py-3 text-center">
+              <span className="mb-[18px] flex h-16 w-16 items-center justify-center rounded-full bg-[#ecfdf5] text-[#059669]">
+                <Check size={30} strokeWidth={2.5} />
+              </span>
+              <h3 className="text-xl font-semibold text-slate-900">
+                Password berhasil direset
+              </h3>
+              <p className="mt-2 text-sm leading-[1.65] text-slate-500">
+                Password baru kamu sudah tersimpan. Silakan masuk dengan
+                password yang baru.
               </p>
-              <Button
-                rounded="full"
-                size="lg"
-                variant="primary"
+              <button
+                type="button"
                 onClick={() => navigate("/sign-in")}
+                className="mt-6 flex h-12 w-full items-center justify-center rounded-2xl bg-[#3966bf] text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#2b4f9c]"
               >
-                Kembali ke Sign In
-              </Button>
+                Kembali Masuk
+              </button>
             </div>
           )}
-
         </div>
       </div>
 
-      {/* Banner Section */}
-      <div className="relative my-[-20px] shadow-xl lg:w-1/2">
-        <div className="bg-black absolute left-0 right-0 top-0 bottom-0 z-10 opacity-30 lg-max:mb-[-40vh]"></div>
-        <div className="sticky top-0 lg-max:mb-[-40vh] h-screen">
-          <img
-            src={Family}
-            alt="Family"
-            className="h-full w-full object-cover"
-          />
-        </div>
-      </div>
+      <AuthBrandPanel />
     </div>
   );
 };

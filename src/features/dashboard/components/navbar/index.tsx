@@ -1,78 +1,104 @@
 import DefaultImage from "@core/assets/default-photo.svg";
-import { useState } from "react";
-import { CiLogout } from "react-icons/ci";
-import { Poppins } from "../../../_global/components/Text";
-import { useProfile } from "../../../profile/useProfile";
-import { LogoutConfirmation } from "./LogoutConfirmation";
+import { useAtom } from "jotai";
+import { Menu, PanelLeft } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import { useMenus } from "../../../_global/hooks/useMenus";
 import { Skeleton } from "../../../_global/components/Shimer";
-import { Badge } from "../../../_global/components/Badge";
+import { useProfile } from "../../../profile/useProfile";
+import { sidebarAtom } from "../sidebar/store";
 
-export const DashboardNavbar = () => {
+interface DashboardNavbarProps {
+  onToggleCollapse?: () => void;
+  withSidebar?: boolean;
+  collapsed?: boolean;
+}
+
+export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
+  onToggleCollapse,
+  withSidebar = false,
+  collapsed = false,
+}) => {
   const { data: profile, isFetching } = useProfile();
   const role = profile?.data?.isMentor
     ? "Mentor"
     : profile?.data?.role || "unknown";
 
-  const [show, setShow] = useState<boolean>(false);
+  const location = useLocation();
+  const { menus } = useMenus();
+  const [, setSidebarShow] = useAtom(sidebarAtom);
+
+  const title = menus
+    .flatMap((group) => group.items)
+    .find(
+      (item) =>
+        item.path !== "/" && location.pathname.includes(item.path)
+    )?.name;
+
   return (
-    <>
-      <nav className="bg-white shadow-sm px-4 py-2 sticky top-0 z-50">
-        <div className="flex justify-between items-center max-w-[1920px] mx-auto">
-          <div className="flex items-center justify-end gap-4 w-full">
+    <nav
+      className={`sticky top-0 z-50 h-16 border-b border-slate-200 bg-white transition-all duration-300 ${
+        withSidebar ? (collapsed ? "lg:ml-[76px]" : "lg:ml-[260px]") : ""
+      }`}
+    >
+      <div className="flex h-full items-center gap-3.5 px-6">
+        <button
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 lg:hidden"
+          onClick={() => setSidebarShow((prev) => !prev)}
+          aria-label="Buka sidebar"
+        >
+          <Menu size={19} />
+        </button>
+        {onToggleCollapse && (
+          <button
+            className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 lg:flex"
+            onClick={onToggleCollapse}
+            title="Rampingkan sidebar"
+            aria-label="Rampingkan sidebar"
+          >
+            <PanelLeft size={19} />
+          </button>
+        )}
+        {title && (
+          <h2 className="truncate text-base font-semibold text-slate-900">
+            {title}
+          </h2>
+        )}
+        <div className="ml-auto flex items-center gap-3">
+          {isFetching ? (
+            <Skeleton width="4rem" height="1rem" />
+          ) : (
+            <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+              {role}
+            </span>
+          )}
+          <div className="flex items-center gap-2.5">
             {isFetching ? (
               <>
-                <Skeleton width="4rem" height="1rem" />
+                <Skeleton width="8rem" height="0.8rem" />
+                <Skeleton width="2rem" height="2rem" borderRadius="100%" />
               </>
             ) : (
-              <Badge variant="primary" rounded="full" size="sm">
-                {role}
-              </Badge>
+              <>
+                <p className="max-w-[140px] truncate text-sm font-semibold text-slate-900">
+                  {profile?.data?.name || "unknown"}
+                </p>
+                <img
+                  src={
+                    !profile?.data?.photo || isFetching
+                      ? DefaultImage
+                      : profile?.data?.photo
+                  }
+                  onError={(e) =>
+                    ((e.target as HTMLImageElement).src = DefaultImage)
+                  }
+                  alt="Profile"
+                  className="h-8 w-8 rounded-full border border-slate-200 object-cover"
+                />
+              </>
             )}
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-2">
-                {isFetching ? (
-                  <>
-                    <Skeleton width="8rem" height="0.8rem" />
-                    <Skeleton width="2rem" height="2rem" borderRadius="100%" />
-                  </>
-                ) : (
-                  <>
-                    <Poppins className="text-xs max-w-[140px] truncate overflow-hidden whitespace-nowrap">
-                      {profile?.data?.name || "unknown"}
-                    </Poppins>
-                    <img
-                      src={
-                        !profile?.data?.photo || isFetching
-                          ? DefaultImage
-                          : profile?.data?.photo
-                      }
-                      onError={(e) =>
-                        ((e.target as HTMLImageElement).src = DefaultImage)
-                      }
-                      alt="Profile"
-                      className="w-8 h-8 rounded-full cursor-pointer"
-                    />
-                  </>
-                )}
-              </div>
-              {isFetching ? (
-                <>
-                  <Skeleton height="1.8rem" width="5rem" />
-                </>
-              ) : (
-                <div
-                  className="border border-solid border-red-500 h-8 flex items-center gap-2 rounded-md bg-red-700 hover:bg-red-500 duration-300 px-1 pr-2 cursor-pointer"
-                  onClick={() => setShow((prev) => !prev)}
-                >
-                  <CiLogout className="text-white" />
-                  <Poppins className="text-xs text-white md:block hidden">Logout</Poppins>
-                </div>
-              )}
-            </div>
           </div>
         </div>
-      </nav>
-      <LogoutConfirmation onHide={() => setShow((prev) => !prev)} show={show} />
-    </>
+      </div>
+    </nav>
   );
 };

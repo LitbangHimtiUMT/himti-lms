@@ -1,37 +1,54 @@
 import { PropsWithChildren } from "react";
 
-import { useAtomValue } from "jotai";
 import { Navigate } from "react-router-dom";
 import { CONFIG_APP } from "../../../core/configs/app";
 import { DashboardNavbar } from "../../dashboard/components/navbar";
 import { GeneralSidebar } from "../../dashboard/components/sidebar/GeneralSidebar";
-import { sidebarAtom } from "../../dashboard/components/sidebar/store";
 import { useMenus } from "../hooks/useMenus";
 
 interface LearningRootProps extends PropsWithChildren {
   withSidebar?: boolean;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 export const LearningRoot: React.FC<LearningRootProps> = ({
   withSidebar = true,
+  collapsed = false,
+  onToggleCollapse,
   children,
 }) => {
-  const sidebarOpen = useAtomValue(sidebarAtom);
   const menu = useMenus();
   const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
   if (!token) return <Navigate to={"/sign-in"} />;
 
   return (
     <div className="bg-gray-100">
-      <DashboardNavbar />
+      <DashboardNavbar
+        onToggleCollapse={onToggleCollapse}
+        withSidebar={withSidebar}
+        collapsed={collapsed}
+      />
       <div className="flex relative min-h-screen">
-        {withSidebar && <GeneralSidebar isFetching={menu.isFetching} items={menu.menus} />}
+        {withSidebar && (
+          <GeneralSidebar
+            isFetching={menu.isFetching}
+            items={menu.menus}
+            collapsed={collapsed}
+          />
+        )}
         {/* Main Content */}
         <div
           className={`
             flex-1 flex flex-col min-w-0
             transition-all duration-300 ease-in-out
-            ${sidebarOpen ? "lg:ml-80" : "lg:ml-0"}
+            ${
+              withSidebar
+                ? collapsed
+                  ? "lg:ml-[76px]"
+                  : "lg:ml-[260px]"
+                : ""
+            }
           `}
         >
           <main className="flex-1 mx-4 mb-4 rounded-lg m-4 lg:m-6 lg:mt-10">
