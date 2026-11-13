@@ -1,7 +1,13 @@
 {
-  "name": "himti-admin",
+  "name": "himti-lms",
   "private": true,
   "version": "0.0.0",
+  "description": "Learning Management System HIMTI UMT — kelas, materi mandiri, dan sertifikat.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LitbangHimtiUMT/himti-lms.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
