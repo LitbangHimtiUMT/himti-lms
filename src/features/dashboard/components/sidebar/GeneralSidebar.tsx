@@ -61,8 +61,12 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({
               "lg:flex lg:flex-col lg:w-64 lg:border-r"
             )}
           >
-            <div className="mt-14">
-              <img src="/HIMTI.png" width={100} alt="HIMTI" />
+            <div className="mt-14 px-5">
+              <img
+                src="/HIMTI.png"
+                alt="HIMTI"
+                className="w-[100px] h-auto object-contain"
+              />
             </div>
             {/* Content */}
             <div className="pt-4 px-5 h-full flex flex-col">
