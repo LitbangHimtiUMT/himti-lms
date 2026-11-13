@@ -3,6 +3,7 @@ import { NotFound } from "../../features/_global/components/NotFound";
 import { RootViews } from "../../features/_global/views";
 import { AuthLayout } from "../../features/_global/views/AuthLayout";
 import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
+import { MentorGuard } from "../../features/_global/views/MentorGuard";
 import { InvitationRoot } from "../../features/_global/views/InvitationRoot";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
@@ -82,36 +83,41 @@ export const router = createBrowserRouter([
     element: <DashboardRoot />,
     children: [
       {
-        path: "/dashboard/my-class",
-        element: <MyClassViews />,
+        element: <MentorGuard />,
+        children: [
+          {
+            path: "/dashboard/my-class",
+            element: <MyClassViews />,
+          },
+          {
+            path: "/dashboard/my-class/:classId",
+            element: <SessionViews />,
+          },
+          {
+            path: "/dashboard/my-class/create",
+            element: <CreateClassesViews />,
+          },
+          {
+            path: "/dashboard/:classId/:sessionId/create-modules",
+            element: <CreateModules />,
+          },
+          {
+            path: "/dashboard/:classId/:sessionId",
+            element: <DetailSessionView />,
+          },
+          {
+            path: "/dashboard/:classId/:sessionId/:moduleId",
+            element: <DetailModuleView />,
+          },
+          {
+            path: "/dashboard/:classId/:sessionId/:moduleId/:assignmentId",
+            element: <DetailAssignmentView />,
+          },
+        ],
       },
       {
         path: "/dashboard/enrolled-class",
         element: <EnrolledClassViews />,
-      },
-      {
-        path: "/dashboard/my-class/:classId",
-        element: <SessionViews />,
-      },
-      {
-        path: "/dashboard/my-class/create",
-        element: <CreateClassesViews />,
-      },
-      {
-        path: "/dashboard/:classId/:sessionId/create-modules",
-        element: <CreateModules />,
-      },
-      {
-        path: "/dashboard/:classId/:sessionId",
-        element: <DetailSessionView />,
-      },
-      {
-        path: "/dashboard/:classId/:sessionId/:moduleId",
-        element: <DetailModuleView />,
-      },
-      {
-        path: "/dashboard/:classId/:sessionId/:moduleId/:assignmentId",
-        element: <DetailAssignmentView />,
       },
       {
         path: "/dashboard/certificates",
