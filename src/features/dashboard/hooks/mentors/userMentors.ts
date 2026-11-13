@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { classesService } from "../../../../core/services/classes";
 import useDebounce from "../../../_global/hooks/useDebounce";
 import { mentorService } from "../../../../core/services/mentor";
-import { CONFIG_APP } from "../../../../core/configs/app";
 
 interface Query {
   path?: string;
@@ -46,9 +45,6 @@ export const useMentors = (queryParams?: Query) => {
     queryFn: () =>
       mentorService.get({
         queryParams,
-        headers: {
-          [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
-        },
       }),
       enabled: !!queryParams?.enabled
   });

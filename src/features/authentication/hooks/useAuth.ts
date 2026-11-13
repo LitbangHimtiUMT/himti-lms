@@ -30,23 +30,11 @@ export function useAuthCreation() {
     mutationFn: ({ body, type }: ITypeAuth) => {
       switch (type) {
         case "login":
-          return authService.login(body as AuthLoginDTO, {
-            headers: {
-              [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
-            },
-          });
+          return authService.login(body as AuthLoginDTO);
         case "register":
-          return authService.register(body as AuthRegisterDTO, {
-            headers: {
-              [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
-            },
-          });
+          return authService.register(body as AuthRegisterDTO);
         default:
-          return authService.login(body as AuthRegisterDTO, {
-            headers: {
-              [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
-            },
-          });
+          return authService.login(body as AuthRegisterDTO);
       }
     },
     onSuccess: (res) => {

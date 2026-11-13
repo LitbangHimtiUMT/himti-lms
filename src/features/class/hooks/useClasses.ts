@@ -58,9 +58,6 @@ export function useClasses(options?: Options) {
           ...(level && { level }),
         },
         path: options?.path,
-        headers: {
-          [CONFIG_APP.HIMTI_HEADER_KEY]: CONFIG_APP.HIMTI_SECRET_KEY,
-        },
       }),
   });
   return query;
@@ -75,17 +72,11 @@ export function useClassesCreation() {
         case "create":
           return classesService.post(data as FormData, {
             contentType: "form-data",
-            headers: {
-              [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
-            },
           });
         case "update":
           return classesService.put(data, {
             contentType: "form-data",
             path: id,
-            headers: {
-              [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
-            },
           });
         case "delete":
           return classesService.delete({
@@ -111,9 +102,6 @@ export function useClassesCreation() {
         default:
           return classesService.post(data as FormData, {
             contentType: "form-data",
-            headers: {
-              [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
-            },
           });
       }
     },
@@ -174,9 +162,6 @@ export function useDetailClass(by: "id" | "code" = "id", cId?: string) {
         queryParams: {
           page: page ? Number(page) : undefined,
           perPage: perPage ? Number(perPage) : undefined,
-        },
-        headers: {
-          [CONFIG_APP.HIMTI_HEADER_KEY]: btoa(CONFIG_APP.HIMTI_SECRET_KEY),
         },
       }),
     enabled: !!cId || !!id || !!classId || !!code,
