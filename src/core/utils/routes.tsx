@@ -4,7 +4,6 @@ import { RootViews } from "../../features/_global/views";
 import { AuthLayout } from "../../features/_global/views/AuthLayout";
 import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
 import { InvitationRoot } from "../../features/_global/views/InvitationRoot";
-import { Playground } from "../../features/_global/views/playground";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
 import { ForgotPasswordViews } from "../../features/authentication/views/forgot-password/ForgotPasswordViews";
@@ -129,10 +128,6 @@ export const router = createBrowserRouter([
         element: <InvitationUseCodeViews />,
       },
     ],
-  },
-  {
-    path: "/playground",
-    element: <Playground />,
   },
   {
     path: "/course/:courseId",
