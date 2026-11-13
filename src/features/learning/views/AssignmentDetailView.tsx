@@ -42,7 +42,16 @@ export const AssignmentDetailView = () => {
                   allowedFile: assignment?.data?.allowedFile,
                   isHaveHistory: !!assignment?.data?.historySubmission.length,
                   activeSubmission: assignment?.data?.activeSubmission,
-                  submission: assignment?.data?.activeSubmission ?? null,
+                  historySubmission: assignment?.data?.historySubmission,
+                  // The submission shown on this page: the one under review,
+                  // else the approved one (APPROVE is terminal, so the detail
+                  // card shows it instead of the submit form).
+                  submission:
+                    assignment?.data?.activeSubmission ??
+                    assignment?.data?.historySubmission?.find(
+                      (item) => item.status === "APPROVE"
+                    ) ??
+                    null,
                 }
               : {
                   createdBy: {
