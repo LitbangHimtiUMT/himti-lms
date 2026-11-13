@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { sanitizeHtml } from "@core/libs/sanitize";
 import { highlightCode } from "../utils/parserHelpers";
 
 interface CodeBlockProps {
@@ -97,7 +98,7 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
         {/* Code content */}
         <pre 
           className="flex-1 bg-transparent p-0 border-0 rounded-none m-0 pl-4 text-[#d4d4d4] font-mono text-sm leading-[22px] overflow-x-visible whitespace-pre text-left"
-          dangerouslySetInnerHTML={{ __html: highlighted }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(highlighted) }}
         />
       </div>
     </div>

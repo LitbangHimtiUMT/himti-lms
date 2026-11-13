@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { FiFileText } from "react-icons/fi";
 import { IoDocument } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
+import { sanitizeHtml } from "@core/libs/sanitize";
 import { Button } from "../../../../_global/components/Button";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
 import { Skeleton } from "../../../../_global/components/Shimer";
@@ -103,7 +104,7 @@ export const DetailModuleContent = () => {
               className={`prose max-w-none dark:prose-invert 
                 prose-base`}
               dangerouslySetInnerHTML={{
-                __html: modules?.data?.textModule || "",
+                __html: sanitizeHtml(modules?.data?.textModule || ""),
               }}
             />
             {/* Tombol View Assignment (hanya muncul jika ini assignment) */}

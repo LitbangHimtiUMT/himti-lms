@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { sanitizeHtml } from "@core/libs/sanitize";
 import {
   FiCalendar,
   FiClock,
@@ -148,7 +149,7 @@ export const DetailAssignmentContent = () => {
             <div
               className="prose max-w-none dark:prose-invert prose-sm sm:prose-base"
               dangerouslySetInnerHTML={{
-                __html: assignment?.description || "",
+                __html: sanitizeHtml(assignment?.description || ""),
               }}
             />
           </div>
