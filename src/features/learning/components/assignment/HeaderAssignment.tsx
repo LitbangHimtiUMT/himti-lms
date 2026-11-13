@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaCalendarAlt, FaPaperPlane } from "react-icons/fa";
+import { sanitizeHtml } from "@core/libs/sanitize";
 import { Button } from "../../../_global/components/Button";
 import { Poppins } from "../../../_global/components/Text";
 import { UploadFile } from "../../../_global/components/UploadFiles";
@@ -164,7 +165,9 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
             <h3 className="text-lg font-semibold mb-3">Description</h3>
             <div
               dangerouslySetInnerHTML={{
-                __html: data.description || "No description provided",
+                __html: sanitizeHtml(
+                  data.description || "No description provided"
+                ),
               }}
             />
           </div>

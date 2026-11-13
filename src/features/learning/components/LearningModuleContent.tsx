@@ -1,4 +1,5 @@
 import React from "react";
+import { sanitizeHtml } from "@core/libs/sanitize";
 import { ConditionNode } from "../../_global/components/ConditionNode";
 import { YoutubeEmbed } from "../../dashboard/components/modules/detail-modules/EmbededYoutube";
 import { ModuleDTO } from "../../../core/model/modules";
@@ -27,7 +28,7 @@ export const LearningModuleContent: React.FC<LearningModuleContentProps> = ({
           <div
             className={`prose max-w-none dark:prose-invert prose-base mt-4`}
             dangerouslySetInnerHTML={{
-              __html: module?.textModule || "",
+              __html: sanitizeHtml(module?.textModule || ""),
             }}
           />
           <ConditionNode
