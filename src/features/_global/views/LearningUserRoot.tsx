@@ -93,14 +93,18 @@ export const LearningUserRoot = () => {
   }, []);
 
   useEffect(() => {
-    if (!moduleIdQs && modules?.[0]?.modules?.[0]?.id) {
+    if (moduleIdQs) return;
+    const firstModuleId = modules?.flatMap(
+      (session) => session.modules
+    )?.[0]?.id;
+    if (firstModuleId) {
       setSearchParams({
         ...queries,
-        moduleId: modules[0].modules[0].id,
+        moduleId: firstModuleId,
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moduleIdQs]); // Empty dependency array
+  }, [moduleIdQs, modules]);
 
   const handleClickModule = useCallback(
     (moduleId: string) => {

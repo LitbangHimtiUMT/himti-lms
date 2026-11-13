@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import { Menu } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { Skeleton } from "../../_global/components/Shimer";
+import { EmptyState } from "../../_global/components/Empty";
 import { LearningSidebarAtom } from "../../_global/store";
 import { useDetailModule } from "../../dashboard/hooks/modules/useModules";
 import { LearningModuleContent } from "../components/LearningModuleContent";
@@ -49,7 +50,12 @@ export const LearningDashboardView = () => {
           </>
         ) : module ? (
           <LearningModuleContent module={module?.data as ModuleDTO} />
-        ) : null}
+        ) : (
+          <EmptyState
+            variant="discovery"
+            description="Select a module from the sidebar to start learning."
+          />
+        )}
 
         {/* Fixed Navigation Buttons */}
         {module && <NavigationModule />}
