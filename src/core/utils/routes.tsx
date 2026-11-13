@@ -4,6 +4,7 @@ import { RootViews } from "../../features/_global/views";
 import { AuthLayout } from "../../features/_global/views/AuthLayout";
 import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
 import { MentorGuard } from "../../features/_global/views/MentorGuard";
+import { RequireAuth } from "../../features/_global/views/RequireAuth";
 import { InvitationRoot } from "../../features/_global/views/InvitationRoot";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
@@ -136,8 +137,13 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/course/:courseId",
-    element: <CoursePage />,
+    element: <RequireAuth />,
+    children: [
+      {
+        path: "/course/:courseId",
+        element: <CoursePage />,
+      },
+    ],
   },
   {
     path: "/learning",
