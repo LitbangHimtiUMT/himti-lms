@@ -1,70 +1,127 @@
-# HIMTI Learning Management System (LMS)
+# HIMTI LMS
 
-## 📌 About Project
-LMS (Learning Management System) is a platform to help the online learning process. This system allows users to take classes, access learning modules, and track their learning progress.
+Learning Management System HIMTI UMT. Buat peserta, mentor, dan admin. Frontend aja, backend-nya repo terpisah.
 
-## ✨ Core Feature
-- **User Management**: Registration, authentication, and user roles (admin, mentor, participant).
-- **Classes & Mentors**: Mentors can create classes and manage participants.
-- **Modules & Sessions**: Each class has sessions containing learning modules in the form of text and video.
-- **Progress Tracking**: Users can mark completed modules.
-- **Points & Reward System**: Can be further developed to increase user engagement.
+Live di https://lms.himtiumt.org. Backend/API: [himti-api](https://github.com/LitbangHimtiUMT/himti-api).
 
-## 🛠️ Tech Stack
-React Vite, Typescript, Tailwind CSS
+## Fitur
 
-## 📂 Project Structure
-```
-📦 learning-management-system
-├── 📁 src
-│   ├── 📁 core
-│       ├── 📁 core
-│   │   ├── 📁 models
-│   │   ├── 📁 service
-│   │   ├── 📁 config
-│   ├── 📁 entries
-│   │   ├── 📄 app.tsx
-│   │   ├── 📁 index.css
-│   ├── 📁 feature
-│   │   ├── 📁 components
-│   │   │   ├── ⚛ ClassButton.tsx
-│   │   ├── 📁 hooks
-│   │   │   ├── ⚛ useClass.ts
-│   │   ├── 📁 views
-│   │   │   ├── ⚛ ClassesView.tsx
-├── 📄 index.html
-├── 📄 README.md
-```
+Yang ada sekarang:
 
-## 🚀 How to run?
-### Requirement
-- Node.js & npm/yarn
+- Auth: sign-in, sign-up, lupa password.
+- Kelas dan mentor: mentor bikin kelas, atur peserta, sesi, dan modul.
+- Sesi, modul, dan assignment: modul teks dan video, assignment plus submission.
+- Progres belajar: peserta menandai modul yang selesai.
+- Sertifikat: peserta bisa cek dan unduh sertifikat kelas yang selesai.
+- Materi mandiri (`/courses`): materi statis yang dipelajari sendiri, tanpa mentor dan sertifikat. 4 materi tersedia, 6 masih placeholder.
+- Undangan via kode: gabung kelas pakai kode undangan.
 
-### Step by step
-#### 1️⃣ Clone Repository
+Nggak ada sistem poin atau reward.
+
+## Tech stack
+
+- React 18 + Vite 5 + TypeScript 5
+- Tailwind CSS 3
+- React Query 5, Jotai, react-router-dom 6
+- Pendukung: react-toastify, lucide-react, react-icons, suneditor, lottie-react, date-fns
+
+## Prasyarat
+
+- Node 18 atau lebih baru.
+- npm. Jangan pakai yarn, repo ini pakai `package-lock.json`.
+- API backend yang bisa diakses (lihat `HIMTI_BASE_URL` di bawah).
+
+## Quickstart
+
+1. Clone repo:
+
 ```bash
-git clone https://github.com/LitbangHimtiUMT/learning-management-system.git
-cd learning-management-system
+git clone https://github.com/LitbangHimtiUMT/himti-lms.git
+cd himti-lms
 ```
 
-#### 3️⃣ Setup Environment
+2. Install dependency:
+
 ```bash
-touch .env
-# Edit file .env sesuai konfigurasi API backend
-
-# Install dependency
-yarn install
-
-# Jalankan aplikasi
-yarn dev
+npm install
 ```
 
-## 🤝 Contributions
-We welcome contributions from anyone! Please feel free to fork this repository, create new branches, and submit pull requests.
+Repo ini pakai `legacy-peer-deps=true` di `.npmrc`. Jangan dihapus, build Vercel butuh itu.
 
-## 📜 License
-This project is licensed under the [MIT License](LICENSE).
+3. Salin env example dan isi nilainya:
 
----
-🚀 Built with ❤️ by **[Litbang/HIMTI-UMT]**
+```bash
+cp .env.example .env
+```
 
+| Variabel | Buat apa |
+| --- | --- |
+| `HIMTI_BASE_URL` | URL dasar API backend. |
+| `HIMTI_APP_NAME` | Nama aplikasi, dipakai di judul halaman. |
+| `HIMTI_SECRET_KEY` | Dipakai buat nurunin nama key token di localStorage. |
+| `HIMTI_HEADER_KEY` | Legacy. Sudah tidak dibaca kode sejak header `x-api-key` dicabut. Masih ada di `.env.example` sampai dibersihkan bareng perbaikan keamanan berikutnya. |
+
+4. Jalankan:
+
+```bash
+npm run dev
+```
+
+5. Build dan lint sebelum PR:
+
+```bash
+npm run build
+npm run lint
+```
+
+## Struktur proyek
+
+```
+himti-lms
+├── public/            # file statis, termasuk logo + favicon HIMTI.png
+├── src/
+│   ├── core/          # kode bersama: configs, libs, model, services, utils, assets
+│   │   └── modul/     # konten markdown materi mandiri (4 folder course)
+│   ├── entries/       # App.tsx + index.css
+│   └── features/      # satu folder per fitur: components, hooks, views
+│       ├── _global/   # komponen dan layout yang dipakai semua fitur
+│       ├── authentication/
+│       ├── categories/
+│       ├── certificates/
+│       ├── class/
+│       ├── course/    # katalog + halaman materi mandiri
+│       ├── dashboard/
+│       ├── faq/
+│       ├── home/
+│       ├── invitations/
+│       ├── learning/
+│       ├── mentor/
+│       └── profile/
+├── index.html
+├── tailwind.config.js
+├── vite.config.ts
+└── vercel.json
+```
+
+`core/` isinya kode yang dipakai lintas fitur. `features/` isinya kode per fitur, dan `_global/` di dalamnya isinya komponen bersama. Konten materi mandiri tinggal di `src/core/modul/` sebagai file markdown, diimpor pakai `?raw` supaya Vite membacanya sebagai teks mentah.
+
+## Scripts
+
+| Script | Buat apa |
+| --- | --- |
+| `npm run dev` | Jalankan dev server. |
+| `npm run build` | Typecheck (`tsc -b`) lalu build produksi. |
+| `npm run lint` | ESLint, nol warning. |
+| `npm run preview` | Jalankan hasil build secara lokal. |
+
+## Deploy
+
+Deploy di Vercel. `vercel.json` sudah berisi rewrite SPA (semua path ke `/`), jadi routing client-side tetap jalan pas refresh halaman. Env var diisi di dashboard Vercel, jangan commit file `.env`.
+
+## Kontribusi
+
+Baca [CONTRIBUTING.md](CONTRIBUTING.md) dulu sebelum bikin PR.
+
+## Lisensi
+
+[MIT](LICENSE.md). Dibangun Litbang HIMTI UMT.
