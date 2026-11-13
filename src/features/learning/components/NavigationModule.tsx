@@ -10,11 +10,11 @@ import { useDetailModule } from "../../dashboard/hooks/modules/useModules";
 import { useCompletedModules } from "../hooks/useCompleted";
 
 export const NavigationModule = () => {
-  const { data: classess } = useDetailClass();
+  const { data: classes } = useDetailClass();
   const [sessions, setSessions] = useState<
     Array<SessionDTO & { isOpen: boolean }>
   >(
-    (classess?.data?.sessions || []).map((item) => ({
+    (classes?.data?.sessions || []).map((item) => ({
       ...item,
       isOpen: false,
     }))
@@ -105,12 +105,12 @@ export const NavigationModule = () => {
   );
   useEffect(() => {
     setSessions(
-      (classess?.data?.sessions || []).map((item) => ({
+      (classes?.data?.sessions || []).map((item) => ({
         ...item,
         isOpen: false,
       }))
     );
-  }, [classess?.data?.sessions]);
+  }, [classes?.data?.sessions]);
 
   const handleClickModule = (moduleId: string) => {
     setSearchParams({

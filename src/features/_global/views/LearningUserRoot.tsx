@@ -1,4 +1,3 @@
-import HIMTI from "@core/assets/logo/HIMTI.png";
 import { useAtom } from "jotai";
 import { CheckCircle, Menu, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -27,16 +26,16 @@ export const LearningUserRoot = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const moduleIdQs = searchParams.get("moduleId") || "";
-  const { data: classess, isFetching } = useDetailClass();
+  const { data: classes, isFetching } = useDetailClass();
   // Perbaikan 1: Gunakan useMemo untuk inisialisasi awal modules
   const initialModules = useMemo(() => {
-    return classess?.data?.sessions.map((item, index) => {
+    return classes?.data?.sessions.map((item, index) => {
       const isOpen = moduleIdQs
         ? item.modules.some((mdl) => mdl.id === moduleIdQs)
         : index === 0; // Hanya buka session pertama jika tidak ada moduleIdQs
       return { ...item, isOpen };
     });
-  }, [classess?.data?.sessions, moduleIdQs]);
+  }, [classes?.data?.sessions, moduleIdQs]);
 
   const [modules, setModules] = useState(initialModules);
 
@@ -163,7 +162,7 @@ export const LearningUserRoot = () => {
               <>
                 {/* Logo and Back Link */}
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                  <img src={HIMTI} width={100} className="mx-2" alt="HIMTI" />
+                  <img src="/HIMTI.png" width={100} className="mx-2" alt="HIMTI" />
                 </div>
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                   <div className="flex items-center justify-between">

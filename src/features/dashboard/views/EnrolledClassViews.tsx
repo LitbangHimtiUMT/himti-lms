@@ -1,4 +1,4 @@
-import { EnrolledClassContent } from "../components/classess/classess-list/EnrolledClassContent";
+import { EnrolledClassContent } from "../components/classes/classes-list/EnrolledClassContent";
 
 export const EnrolledClassViews = () => {
   return (

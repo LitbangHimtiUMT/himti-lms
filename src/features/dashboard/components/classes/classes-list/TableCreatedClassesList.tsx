@@ -26,7 +26,7 @@ import { useProfile } from "../../../../profile/useProfile";
 import { DrawerParticipants } from "../../drawer/DrawerParticipants";
 import { UpdateClassDrawer } from "../../drawer/UpdateClassDrawer";
 
-export const TableCreatedClassessList = () => {
+export const TableCreatedClassesList = () => {
   const navigate = useNavigate();
   const { data: classes, isFetching } = useClasses();
   const { data: profile } = useProfile();

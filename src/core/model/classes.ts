@@ -4,7 +4,7 @@ import { UserModel } from "./user";
 import { ModuleDTO } from "./modules";
 import { CourseType } from "../../features/dashboard/store";
 
-export type StatusClassess = 'PUBLISH' | 'DRAFT'
+export type StatusClasses = 'PUBLISH' | 'DRAFT'
 export type ProgressStatus = "Completed" | "In Progress"
 
 export interface SessionDTO {
@@ -21,7 +21,7 @@ export interface ClassModel {
   name: string;
   description: string;
   isAlreadyJoin: boolean;
-  status: StatusClassess;
+  status: StatusClasses;
   code?: string;
   level: CourseType;
   category: CategoriesModel;

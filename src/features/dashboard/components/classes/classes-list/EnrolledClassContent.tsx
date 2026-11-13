@@ -11,7 +11,7 @@ import { useCategories } from "../../../../categories/hooks/useCategories";
 import { Button } from "../../../../_global/components/Button";
 
 export const EnrolledClassContent = () => {
-  const { data: classess, isFetching } = useClasses({
+  const { data: classes, isFetching } = useClasses({
     path: "user",
   });
 
@@ -102,9 +102,9 @@ export const EnrolledClassContent = () => {
               </div>
             </div>
           ))
-        ) : classess?.data?.length ? (
+        ) : classes?.data?.length ? (
           // Actual cards
-          classess.data.map((item, index) => (
+          classes.data.map((item, index) => (
             <>
               <CardEnrolledClass key={index} {...item} />
             </>

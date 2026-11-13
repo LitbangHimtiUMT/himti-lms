@@ -10,7 +10,7 @@ import {
 import { useProfile } from "../../profile/useProfile";
 
 export const InvitationUseCodeViews = () => {
-  const { data: classess, isFetching: classFetching } = useDetailClass("code");
+  const { data: classes, isFetching: classFetching } = useDetailClass("code");
   const { data: profile, isFetching: profileFetching } = useProfile();
 
   const mutation = useClassesCreation();
@@ -24,7 +24,7 @@ export const InvitationUseCodeViews = () => {
     });
   };
 
-  const isCreator = classess?.data?.creator?.id === profile?.data?.id;
+  const isCreator = classes?.data?.creator?.id === profile?.data?.id;
   const isFetching = classFetching || profileFetching;
 
   return (
@@ -46,21 +46,21 @@ export const InvitationUseCodeViews = () => {
           <div className="flex flex-col items-center">
             <div className="mb-4">
               <p className="text-lg font-semibold text-gray-700">
-                {classess?.data?.name}
+                {classes?.data?.name}
               </p>
               <div className="flex items-center justify-center gap-2 mt-2">
                 <Poppins className="text-sm text-gray-400">
                   Invitation Code:
                 </Poppins>
                 <Poppins className="font-medium text-sm text-gray-600">
-                  {atob(classess?.data?.code ?? "")}
+                  {atob(classes?.data?.code ?? "")}
                 </Poppins>
               </div>
             </div>
             <div className="flex flex-col items-center gap-3 w-full">
               <ConditionNode
                 condition={
-                  !!classess?.data?.isAlreadyJoin && !isCreator && !isFetching
+                  !!classes?.data?.isAlreadyJoin && !isCreator && !isFetching
                 }
               >
                 <div className="bg-red-100 w-[75#] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
@@ -69,7 +69,7 @@ export const InvitationUseCodeViews = () => {
               </ConditionNode>
               <ConditionNode
                 condition={
-                  isCreator && !classess?.data?.isAlreadyJoin && !isFetching
+                  isCreator && !classes?.data?.isAlreadyJoin && !isFetching
                 }
               >
                 <div className="bg-red-100 w-[75#] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
@@ -81,7 +81,7 @@ export const InvitationUseCodeViews = () => {
                   size="lg"
                   variant={
                     isCreator ||
-                    classess?.data?.isAlreadyJoin ||
+                    classes?.data?.isAlreadyJoin ||
                     isFetching ||
                     mutation.isPending
                       ? "disabled"

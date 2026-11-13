@@ -23,16 +23,16 @@ export const CertificatesViews = () => {
               ),
             },
             {
-              return: ({ class: classess }) => (
+              return: ({ class: classes }) => (
                 <Poppins className="text-sm font-medium">
-                  {classess.name}
+                  {classes.name}
                 </Poppins>
               ),
             },
             {
-              return: ({ class: classess }) => (
+              return: ({ class: classes }) => (
                 <Poppins className="text-sm font-medium">
-                  {classess.category.name}
+                  {classes.category.name}
                 </Poppins>
               ),
             },

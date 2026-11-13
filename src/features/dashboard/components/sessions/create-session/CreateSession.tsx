@@ -13,9 +13,9 @@ export const CreateSession = () => {
 
   const [show, setShow] = useAtom(DrawerStateSession);
   const { data: profile, isFetching } = useProfile();
-  const { data: classess } = useDetailClass();
+  const { data: classes } = useDetailClass();
 
-  const isOwner = profile?.data?.id === classess?.data?.creator?.id;
+  const isOwner = profile?.data?.id === classes?.data?.creator?.id;
 
   const onHide = () => setShow((prev) => ({ ...prev, show: !prev.show }));
   return (

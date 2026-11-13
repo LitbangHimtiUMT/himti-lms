@@ -1,5 +1,5 @@
 import React from "react";
-import { ClassLevel, StatusClassess } from "../../../../../core/model/classes";
+import { ClassLevel, StatusClasses } from "../../../../../core/model/classes";
 import { Badge, BadgeVariant } from "../../../../_global/components/Badge";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { Poppins } from "../../../../_global/components/Text";
@@ -13,7 +13,7 @@ interface CardDetailClassProps {
   category: string;
   level: ClassLevel;
   totalParticipant: number;
-  status: StatusClassess;
+  status: StatusClasses;
   isFetching?: boolean;
   id: string;
 }
@@ -36,7 +36,7 @@ export const CardDetailClass: React.FC<CardDetailClassProps> = ({
     EXPERT: "success",
   };
 
-  const statusColor: Record<StatusClassess, BadgeVariant> = {
+  const statusColor: Record<StatusClasses, BadgeVariant> = {
     PUBLISH: "success",
     DRAFT: "outline",
   };

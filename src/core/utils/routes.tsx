@@ -4,12 +4,11 @@ import { RootViews } from "../../features/_global/views";
 import { AuthLayout } from "../../features/_global/views/AuthLayout";
 import { DashboardRoot } from "../../features/_global/views/DashboardRoot";
 import { InvitationRoot } from "../../features/_global/views/InvitationRoot";
-import { Playground } from "../../features/_global/views/playground";
 import { SignInViews } from "../../features/authentication/views/sign-in";
 import { SignUpViews } from "../../features/authentication/views/sign-up";
 import { ForgotPasswordViews } from "../../features/authentication/views/forgot-password/ForgotPasswordViews";
 import { ClassViews } from "../../features/class/views/ClassViews";
-import { CreateClassessViews } from "../../features/dashboard/views/CreateClassessViews";
+import { CreateClassesViews } from "../../features/dashboard/views/CreateClassesViews";
 import { CreateModules } from "../../features/dashboard/views/CreateModules";
 import { DetailModuleView } from "../../features/dashboard/views/DetailModuleView";
 import { DetailSessionView } from "../../features/dashboard/views/DetailSessionView";
@@ -96,7 +95,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/my-class/create",
-        element: <CreateClassessViews />,
+        element: <CreateClassesViews />,
       },
       {
         path: "/dashboard/:classId/:sessionId/create-modules",
@@ -129,10 +128,6 @@ export const router = createBrowserRouter([
         element: <InvitationUseCodeViews />,
       },
     ],
-  },
-  {
-    path: "/playground",
-    element: <Playground />,
   },
   {
     path: "/course/:courseId",

@@ -4,22 +4,22 @@ import { CardDetailClass } from "./CardDetailClass";
 import { HeaderDetailClass } from "./HeaderDetailClass";
 
 export const DetailClassContent = () => {
-  const { data: classess, isFetching } = useDetailClass();
+  const { data: classes, isFetching } = useDetailClass();
   return (
     <>
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
           <HeaderDetailClass />
           <CardDetailClass
-            id={classess?.data?.id || ""}
-            name={classess?.data?.name || ""}
-            category={classess?.data?.category?.name || ""}
-            createdBy={classess?.data?.creator?.name || ""}
-            level={classess?.data?.level || "BEGINNER"}
-            price={classess?.data?.price || 0}
-            status={classess?.data?.status || "PUBLISH"}
-            thumbnail={classess?.data?.thumbnail || ""}
-            totalParticipant={classess?.data?.totalParticipant || 0}
+            id={classes?.data?.id || ""}
+            name={classes?.data?.name || ""}
+            category={classes?.data?.category?.name || ""}
+            createdBy={classes?.data?.creator?.name || ""}
+            level={classes?.data?.level || "BEGINNER"}
+            price={classes?.data?.price || 0}
+            status={classes?.data?.status || "PUBLISH"}
+            thumbnail={classes?.data?.thumbnail || ""}
+            totalParticipant={classes?.data?.totalParticipant || 0}
             isFetching={isFetching}
           />
         </div>
