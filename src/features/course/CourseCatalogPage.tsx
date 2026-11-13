@@ -37,7 +37,7 @@ const CourseCard = ({ course }: { course: CourseCatalogItem }) => {
     if (!course.isAvailable) return;
     const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
     if (!token) {
-      toast.warning("Kamu harus login terlebih dahulu untuk mengakses kursus ini!");
+      toast.warning("Kamu harus login terlebih dahulu untuk mengakses materi mandiri ini!");
       navigate(`/sign-in?return=${encodeURIComponent(course.path)}`);
       return;
     }
@@ -175,7 +175,7 @@ export default function CourseCatalogPage() {
           <div className="flex flex-col items-center text-center gap-5 max-w-3xl mx-auto">
 
             <h1 className="text-3xl md:text-5xl font-black text-slate-900 leading-tight tracking-tight">
-              Kursus Teknologi{" "}
+              Materi Mandiri{" "}
               <span className="bg-gradient-to-r from-[#f1c857] to-[#2b6394] bg-clip-text text-transparent">
                 Berkualitas
               </span>
@@ -185,7 +185,8 @@ export default function CourseCatalogPage() {
 
             <p className="text-sm md:text-base text-slate-500 leading-relaxed max-w-xl">
               Tingkatkan skillmu dengan kurikulum terstruktur, konten modul mendalam, dan evaluasi mandiri bertenaga AI.{" "}
-              <strong className="text-slate-700">{availableCount} kursus</strong> sudah tersedia dan terus bertambah.
+              <strong className="text-slate-700">{availableCount} materi mandiri</strong> sudah tersedia dan terus bertambah.{" "}
+              Materi mandiri dipelajari sendiri tanpa bimbingan mentor, tugas, dan sertifikat — berbeda dari Kelas.
             </p>
 
             {/* Search bar */}
@@ -193,7 +194,7 @@ export default function CourseCatalogPage() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Cari kursus (mis. JavaScript, React, Flutter...)"
+                placeholder="Cari materi mandiri (mis. JavaScript, React, Flutter...)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 focus:border-[#3966bf] focus:outline-none rounded-2xl text-sm text-slate-700 placeholder:text-slate-400 transition-all shadow-sm"
@@ -238,7 +239,7 @@ export default function CourseCatalogPage() {
           <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
             <div className="text-5xl">🔍</div>
             <p className="text-slate-500 text-sm font-medium">
-              Tidak ada kursus yang cocok dengan pencarian "<strong>{searchQuery}</strong>"
+              Tidak ada materi mandiri yang cocok dengan pencarian "<strong>{searchQuery}</strong>"
             </p>
             <button
               onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
@@ -251,7 +252,7 @@ export default function CourseCatalogPage() {
           <>
             <div className="flex items-center justify-between mb-6">
               <p className="text-xs text-slate-400 font-semibold">
-                Menampilkan <span className="text-slate-700 font-black">{filtered.length}</span> kursus
+                Menampilkan <span className="text-slate-700 font-black">{filtered.length}</span> materi mandiri
                 {activeCategory !== "all" && ` di kategori "${CATEGORY_LABELS[activeCategory]}"`}
               </p>
             </div>
@@ -274,9 +275,9 @@ export default function CourseCatalogPage() {
               <Lock className="w-5 h-5 text-[#3966bf]" />
             </div>
             <div>
-              <h3 className="font-black text-slate-900 text-sm md:text-base">Akses Kursus Memerlukan Login</h3>
+              <h3 className="font-black text-slate-900 text-sm md:text-base">Akses Materi Mandiri Memerlukan Login</h3>
               <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                Daftarkan akun HIMTI-mu secara gratis untuk mulai belajar dan melacak progres di semua kursus.
+                Daftarkan akun HIMTI-mu secara gratis untuk mulai belajar dan melacak progres di semua materi mandiri.
               </p>
             </div>
           </div>
