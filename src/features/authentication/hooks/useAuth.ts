@@ -62,38 +62,6 @@ export function useAuthCreation() {
   return mutation;
 }
 
-export function useCheckToken() {
-  const query = useQuery({
-    queryKey: ["checkToken"],
-    queryFn: () => authService.check(),
-  });
-  return query;
-}
-
-export function useAuth() {
-  const token = localStorage.getItem("token") || "";
-  const { data, isLoading } = useCheckToken();
-
-  if (!token) {
-    return undefined;
-  }
-
-  if (isLoading) {
-    return {
-      isLoading,
-    };
-  }
-
-  if (data?.code === "UNAUTHORIZED" || data?.status === 401) {
-    console.log(token);
-    localStorage.removeItem("token");
-    return undefined;
-  }
-  return {
-    data,
-  };
-}
-
 export const useRefreshToken = (enabled = false) => {
   const token = localStorage.getItem(CONFIG_APP.REFRESH_TOKEN_KEY) ?? "";
   const query = useQuery({
