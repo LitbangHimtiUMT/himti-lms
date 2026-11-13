@@ -1,5 +1,4 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Button } from "../../_global/components/Button";
 import { InputLabel } from "../../_global/components/InputLabel";
 import { useState } from "react";
 import { useAuthCreation } from "../hooks/useAuth";
@@ -47,89 +46,96 @@ export const FormSignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <>
-      <div className="lg:mt-24 lg:px-10 py-10 w-full flex items-center justify-center">
-        <div className="lg:w-full w-[95%] bg-white h-full p-10 rounded-xl flex flex-col items-center justify-center gap-10">
-          <div className="flex flex-col lg:w-[75%] w-full gap-2">
-            <h1 className="lg:text-4xl text-xl font-medium">Sign In here !</h1>
-            <h1 className="lg:text-3xl text-lg font-medium">
-              Let’s upgrade your skills
-            </h1>
-          </div>
-          <form
-            className="flex flex-col items-center gap-6 w-full"
-            onSubmit={handleSubmit}
+    <div className="w-full max-w-[400px]">
+      <h1 className="text-[28px] font-semibold tracking-[-0.02em] text-slate-900">
+        Sign in
+      </h1>
+      <p className="mt-2 text-sm leading-[1.6] text-slate-500">
+        Let&rsquo;s upgrade your skills. Masuk untuk lanjut belajar.
+      </p>
+      <form
+        className="mt-8 flex flex-col gap-[18px]"
+        onSubmit={handleSubmit}
+      >
+        <InputLabel
+          title="Email"
+          titleClassName="text-[13px] font-medium text-slate-700"
+          inputProps={{
+            rounded: "xl",
+            inputSize: "lg",
+            borderColor: "slate",
+            focusRing: true,
+            placeholder: "Enter your email",
+            placeholderColor: "normal",
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              setAuthBody((prev) => ({ ...prev, email: e.target.value })),
+            error: !!errors.email,
+            errorText: errors.email,
+          }}
+        />
+        <InputLabel
+          title="Password"
+          titleClassName="text-[13px] font-medium text-slate-700"
+          inputProps={{
+            type: showPassword ? "text" : "password",
+            rounded: "xl",
+            inputSize: "lg",
+            borderColor: "slate",
+            focusRing: true,
+            placeholder: "Enter your password",
+            placeholderColor: "normal",
+            RightIcon: showPassword ? (
+              <FaEye
+                size={16}
+                style={{
+                  cursor: "pointer",
+                }}
+              />
+            ) : (
+              <FaEyeSlash
+                size={16}
+                style={{
+                  cursor: "pointer",
+                }}
+              />
+            ),
+            onClickRightIcon() {
+              setShowPassword((prev) => !prev);
+            },
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              setAuthBody((prev) => ({
+                ...prev,
+                password: e.target.value,
+              })),
+            error: !!errors.password,
+            errorText: errors.password,
+          }}
+        />
+        <div className="-mt-2 flex justify-end">
+          <Link
+            to="/forgot-password"
+            className="text-sm font-semibold text-[#3966bf] transition-colors duration-200 hover:text-[#2b4f9c]"
           >
-            <div className="lg:w-[75%] w-full">
-              <InputLabel
-                title="Email"
-                inputProps={{
-                  rounded: "full",
-                  borderColor: "black",
-                  placeholder: "Enter your email",
-                  placeholderColor: "normal",
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAuthBody((prev) => ({ ...prev, email: e.target.value })),
-                  error: !!errors.email,
-                  errorText: errors.email,
-                }}
-              />
-            </div>
-            <div className="lg:w-[75%] w-full ">
-              <InputLabel
-                title="Password"
-                inputProps={{
-                  type: showPassword ? "text" : "password",
-                  rounded: "full",
-                  borderColor: "black",
-                  placeholder: "Enter your password",
-                  placeholderColor: "normal",
-                  RightIcon: showPassword ? (
-                    <FaEye
-                      size={16}
-                      style={{
-                        cursor: "pointer",
-                      }}
-                    />
-                  ) : (
-                    <FaEyeSlash
-                      size={16}
-                      style={{
-                        cursor: "pointer",
-                      }}
-                    />
-                  ),
-                  onClickRightIcon() {
-                    setShowPassword((prev) => !prev);
-                  },
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAuthBody((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    })),
-                  error: !!errors.password,
-                  errorText: errors.password,
-                }}
-              />
-            </div>
-            <div className="lg:w-[75%] w-full flex justify-end">
-              <Link to="/forgot-password" className="text-sm font-bold text-black hover:underline uppercase tracking-tight">
-                Lupa Password?
-              </Link>
-            </div>
-            <div className="lg:w-[75%] w-full">
-              <Button
-                rounded="full"
-                size="lg"
-                variant={mutation.isPending ? "disabled" : "primary"}
-                type="submit"
-              >
-                {mutation.isPending ? "Loading..." : "Sign In"}
-              </Button>
-            </div>
-          </form>
+            Lupa password?
+          </Link>
         </div>
-      </div>
-    </>
+        <button
+          className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#3966bf] text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#2b4f9c] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={mutation.isPending}
+          type="submit"
+        >
+          {mutation.isPending ? "Loading..." : "Masuk"}
+        </button>
+      </form>
+      <p className="mt-7 text-center text-sm text-slate-500">
+        Belum punya akun?{" "}
+        <Link
+          to="/sign-up"
+          className="font-semibold text-[#3966bf] transition-colors duration-200 hover:text-[#2b4f9c]"
+        >
+          Daftar gratis
+        </Link>
+      </p>
+    </div>
   );
 };

@@ -4,18 +4,19 @@ type NumberString = string | number;
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  rounded?: "sm" | "md" | "lg" | "full";
+  rounded?: "sm" | "md" | "lg" | "xl" | "full";
   error?: boolean;
   LeftIcon?: ReactNode;
   onClickLeftIcon?: () => void;
   onClickRightIcon?: () => void;
   RightIcon?: ReactNode;
   inputSize?: "sm" | "md" | "lg";
-  borderColor?: "black" | "normal";
+  borderColor?: "black" | "normal" | "slate";
   placeholderColor?: "black" | "normal";
   errorText?: string;
   inputStyle?: "addons" | "icon";
   currency?: boolean;
+  focusRing?: boolean;
   onValueChange?: (value: string) => void;
 }
 
@@ -33,6 +34,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     placeholderColor = "normal",
     inputStyle = "icon",
     currency = false,
+    focusRing = false,
     ...rest
   }) => {
     const [formatedValue, setFormatedValue] = useState<NumberString>(
@@ -48,7 +50,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               ? "rounded-sm"
               : rounded == "md"
               ? "rounded-md"
+              : rounded == "xl"
+              ? "rounded-xl"
               : "rounded-lg"
+          } ${
+            focusRing && !error
+              ? "focus-within:ring-[3px] focus-within:ring-[rgba(57,102,191,0.15)]"
+              : ""
           }`}
         >
           {LeftIcon && inputStyle === "icon" && (
@@ -109,6 +117,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               ? "border-red-500"
               : borderColor === "black"
               ? "border-black"
+              : borderColor === "slate"
+              ? "border-slate-300"
               : "border-[#DADADA]"
           }
           focus:border
@@ -119,7 +129,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               ? "placeholder:text-black"
               : "placeholder:text-[#87898E]"
           }
-          ${error ? "focus:border-red-500" : "focus:border-blue-500"}
+          ${
+            error
+              ? "focus:border-red-500"
+              : focusRing
+              ? "focus:border-[#3966bf]"
+              : "focus:border-blue-500"
+          }
           duration-300
           font-poppins
           text-sm
@@ -134,6 +150,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               ? "rounded-sm"
               : rounded == "md"
               ? "rounded-md"
+              : rounded == "xl"
+              ? "rounded-xl"
               : "rounded-lg"
           }
           `}

@@ -1,9 +1,9 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Button } from "../../_global/components/Button";
 import { InputLabel } from "../../_global/components/InputLabel";
 import { useState } from "react";
 import { AuthRegisterDTO } from "@core/model/auth";
 import { useAuthCreation } from "../hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const InitialValue = {
   name: "",
@@ -60,119 +60,126 @@ export const FormSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   return (
-    <>
-      <div className="lg:mt-24 lg:px-10 py-10 w-full flex items-center justify-center">
-        <div className="lg:w-full w-[95%] bg-white h-full p-10 rounded-xl flex flex-col items-center justify-center gap-10">
-          <div className="flex flex-col lg:w-[75%] w-full gap-2">
-            <h1 className="lg:text-4xl text-xl font-semibold">
-              Sign Up here !
-            </h1>
-            <h1 className="lg:text-3xl text-lg font-semibold">
-              Start your adventure
-            </h1>
-          </div>
-          <form
-            className="flex flex-col items-center gap-6 w-full"
-            onSubmit={handleSubmit}
-          >
-            <div className="lg:w-[75%] w-full">
-              <InputLabel
-                title="Full Name"
-                inputProps={{
-                  rounded: "full",
-                  borderColor: "black",
-                  placeholder: "Enter your name",
-                  placeholderColor: "normal",
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAuthBody((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    })),
-                  error: !!errors.name,
-                  errorText: errors.name,
-                }}
-              />
-            </div>
-            <div className="lg:w-[75%] w-full">
-              <InputLabel
-                title="Email"
-                inputProps={{
-                  rounded: "full",
-                  borderColor: "black",
-                  placeholder: "Enter your email",
-                  placeholderColor: "normal",
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAuthBody((prev) => ({ ...prev, email: e.target.value })),
-                  error: !!errors.email,
-                  errorText: errors.email,
-                }}
-              />
-            </div>
-            <div className="lg:w-[75%] w-full ">
-              <InputLabel
-                title="Password"
-                inputProps={{
-                  rounded: "full",
-                  borderColor: "black",
-                  placeholder: "Enter your password",
-                  placeholderColor: "normal",
-                  RightIcon: showPassword ? (
-                    <FaEye size={16} />
-                  ) : (
-                    <FaEyeSlash size={16} />
-                  ),
-                  onClickRightIcon() {
-                    setShowPassword((prev) => !prev);
-                  },
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAuthBody((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    })),
-                  error: !!errors.password,
-                  errorText: errors.password,
-                }}
-              />
-            </div>
-            <div className="lg:w-[75%] w-full ">
-              <InputLabel
-                title="Confirm Password"
-                inputProps={{
-                  rounded: "full",
-                  borderColor: "black",
-                  placeholder: "Confirm your password",
-                  placeholderColor: "normal",
-                  RightIcon: showConfirmPassword ? (
-                    <FaEye size={16} />
-                  ) : (
-                    <FaEyeSlash size={16} />
-                  ),
-                  onClickRightIcon() {
-                    setShowConfirmPassword((prev) => !prev);
-                  },
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                    setAuthBody((prev) => ({
-                      ...prev,
-                      confirmPassword: e.target.value,
-                    })),
-                  error: !!errors.confirmPassword,
-                  errorText: errors.confirmPassword,
-                }}
-              />
-            </div>
-            <div className="lg:w-[75%] w-full">
-              <Button
-                rounded="full"
-                size="lg"
-                variant={mutation.isPending ? "disabled" : "primary"}
-                type="submit"
-              >
-                {mutation.isPending ? "Loading..." : "Sign Up"}
-              </Button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </>
+    <div className="w-full max-w-[400px]">
+      <h1 className="text-[28px] font-semibold tracking-[-0.02em] text-slate-900">
+        Create your account
+      </h1>
+      <p className="mt-2 text-sm leading-[1.6] text-slate-500">
+        Daftar gratis, mulai belajar hari ini. Tanpa kartu kredit, tanpa
+        ribet.
+      </p>
+      <form
+        className="mt-8 flex flex-col gap-[18px]"
+        onSubmit={handleSubmit}
+      >
+        <InputLabel
+          title="Full Name"
+          titleClassName="text-[13px] font-medium text-slate-700"
+          inputProps={{
+            rounded: "xl",
+            inputSize: "lg",
+            borderColor: "slate",
+            focusRing: true,
+            placeholder: "Enter your name",
+            placeholderColor: "normal",
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              setAuthBody((prev) => ({
+                ...prev,
+                name: e.target.value,
+              })),
+            error: !!errors.name,
+            errorText: errors.name,
+          }}
+        />
+        <InputLabel
+          title="Email"
+          titleClassName="text-[13px] font-medium text-slate-700"
+          inputProps={{
+            rounded: "xl",
+            inputSize: "lg",
+            borderColor: "slate",
+            focusRing: true,
+            placeholder: "Enter your email",
+            placeholderColor: "normal",
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              setAuthBody((prev) => ({ ...prev, email: e.target.value })),
+            error: !!errors.email,
+            errorText: errors.email,
+          }}
+        />
+        <InputLabel
+          title="Password"
+          titleClassName="text-[13px] font-medium text-slate-700"
+          inputProps={{
+            type: showPassword ? "text" : "password",
+            rounded: "xl",
+            inputSize: "lg",
+            borderColor: "slate",
+            focusRing: true,
+            placeholder: "Enter your password",
+            placeholderColor: "normal",
+            RightIcon: showPassword ? (
+              <FaEye size={16} />
+            ) : (
+              <FaEyeSlash size={16} />
+            ),
+            onClickRightIcon() {
+              setShowPassword((prev) => !prev);
+            },
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              setAuthBody((prev) => ({
+                ...prev,
+                password: e.target.value,
+              })),
+            error: !!errors.password,
+            errorText: errors.password,
+          }}
+        />
+        <InputLabel
+          title="Confirm Password"
+          titleClassName="text-[13px] font-medium text-slate-700"
+          inputProps={{
+            type: showConfirmPassword ? "text" : "password",
+            rounded: "xl",
+            inputSize: "lg",
+            borderColor: "slate",
+            focusRing: true,
+            placeholder: "Confirm your password",
+            placeholderColor: "normal",
+            RightIcon: showConfirmPassword ? (
+              <FaEye size={16} />
+            ) : (
+              <FaEyeSlash size={16} />
+            ),
+            onClickRightIcon() {
+              setShowConfirmPassword((prev) => !prev);
+            },
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+              setAuthBody((prev) => ({
+                ...prev,
+                confirmPassword: e.target.value,
+              })),
+            error: !!errors.confirmPassword,
+            errorText: errors.confirmPassword,
+          }}
+        />
+        <button
+          className="flex h-12 w-full items-center justify-center rounded-2xl bg-[#3966bf] text-[15px] font-semibold text-white transition-colors duration-200 hover:bg-[#2b4f9c] disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={mutation.isPending}
+          type="submit"
+        >
+          {mutation.isPending ? "Loading..." : "Daftar"}
+        </button>
+      </form>
+      <p className="mt-7 text-center text-sm text-slate-500">
+        Sudah punya akun?{" "}
+        <Link
+          to="/sign-in"
+          className="font-semibold text-[#3966bf] transition-colors duration-200 hover:text-[#2b4f9c]"
+        >
+          Masuk
+        </Link>
+      </p>
+    </div>
   );
 };
