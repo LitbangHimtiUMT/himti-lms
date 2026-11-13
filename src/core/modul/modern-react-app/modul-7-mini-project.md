@@ -101,7 +101,7 @@ Gunakan token otentikasi bearer dan query parameter `response_fields` untuk memi
 ```javascript
 // src/services/countryService.js
 const API_BASE_URL = 'https://api.restcountries.com/countries/v5';
-const AUTH_TOKEN = 'rc_live_11b0d9a0acf547ebb9533897f54cacfa';
+const AUTH_TOKEN = 'TOKEN_CONTOH';
 
 const headers = {
   'Authorization': `Bearer ${AUTH_TOKEN}`

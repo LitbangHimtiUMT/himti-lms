@@ -47,14 +47,14 @@ Komunikasi pada REST API menggunakan protokol web standar (HTTP) yang berjalan m
 
 Pada API tingkat produksi industri, server membatasi akses agar tidak disalahgunakan. Pengembang wajib menyertakan **Bearer Token** di dalam request headers untuk membuktikan bahwa request tersebut legal dan memiliki hak akses.
 
-Sesuai instruksi resmi, token otentikasi kita untuk REST Countries API v5 adalah:
-`rc_live_11b0d9a0acf547ebb9533897f54cacfa`
+Sebagai contoh, token yang dipakai di latihan ini adalah token contoh (bukan token beneran):
+`TOKEN_CONTOH`
 
 ### Contoh Pengiriman Headers di Fetch:
 ```javascript
 fetch('https://api.restcountries.com/countries/v5', {
   headers: {
-    'Authorization': 'Bearer rc_live_11b0d9a0acf547ebb9533897f54cacfa'
+    'Authorization': 'Bearer TOKEN_CONTOH'
   }
 })
 .then(response => response.json())
@@ -97,7 +97,7 @@ Buat berkas baru khusus untuk menampung fungsi pemanggilan API ke server dengan 
 ```javascript
 // src/services/countryService.js
 const API_BASE_URL = 'https://api.restcountries.com/countries/v5';
-const AUTH_TOKEN = 'rc_live_11b0d9a0acf547ebb9533897f54cacfa';
+const AUTH_TOKEN = 'TOKEN_CONTOH';
 
 // Setup default headers untuk otentikasi
 const fetchHeaders = {

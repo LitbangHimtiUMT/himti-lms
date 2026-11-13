@@ -195,7 +195,7 @@ export const modernReactCourseModules: ModuleData[] = [
     order: 5,
     markdown: modernReactModul5,
     question: "Sebutkan token autentikasi Bearer dan parameter query limit & q yang digunakan untuk mencari negara di REST Countries API v5!",
-    criteria: "Menyebutkan token 'rc_live_11b0d9a0acf547ebb9533897f54cacfa' dan parameter query 'limit=...' dan 'q=...'."
+    criteria: "Menyebutkan token 'TOKEN_CONTOH' dan parameter query 'limit=...' dan 'q=...'."
   },
   {
     id: "modul-6",
