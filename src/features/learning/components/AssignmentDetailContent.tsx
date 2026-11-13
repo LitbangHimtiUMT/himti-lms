@@ -34,6 +34,13 @@ export interface AssignmentDataProps {
     file?: string;
     feedback?: string;
   };
+  historySubmission?: {
+    id: string;
+    status: "APPROVE" | "REJECT" | "REVIEW";
+    submittedAt: Date;
+    file?: string;
+    feedback?: string;
+  }[];
   isHaveHistory: boolean;
 }
 
@@ -55,7 +62,11 @@ export const AssignmentDetailContent = ({
 }: AssignmentDetailViewProps) => {
   const [sidebarOpen] = useAtom(LearningSidebarAtom);
 
-  const haveApproveSubmission = data?.submission?.status === "APPROVE";
+  // APPROVE lives in historySubmission, never in activeSubmission
+  // (REVIEW-only), so the guard must read history, not data.submission.
+  const haveApproveSubmission =
+    data?.historySubmission?.some((item) => item.status === "APPROVE") ??
+    false;
   const isSubmit =
     mode === "current" && !haveApproveSubmission && !data?.activeSubmission;
 
