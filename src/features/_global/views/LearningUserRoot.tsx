@@ -1,4 +1,3 @@
-import HIMTI from "@core/assets/logo/HIMTI.png";
 import { useAtom } from "jotai";
 import { CheckCircle, Menu, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -163,7 +162,7 @@ export const LearningUserRoot = () => {
               <>
                 {/* Logo and Back Link */}
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                  <img src={HIMTI} width={100} className="mx-2" alt="HIMTI" />
+                  <img src="/HIMTI.png" width={100} className="mx-2" alt="HIMTI" />
                 </div>
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                   <div className="flex items-center justify-between">

@@ -1,4 +1,3 @@
-import HIMTI from "@core/assets/logo/HIMTI.png";
 import { Menus } from "../../config";
 import { Link, useLocation } from "react-router-dom";
 import { Poppins } from "../Text";
@@ -18,7 +17,7 @@ export const Footer = () => {
           {/* Column 1: Brand & Info */}
           <div className="col-span-12 md:col-span-4 flex flex-col items-start gap-4">
             <div className="flex items-center gap-3">
-              <img src={HIMTI} className="w-16 h-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.25)]" alt="HIMTI Logo" />
+              <img src="/HIMTI.png" className="w-16 h-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.25)]" alt="HIMTI Logo" />
               <div>
                 <Poppins className="text-white font-bold text-lg leading-tight tracking-wider">HIMTI UMT</Poppins>
                 <Poppins className="text-xs text-yellow-500 font-medium">Learning Management System</Poppins>

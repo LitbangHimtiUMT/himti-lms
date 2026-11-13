@@ -3,7 +3,6 @@ import { useAtom } from "jotai";
 import React, { useEffect } from "react";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import { CgMenuLeft } from "react-icons/cg";
-import HIMTI from "../../../../core/assets/logo/HIMTI.png";
 import { Skeleton } from "../../../_global/components/Shimer";
 import { Poppins } from "../../../_global/components/Text";
 import { useScreen } from "../../../_global/hooks/useScreen";
@@ -63,7 +62,7 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({
             )}
           >
             <div className="mt-14">
-              <img src={HIMTI} width={100} alt="HIMTI" />
+              <img src="/HIMTI.png" width={100} alt="HIMTI" />
             </div>
             {/* Content */}
             <div className="pt-4 px-5 h-full flex flex-col">

@@ -2,7 +2,6 @@ import React from "react";
 import { FaEye } from "react-icons/fa";
 import { IoDocumentOutline, IoImageOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import HIMTI from "../../../../../../core/assets/logo/HIMTI.png";
 import { ClassModel } from "../../../../../../core/model/classes";
 import { Badge } from "../../../../../_global/components/Badge";
 import { Button } from "../../../../../_global/components/Button";
@@ -50,7 +49,7 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
               alt={name}
               className="w-full h-full object-cover"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = HIMTI;
+                (e.target as HTMLImageElement).src = "/HIMTI.png";
               }}
             />
           ) : (
