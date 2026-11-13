@@ -58,8 +58,6 @@ cp .env.example .env
 | --- | --- |
 | `HIMTI_BASE_URL` | URL dasar API backend. |
 | `HIMTI_APP_NAME` | Nama aplikasi, dipakai di judul halaman. |
-| `HIMTI_SECRET_KEY` | Dipakai buat nurunin nama key token di localStorage. |
-| `HIMTI_HEADER_KEY` | Legacy. Sudah tidak dibaca kode sejak header `x-api-key` dicabut. Masih ada di `.env.example` sampai dibersihkan bareng perbaikan keamanan berikutnya. |
 
 4. Jalankan:
 
