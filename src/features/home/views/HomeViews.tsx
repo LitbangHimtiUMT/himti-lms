@@ -49,7 +49,7 @@ export const HomeViews = () => {
             to="/courses"
             className="px-6 py-3 rounded-full bg-white hover:bg-gray-100 border border-slate-200 text-slate-700 font-semibold text-sm transition-all duration-200 shadow-sm"
           >
-            Lihat Course
+            Lihat Materi Mandiri
           </Link>
         </div>
 

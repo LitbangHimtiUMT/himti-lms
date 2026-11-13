@@ -10,7 +10,7 @@ export const Menus: MenuAdminConfig = [
     to: "/class",
   },
   {
-    name: "Course",
+    name: "Materi Mandiri",
     to: "/courses",
   },
   {

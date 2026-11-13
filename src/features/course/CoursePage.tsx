@@ -67,7 +67,7 @@ export default function CoursePage() {
           <Link
             to="/courses"
             className="flex items-center gap-1 p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-slate-800 transition-colors text-xs font-semibold"
-            title="Kembali ke Katalog Kursus"
+            title="Kembali ke Katalog Materi Mandiri"
           >
             <ChevronLeft className="w-4 h-4" />
             <span className="hidden sm:inline ml-0.5">Katalog</span>
@@ -110,7 +110,7 @@ export default function CoursePage() {
               <Award className="w-4 h-4 text-[#3966bf]" />
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider leading-none mb-1">Progres Kelas</span>
+              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider leading-none mb-1">Progres Materi</span>
               <div className="flex items-center gap-2 mt-0.5">
                 <div className="w-28 bg-slate-250/80 h-1.5 rounded-full overflow-hidden">
                   <div 
