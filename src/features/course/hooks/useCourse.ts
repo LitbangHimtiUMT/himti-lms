@@ -4,6 +4,13 @@ import { useParams } from "react-router-dom";
 import { coursesCatalogData } from "../courseData";
 import { extractTOC } from "../utils/markdownUtils";
 import { API_ENDPOINT } from "../../../core/configs/app";
+import { request } from "../../../core/libs/api/config";
+
+interface CourseEvaluationResult {
+  score: number;
+  feedback: string;
+  isPassed: boolean;
+}
 
 export function useCourse() {
   const { courseId = "javascript" } = useParams<{ courseId: string }>();
@@ -158,26 +165,10 @@ export function useCourse() {
     };
 
     try {
-      const response = await fetch(API_ENDPOINT.courseEvaluate, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+      const data = await request.post<CourseEvaluationResult>(
+        API_ENDPOINT.courseEvaluate
+      )(payload);
 
-      if (!response.ok) {
-        let errMsg = "Gagal menghubungi server";
-        try {
-          const errData = await response.json();
-          if (errData && errData.message) {
-            errMsg = errData.message;
-          }
-        } catch (_) {}
-        throw new Error(errMsg);
-      }
-
-      const data = await response.json();
       handleEvaluationSuccess({
         score: data.score,
         feedback: data.feedback,
@@ -187,23 +178,8 @@ export function useCourse() {
     } catch (err: any) {
       console.error("Backend API error during evaluation:", err);
       setIsLoading(false);
-      
-      let displayMessage = "Gagal terhubung ke API Back-End. Pastikan server backend Anda berjalan!";
-      
-      if (err.message && err.message !== "Gagal menghubungi server" && err.message !== "Failed to fetch") {
-        const msg = err.message.toLowerCase();
-        if (msg.includes("evaluation error") || msg.includes("bad control character") || msg.includes("json")) {
-          displayMessage = "Terjadi kesalahan format saat AI memproses evaluasi. Silakan coba kirim ulang jawaban Anda.";
-        } else if (msg.includes("replicate api token") || msg.includes("not configured")) {
-          displayMessage = "Layanan evaluasi AI belum dikonfigurasi di server backend (Token API tidak ditemukan).";
-        } else if (msg.includes("replicate prediction failed") || msg.includes("failed to get output")) {
-          displayMessage = "Gagal mendapatkan respons evaluasi dari model AI. Silakan coba beberapa saat lagi.";
-        } else {
-          displayMessage = `Evaluasi gagal: ${err.message}`;
-        }
-      }
-      
-      toast.error(displayMessage);
+
+      toast.error("Evaluasi gagal. Silakan coba lagi.");
     }
   };
 

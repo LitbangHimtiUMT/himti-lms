@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Search, Lock, ChevronRight, BookOpen, Layers, Zap } from "lucide-react";
+import { Search, Lock, ChevronRight, BookOpen, Layers, Zap, LayoutDashboard, Trophy } from "lucide-react";
 import { CONFIG_APP } from "../../core/configs/app";
+import { useProfile } from "../profile/useProfile";
 import {
   courseCatalog,
   CATEGORY_LABELS,
@@ -135,11 +136,62 @@ const CourseCard = ({ course }: { course: CourseCatalogItem }) => {
 };
 
 // ============================================
+// PROGRESS (localStorage, ditulis useCourse)
+// ============================================
+// Completed modules per course, written by useCourse.saveProgress as
+// `himti_completed_<courseId>`. Parsed defensively: corrupt storage
+// must never crash the catalog (unlike the reader in useCourse).
+const readCompletedScores = (courseId: string): number[] => {
+  try {
+    const raw = localStorage.getItem(`himti_completed_${courseId}`);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return [];
+    return Object.values(parsed)
+      .map((entry) => (entry as { score?: unknown })?.score)
+      .filter((score): score is number => typeof score === "number");
+  } catch {
+    return [];
+  }
+};
+
+// ============================================
 // MAIN CATALOG PAGE
 // ============================================
 export default function CourseCatalogPage() {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<CourseCategory>("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const isLoggedIn = !!localStorage.getItem(CONFIG_APP.TOKEN_KEY);
+  const { data: profile } = useProfile();
+  const firstName = profile?.data?.name?.split(" ")[0] ?? "";
+
+  const availableCourses = courseCatalog.filter((c) => c.isAvailable);
+
+  // Per-course progress for the logged-in dashboard panel.
+  const progressByCourse = availableCourses.map((course) => {
+    const courseId = course.path.split("/").pop() ?? "";
+    const scores = readCompletedScores(courseId);
+    return { course, done: scores.length, total: course.moduleCount, scores };
+  });
+  const startedCount = progressByCourse.filter((p) => p.done > 0).length;
+  const totalDone = progressByCourse.reduce((sum, p) => sum + p.done, 0);
+  const totalModules = progressByCourse.reduce((sum, p) => sum + p.total, 0);
+  const allScores = progressByCourse.flatMap((p) => p.scores);
+  const avgScore = allScores.length
+    ? Math.round(allScores.reduce((sum, s) => sum + s, 0) / allScores.length)
+    : null;
+  const overallPercent = totalModules
+    ? Math.round((totalDone / totalModules) * 100)
+    : 0;
+  const resumeTarget =
+    progressByCourse.find((p) => p.done > 0 && p.done < p.total) ??
+    progressByCourse.find((p) => p.done === 0) ??
+    progressByCourse[0];
+  const allComplete =
+    progressByCourse.length > 0 &&
+    progressByCourse.every((p) => p.done >= p.total);
 
   const categories = Object.entries(CATEGORY_LABELS) as [CourseCategory, string][];
 
@@ -152,7 +204,7 @@ export default function CourseCatalogPage() {
     return matchCategory && matchSearch;
   });
 
-  const availableCount = courseCatalog.filter((c) => c.isAvailable).length;
+  const availableCount = availableCourses.length;
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
@@ -266,36 +318,96 @@ export default function CourseCatalogPage() {
       </section>
 
       {/* ============================================
-          LOGIN NOTICE BANNER
+          LOGIN NOTICE BANNER / LEARNING DASHBOARD
+          Guests see the login banner; logged-in users see
+          their learning dashboard instead.
           ============================================ */}
       <section className="max-w-6xl mx-auto px-6 md:px-10 pb-16">
-        <div className="bg-gradient-to-r from-[#3966bf]/8 to-[#fda802]/8 border border-[#3966bf]/15 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-[#3966bf]/10 rounded-2xl border border-[#3966bf]/20 shrink-0">
-              <Lock className="w-5 h-5 text-[#3966bf]" />
+        {isLoggedIn && resumeTarget ? (
+          <div className="bg-gradient-to-r from-[#3966bf]/8 to-[#fda802]/8 border border-[#3966bf]/15 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 flex-1 min-w-0 w-full">
+              <div className="p-3 bg-[#3966bf]/10 rounded-2xl border border-[#3966bf]/20 shrink-0">
+                <LayoutDashboard className="w-5 h-5 text-[#3966bf]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-black text-slate-900 text-sm md:text-base">
+                  Selamat datang kembali{firstName ? `, ${firstName}` : ""}!
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                  {allComplete
+                    ? "Semua materi mandiri sudah selesai. Kerja bagus — ulangi lagi kapan pun kamu mau."
+                    : startedCount > 0
+                      ? `Kamu sedang belajar ${startedCount} dari ${availableCourses.length} materi mandiri. Lanjutkan progresmu!`
+                      : "Mulai belajar dan lacak progresmu di semua materi mandiri."}
+                </p>
+                <div className="flex items-center gap-5 mt-3 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                    <BookOpen className="w-3.5 h-3.5 text-[#3966bf]" />
+                    {startedCount}/{availableCourses.length} materi dimulai
+                  </span>
+                  <span className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                    <Layers className="w-3.5 h-3.5 text-[#3966bf]" />
+                    {totalDone} modul selesai
+                  </span>
+                  <span className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                    <Trophy className="w-3.5 h-3.5 text-[#3966bf]" />
+                    Rata-rata nilai: {avgScore ?? "—"}
+                  </span>
+                </div>
+                <div className="mt-3 h-2 bg-slate-200/70 rounded-full overflow-hidden max-w-md">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#3966bf] to-[#fda802] rounded-full transition-all"
+                    style={{ width: `${overallPercent}%` }}
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="font-black text-slate-900 text-sm md:text-base">Akses Materi Mandiri Memerlukan Login</h3>
-              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                Daftarkan akun HIMTI-mu secara gratis untuk mulai belajar dan melacak progres di semua materi mandiri.
-              </p>
+            <div className="flex flex-col items-center md:items-end gap-2 shrink-0">
+              <button
+                onClick={() => navigate(resumeTarget.course.path)}
+                className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-[#3966bf] to-[#3966bf]/90 text-white rounded-xl shadow-md shadow-[#3966bf]/20 hover:from-[#3966bf]/90 hover:to-[#fda802] transition-all active:scale-95"
+              >
+                {allComplete
+                  ? "Jelajahi Lagi"
+                  : startedCount > 0
+                    ? "Lanjutkan Belajar"
+                    : "Mulai Belajar"}
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+              <span className="text-[11px] text-slate-400 font-semibold max-w-[220px] text-center md:text-right leading-snug">
+                {resumeTarget.course.title} · {resumeTarget.done}/{resumeTarget.total} modul
+              </span>
             </div>
           </div>
-          <div className="flex items-center gap-3 shrink-0">
-            <a
-              href="/sign-in"
-              className="px-5 py-2 text-xs font-bold bg-white border border-slate-200 hover:border-[#3966bf]/40 text-slate-700 hover:text-[#3966bf] rounded-xl transition-all"
-            >
-              Masuk
-            </a>
-            <a
-              href="/sign-up"
-              className="px-5 py-2 text-xs font-bold bg-gradient-to-r from-[#3966bf] to-[#3966bf]/90 text-white rounded-xl shadow-md shadow-[#3966bf]/20 hover:from-[#3966bf]/90 hover:to-[#fda802] transition-all"
-            >
-              Daftar Gratis →
-            </a>
+        ) : (
+          <div className="bg-gradient-to-r from-[#3966bf]/8 to-[#fda802]/8 border border-[#3966bf]/15 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-[#3966bf]/10 rounded-2xl border border-[#3966bf]/20 shrink-0">
+                <Lock className="w-5 h-5 text-[#3966bf]" />
+              </div>
+              <div>
+                <h3 className="font-black text-slate-900 text-sm md:text-base">Akses Materi Mandiri Memerlukan Login</h3>
+                <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                  Daftarkan akun HIMTI-mu secara gratis untuk mulai belajar dan melacak progres di semua materi mandiri.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <a
+                href="/sign-in"
+                className="px-5 py-2 text-xs font-bold bg-white border border-slate-200 hover:border-[#3966bf]/40 text-slate-700 hover:text-[#3966bf] rounded-xl transition-all"
+              >
+                Masuk
+              </a>
+              <a
+                href="/sign-up"
+                className="px-5 py-2 text-xs font-bold bg-gradient-to-r from-[#3966bf] to-[#3966bf]/90 text-white rounded-xl shadow-md shadow-[#3966bf]/20 hover:from-[#3966bf]/90 hover:to-[#fda802] transition-all"
+              >
+                Daftar Gratis →
+              </a>
+            </div>
           </div>
-        </div>
+        )}
       </section>
     </div>
   );
