@@ -5,6 +5,10 @@ import { InputLabel } from "../../../../_global/components/InputLabel";
 import { Poppins } from "../../../../_global/components/Text";
 import { TextArea } from "../../../../_global/components/TextArea";
 import { validateImageAspectRatio } from "../../../../_global/helper/ratio-aspect";
+import {
+  UPLOAD_MAX_SIZE,
+  validateUploadFile,
+} from "../../../../_global/helper/validate-file";
 import { CourseLevelList } from "../../../store";
 import { ClassLevel } from "../../../../../core/model/classes";
 import { Button } from "../../../../_global/components/Button";
@@ -40,6 +44,16 @@ export const FormCreateClasses = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
+
+    const error = validateUploadFile(selectedFile, {
+      maxSizeBytes: UPLOAD_MAX_SIZE.thumbnail,
+      allowedExtensions: [".jpg", ".jpeg", ".png", ".webp"],
+    });
+    if (error) {
+      toast.error(error);
+      e.target.value = "";
+      return;
+    }
 
     const isValid = await validateImageAspectRatio(selectedFile);
     if (!isValid) {

@@ -1,7 +1,12 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { InputLabel } from "../../../../_global/components/InputLabel";
 import { Poppins } from "../../../../_global/components/Text";
 import { TextEditor } from "../../../../_global/components/TextEditor";
+import {
+  UPLOAD_MAX_SIZE,
+  validateUploadFile,
+} from "../../../../_global/helper/validate-file";
 import { ModuleCreationDTO } from "../../../../../core/model/modules";
 import { Button } from "../../../../_global/components/Button";
 import { useModulesCreation } from "../../../hooks/modules/useModules";
@@ -15,6 +20,22 @@ export const FormCreateModules = () => {
   });
 
   const mutation = useModulesCreation();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+    const error = validateUploadFile(selectedFile, {
+      maxSizeBytes: UPLOAD_MAX_SIZE.moduleFile,
+      allowedExtensions: [".pdf", ".ppt", ".pptx", ".doc", ".docx"],
+    });
+    if (error) {
+      toast.error(error);
+      e.target.value = "";
+      return;
+    }
+    setData((prev) => ({ ...prev, fileModule: selectedFile }));
+  };
+
   const handleSubmit = async () => {
     const formData = new FormData();
 
@@ -62,12 +83,7 @@ export const FormCreateModules = () => {
             className="file-input"
             accept=".pdf, .ppt, .pptx, .doc, .docx"
             multiple={false}
-            onChange={(e) =>
-              setData({
-                ...data,
-                fileModule: e.target.files?.[0] as File,
-              })
-            }
+            onChange={handleFileChange}
           />
         </div>
         <div className="flex flex-col gap-2">
