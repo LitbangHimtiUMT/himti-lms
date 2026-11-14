@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { FaCalendarAlt, FaPaperPlane } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { sanitizeHtml } from "@core/libs/sanitize";
 import { Button } from "../../../_global/components/Button";
 import { Poppins } from "../../../_global/components/Text";
 import { UploadFile } from "../../../_global/components/UploadFiles";
 import { formatTime } from "../../../_global/lib/format-time";
+import {
+  UPLOAD_MAX_SIZE,
+  validateUploadFile,
+} from "../../../_global/helper/validate-file";
 import { useAssignmentsCreation } from "../../../dashboard/hooks/assignments/useAssignmentsCreation";
 import { AssignmentDataProps } from "../AssignmentDetailContent";
 import { CardSubmission } from "../submission/CardSubmission";
@@ -26,7 +31,6 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
   isOpen,
   type,
 }) => {
-  console.log({data})
   const [files, setFiles] = useState<File | string | undefined>(undefined);
   const mutation = useAssignmentsCreation();
   const renderSubmissionForm = () => {
@@ -94,9 +98,19 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
   };
   const handleClear = () => setFiles(undefined);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.length) {
-      setFiles(e.target.files[0]);
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+    const error = validateUploadFile(selectedFile, {
+      maxSizeBytes: UPLOAD_MAX_SIZE.submission,
+      allowedExtensions: data.allowedFile?.split(",") ?? [],
+    });
+    if (error) {
+      toast.error(error);
+      e.target.value = "";
+      setFiles(undefined);
+      return;
     }
+    setFiles(selectedFile);
   };
 
   const handleSubmit = async () => {

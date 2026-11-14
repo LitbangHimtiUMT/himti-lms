@@ -9,6 +9,10 @@ import {
   useDetailClass,
 } from "../../../class/hooks/useClasses";
 import { validateImageAspectRatio } from "../../../_global/helper/ratio-aspect";
+import {
+  UPLOAD_MAX_SIZE,
+  validateUploadFile,
+} from "../../../_global/helper/validate-file";
 import { toast } from "react-toastify";
 import { TextArea } from "../../../_global/components/TextArea";
 import { DropdownRevamp } from "../../../_global/components/Dropdown/DropdownRevamp";
@@ -54,6 +58,16 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
+
+    const error = validateUploadFile(selectedFile, {
+      maxSizeBytes: UPLOAD_MAX_SIZE.thumbnail,
+      allowedExtensions: [".jpg", ".jpeg", ".png"],
+    });
+    if (error) {
+      toast.error(error);
+      e.target.value = "";
+      return;
+    }
 
     const isValid = await validateImageAspectRatio(selectedFile);
     if (!isValid) {
