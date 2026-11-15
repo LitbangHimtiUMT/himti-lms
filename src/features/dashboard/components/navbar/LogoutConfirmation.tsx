@@ -1,9 +1,11 @@
 import React from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Dialog } from "../../../_global/components/Dialog";
 import { IoWarning } from "react-icons/io5";
 import { Poppins } from "../../../_global/components/Text";
 import { Button } from "../../../_global/components/Button";
-import { CONFIG_APP } from "../../../../core/configs/app";
+import { authService } from "../../../../core/services/auth";
+import { SESSION_QUERY_KEY } from "../../../../features/authentication/hooks/useSession";
 import { useNavigate } from "react-router-dom";
 import { ConditionNode } from "../../../_global/components/ConditionNode";
 
@@ -17,10 +19,20 @@ export const LogoutConfirmation: React.FC<LogoutConfirmationProps> = ({
   show,
 }) => {
   const navigate = useNavigate();
-  const handleConfirmLogout = () => {
+  const queryClient = useQueryClient();
+  const handleConfirmLogout = async () => {
     onHide();
-    localStorage.removeItem(CONFIG_APP.TOKEN_KEY);
-    localStorage.removeItem(CONFIG_APP.REFRESH_TOKEN_KEY);
+    // Best-effort server logout: the session cookie is cleared
+    // server-side. A failed request still signs out locally.
+    try {
+      await authService.logout();
+    } catch {
+      // Ignore: navigation below happens either way.
+    }
+    // Re-probe the session so guards and the navbar stop treating
+    // the user as signed in. Only the session query is touched:
+    // unrelated localStorage (sidebar, course progress) is left alone.
+    queryClient.invalidateQueries({ queryKey: SESSION_QUERY_KEY });
     navigate("/");
   };
 

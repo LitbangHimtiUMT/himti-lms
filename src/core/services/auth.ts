@@ -10,4 +10,5 @@ export const authService = {
   refreshToken: request.post<ApiResponse<AuthLoginModel>>(
     API_ENDPOINT.auth.refreshToken
   ),
+  logout: request.get<ApiResponse>(API_ENDPOINT.auth.logout),
 };

@@ -12,6 +12,7 @@ export const API_ENDPOINT = {
     refreshToken: `${CONFIG_APP.BASE_URL}/auth/refresh-token`,
     login: `${CONFIG_APP.BASE_URL}/auth/login?authType=lms`,
     register: `${CONFIG_APP.BASE_URL}/auth/register?authType=lms`,
+    logout: `${CONFIG_APP.BASE_URL}/auth/logout`,
   },
   check: `${CONFIG_APP.BASE_URL}/auth/token`,
   categories: `${CONFIG_APP.BASE_URL}/lms/categories`,
