@@ -32,7 +32,8 @@ export const DetailSessionContent = () => {
   const mutation = useModulesCreation();
   const [moduleId, setModuleId] = useState("");
 
-  const { data: modules, isFetching } = useModules(sessionId);
+  const { data: modules, isFetching, isError, refetch } =
+    useModules(sessionId);
   const navigate = useNavigate();
 
   const handleChangePage = (page: string) =>
@@ -58,6 +59,8 @@ export const DetailSessionContent = () => {
         title={["Title", "Have Assignment", ""]}
         data={modules?.data || []}
         isLoading={isFetching}
+        isError={isError}
+        onRetry={refetch}
         columnTable={[
           {
             return: (item) => <Poppins>{item.name}</Poppins>,

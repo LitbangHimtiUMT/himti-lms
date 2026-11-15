@@ -19,7 +19,7 @@ import { Dialog } from "../../_global/components/Dialog";
 export const SessionTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { classId } = useParams();
-  const { data: sessions, isFetching } = useSessions();
+  const { data: sessions, isFetching, isError, refetch } = useSessions();
   const queries = convertQueryParamsToObject(searchParams.toString());
   const navigate = useNavigate();
   const page = searchParams.get("page") || 1;
@@ -57,6 +57,8 @@ export const SessionTable = () => {
           title={["Title", "Total Module", ""]}
           data={sessions?.data || []}
           isLoading={isFetching}
+          isError={isError}
+          onRetry={refetch}
           withAction={false}
           pagination={{
             currentPage: Number(page),

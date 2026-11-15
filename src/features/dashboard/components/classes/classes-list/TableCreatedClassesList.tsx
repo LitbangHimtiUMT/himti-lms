@@ -28,7 +28,7 @@ import { UpdateClassDrawer } from "../../drawer/UpdateClassDrawer";
 
 export const TableCreatedClassesList = () => {
   const navigate = useNavigate();
-  const { data: classes, isFetching } = useClasses();
+  const { data: classes, isFetching, isError, refetch } = useClasses();
   const { data: profile } = useProfile();
   const { handleInputChange } = useSearchParamsInput("search");
   const [dialog, setDialog] = useState<string>("");
@@ -71,6 +71,8 @@ export const TableCreatedClassesList = () => {
 
       <MasterTable
         isLoading={isFetching}
+        isError={isError}
+        onRetry={refetch}
         withAction={false}
         data={classes?.data || []}
         title={[
