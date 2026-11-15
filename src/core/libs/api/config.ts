@@ -23,11 +23,6 @@ const generateEndpoint = (
 // instead of each firing its own (the backend rate-limits refresh calls).
 let refreshPromise: Promise<boolean> | null = null;
 
-const clearSession = () => {
-  localStorage.removeItem(CONFIG_APP.TOKEN_KEY);
-  localStorage.removeItem(CONFIG_APP.REFRESH_TOKEN_KEY);
-};
-
 const redirectToSignIn = () => {
   if (window.location.pathname !== "/sign-in") {
     window.location.href = "/sign-in";
@@ -41,23 +36,19 @@ const isAuthEndpoint = (endpoint: string) =>
   endpoint.startsWith(`${CONFIG_APP.BASE_URL}/auth/`);
 
 const doRefresh = async (): Promise<boolean> => {
-  const refreshToken = localStorage.getItem(CONFIG_APP.REFRESH_TOKEN_KEY);
-  if (!refreshToken) return false;
+  // The refresh token lives in an httpOnly cookie, so there is nothing
+  // to read here: the browser sends it with credentials: "include",
+  // and a fresh access cookie comes back on the response. Success is
+  // just res.ok; the body is never read for tokens.
   try {
     const res = await fetch(API_ENDPOINT.auth.refreshToken, {
       method: "POST",
+      credentials: "include",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${refreshToken}`,
+        "X-Requested-With": "XMLHttpRequest",
       },
     });
-    if (!res.ok) return false;
-    const body = await res.json();
-    const data = body?.data;
-    if (!data?.accessToken || !data?.refreshToken) return false;
-    localStorage.setItem(CONFIG_APP.TOKEN_KEY, data.accessToken);
-    localStorage.setItem(CONFIG_APP.REFRESH_TOKEN_KEY, data.refreshToken);
-    return true;
+    return res.ok;
   } catch {
     return false;
   }
@@ -80,26 +71,21 @@ async function sendRequest<Req = unknown>(
 ) {
   const defaultValue = { ...apiOption };
 
-  const token =
-    localStorage.getItem(CONFIG_APP.TOKEN_KEY) || "";
-  if (token) {
-    defaultValue.bearerToken = token;
-  }
-
   const res: Response = await fetch(
     generateEndpoint(endpoint as string, apiOption?.path || "", {
       ...apiOption?.queryParams,
     }),
     {
       method,
+      // Auth travels in httpOnly cookies: include them on every
+      // request, and mark the request so the API can tell a real
+      // XHR apart from a cross-site navigation (CSRF check).
+      credentials: "include",
       headers: {
         ...(defaultValue.contentType !== "form-data" && {
           "Content-Type": getContentType(defaultValue?.contentType),
         }),
-        ...(defaultValue?.bearerToken &&
-          typeof defaultValue.bearerToken !== "undefined" && {
-            Authorization: `Bearer ${defaultValue.bearerToken}`,
-          }),
+        "X-Requested-With": "XMLHttpRequest",
         ...defaultValue?.headers,
       },
       body:
@@ -147,7 +133,6 @@ async function createRequest<Res = unknown, Req = unknown>(
 
   const refreshed = await refreshAccessToken();
   if (!refreshed) {
-    clearSession();
     redirectToSignIn();
     throw attempt.data;
   }
@@ -155,7 +140,6 @@ async function createRequest<Res = unknown, Req = unknown>(
   const retry = await sendRequest(endpoint, method, apiOption, body);
   if (retry.ok) return retry.data as Res;
   if (retry.status === 401) {
-    clearSession();
     redirectToSignIn();
   }
   throw retry.data;

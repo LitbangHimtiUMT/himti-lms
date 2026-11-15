@@ -8,7 +8,6 @@ export interface QueryParams {
 
 export interface ApiOption {
   contentType?: "json" | "form-data" | "url-encoded";
-  bearerToken?: string;
   headers?: HeadersInit;
   path?: string;
   queryParams?: QueryParams;

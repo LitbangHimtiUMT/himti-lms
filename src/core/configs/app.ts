@@ -1,10 +1,6 @@
 export const CONFIG_APP = {
   APP_NAME: import.meta.env.HIMTI_APP_NAME,
   BASE_URL: import.meta.env.HIMTI_BASE_URL,
-  // Plain key names for localStorage. Never derive these from a secret: Vite
-  // inlines every referenced HIMTI_* env var into the public JS bundle.
-  TOKEN_KEY: "himti_access_token",
-  REFRESH_TOKEN_KEY: "himti_refresh_token",
 };
 
 export const API_ENDPOINT = {
@@ -12,6 +8,7 @@ export const API_ENDPOINT = {
     refreshToken: `${CONFIG_APP.BASE_URL}/auth/refresh-token`,
     login: `${CONFIG_APP.BASE_URL}/auth/login?authType=lms`,
     register: `${CONFIG_APP.BASE_URL}/auth/register?authType=lms`,
+    logout: `${CONFIG_APP.BASE_URL}/auth/logout`,
   },
   check: `${CONFIG_APP.BASE_URL}/auth/token`,
   categories: `${CONFIG_APP.BASE_URL}/lms/categories`,
