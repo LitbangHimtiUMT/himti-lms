@@ -7,10 +7,10 @@ export const useCertificates = () => {
   const [searchParams] = useSearchParams();
   const search = searchParams.get("search") || undefined;
   const searchQuery = useDebounce(search as string, 500);
-  const page = searchParams?.get("page");
-  const perPage = searchParams?.get("perPage");
+  const page = searchParams.get("page") || undefined;
+  const perPage = searchParams.get("perPage") || undefined;
   return useQuery({
-    queryKey: ["certificates", { search: searchQuery }],
+    queryKey: ["certificates", { search: searchQuery, page, perPage }],
     queryFn: () =>
       certificateService.get({
         queryParams: {

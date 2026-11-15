@@ -1,13 +1,20 @@
 import { Button } from "../../_global/components/Button";
 import { FaEye } from "react-icons/fa";
+import { useSearchParams } from "react-router-dom";
 import { CONFIG_APP } from "../../../core/configs/app";
 import { MasterTable } from "../../_global/components/MasterTable";
 import { Poppins } from "../../_global/components/Text";
+import { convertQueryParamsToObject } from "../../_global/helper";
 import { formatTime } from "../../_global/lib/format-time";
 import { useCertificates } from "../hooks/useCertificates";
 
 export const CertificatesViews = () => {
   const { data: certificates, isFetching } = useCertificates();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queries = convertQueryParamsToObject(searchParams.toString());
+
+  const handleChangePage = (page: string) =>
+    setSearchParams({ ...queries, page });
   return (
     <>
       <div>
@@ -15,6 +22,11 @@ export const CertificatesViews = () => {
           data={certificates?.data}
           withAction={false}
           isLoading={isFetching}
+          pagination={{
+            totalPages: certificates?.meta?.totalPages || 1,
+            currentPage: certificates?.meta?.page || 1,
+            onPageChange: (page) => handleChangePage(String(page)),
+          }}
           title={["Certificate ID", "Class", "Category", "Issue Date" , '']}
           columnTable={[
             {
