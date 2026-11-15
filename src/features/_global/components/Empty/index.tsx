@@ -8,6 +8,7 @@ import {
   Table2,
   Telescope
 } from "lucide-react";
+import { ReactNode } from "react";
 import { Poppins } from "../Text";
 
 interface IEmptyProps {
@@ -24,6 +25,7 @@ interface IEmptyProps {
     | "archive";
   iconSize?: number;
   className?: string;
+  action?: ReactNode;
 }
 
 export const EmptyState: React.FC<IEmptyProps> = ({
@@ -33,6 +35,7 @@ export const EmptyState: React.FC<IEmptyProps> = ({
   variant = "default",
   iconSize = 48,
   className,
+  action,
 }) => {
   const descriptions = Array.isArray(description) 
     ? description 
@@ -75,6 +78,8 @@ export const EmptyState: React.FC<IEmptyProps> = ({
           ))}
         </div>
       )}
+
+      {action && <div className="flex justify-center">{action}</div>}
     </div>
   );
 
