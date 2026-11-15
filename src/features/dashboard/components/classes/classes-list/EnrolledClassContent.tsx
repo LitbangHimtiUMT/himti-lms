@@ -1,6 +1,7 @@
 import { CiSearch } from "react-icons/ci";
 import { EmptyState } from "../../../../_global/components/Empty";
 import { Input } from "../../../../_global/components/Input";
+import { QueryErrorState } from "../../../../_global/components/QueryErrorState";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
 import { useClasses } from "../../../../class/hooks/useClasses";
@@ -11,7 +12,7 @@ import { useCategories } from "../../../../categories/hooks/useCategories";
 import { Button } from "../../../../_global/components/Button";
 
 export const EnrolledClassContent = () => {
-  const { data: classes, isFetching } = useClasses({
+  const { data: classes, isFetching, isError, refetch } = useClasses({
     path: "user",
   });
 
@@ -102,6 +103,18 @@ export const EnrolledClassContent = () => {
               </div>
             </div>
           ))
+        ) : isError && !classes?.data ? (
+          // Failed to load: not the same as not enrolled
+          <div className="col-span-full">
+            <QueryErrorState
+              customMinHeight={400}
+              description={[
+                "Failed to load your classes.",
+                "Please check your connection and try again.",
+              ]}
+              onRetry={refetch}
+            />
+          </div>
         ) : classes?.data?.length ? (
           // Actual cards
           classes.data.map((item, index) => (
