@@ -7,8 +7,5 @@ export const authService = {
   login: request.post<ApiResponse<AuthLoginModel>, AuthLoginDTO>(API_ENDPOINT.auth.login),
   register: request.post<ApiResponse<unknown>, AuthRegisterDTO>(API_ENDPOINT.auth.register),
   check: request.get<ApiResponse>(API_ENDPOINT.check),
-  refreshToken: request.post<ApiResponse<AuthLoginModel>>(
-    API_ENDPOINT.auth.refreshToken
-  ),
   logout: request.get<ApiResponse>(API_ENDPOINT.auth.logout),
 };

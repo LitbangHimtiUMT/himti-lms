@@ -1,6 +1,6 @@
 import { AuthLoginDTO, AuthRegisterDTO } from "@core/model/auth";
 import { authService } from "@core/services/auth";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { SESSION_QUERY_KEY } from "./useSession";
@@ -55,13 +55,3 @@ export function useAuthCreation() {
   });
   return mutation;
 }
-
-export const useRefreshToken = (enabled = false) => {
-  const query = useQuery({
-    queryKey: ["refresh-token", { enabled }],
-    queryFn: () => authService.refreshToken(undefined),
-    enabled,
-  });
-
-  return query;
-};
