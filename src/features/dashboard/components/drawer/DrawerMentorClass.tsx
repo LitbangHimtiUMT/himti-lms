@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import React, { useState } from "react";
 import { Drawer } from "../../../_global/components/Drawer";
 import { Input } from "../../../_global/components/Input";
+import { QueryErrorState } from "../../../_global/components/QueryErrorState";
 import { Skeleton } from "../../../_global/components/Shimer";
 import { useClassMentors, useMentors } from "../../hooks/mentors/userMentors";
 import { DropdownRevamp } from "../../../_global/components/Dropdown/DropdownRevamp";
@@ -30,11 +31,15 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
   });
   const [mentorId, setMentorId] = useState("");
 
-  const { data: classMentors, isFetching: isFetchingClassMentor } =
-    useClassMentors({
-      search: searchQuery.classMentor,
-      enabled: show,
-    });
+  const {
+    data: classMentors,
+    isFetching: isFetchingClassMentor,
+    isError: isErrorClassMentor,
+    refetch: refetchClassMentors,
+  } = useClassMentors({
+    search: searchQuery.classMentor,
+    enabled: show,
+  });
 
   const { data: mentors, isFetching: isFetchingMentor } = useMentors({
     search: searchQuery.mentor,
@@ -130,6 +135,15 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
                 <Skeleton width="100%" height="3.5rem" />
               </div>
             </>
+          ) : isErrorClassMentor && !classMentors?.data ? (
+            <QueryErrorState
+              customMinHeight={200}
+              description={[
+                "Failed to load mentors.",
+                "Please check your connection and try again.",
+              ]}
+              onRetry={refetchClassMentors}
+            />
           ) : classMentors?.data?.length ? (
             <ul className="flex-col gap-3 items-center justify-center">
               {classMentors?.data?.map((item, index) => (
