@@ -1,10 +1,10 @@
-import { CONFIG_APP } from "@core/configs/app";
 import {
   ApiErrorResponse,
   ApiResponse,
   QueryParams,
 } from "@core/libs/api/types";
 import { classesService } from "@core/services/classes";
+import { useSession } from "@features/authentication/hooks/useSession";
 import useDebounce from "@features/_global/hooks/useDebounce";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -41,12 +41,12 @@ export function useClasses(options?: Options) {
   const searchQuery =
     options?.search || searchParams.get("search") || undefined;
   const search = useDebounce(searchQuery as string, 500);
-  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY) || "";
+  const { isAuthenticated } = useSession();
 
   const query = useQuery({
     queryKey: [
       "classes",
-      { page, perPage, search, path: options?.path, token, categoryId, level },
+      { page, perPage, search, path: options?.path, isAuthenticated, categoryId, level },
     ],
     queryFn: () =>
       classesService.get({

@@ -2,7 +2,7 @@ import DefaultImage from "@core/assets/default-photo.svg";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, LayoutDashboard, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
-import { CONFIG_APP } from "../../../../core/configs/app";
+import { useSession } from "../../../authentication/hooks/useSession";
 import { useProfile } from "../../../profile/useProfile";
 import { LogoutConfirmation } from "../../../dashboard/components/navbar/LogoutConfirmation";
 import { Skeleton } from "../Shimer";
@@ -14,7 +14,7 @@ interface AuthSectionProps {
 export const AuthSection: React.FC<AuthSectionProps> = ({
   direction = "row",
 }) => {
-  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
+  const { isAuthenticated } = useSession();
   const { data: profile, isFetching } = useProfile();
   const [show, setShow] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
@@ -49,7 +49,7 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
 
   return (
     <>
-      {token || isFetching ? (
+      {isAuthenticated || isFetching ? (
         isFetching ? (
           <div
             className={`flex items-center gap-2 ${

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Search, Lock, ChevronRight, BookOpen, Layers, Zap, LayoutDashboard, Trophy } from "lucide-react";
-import { CONFIG_APP } from "../../core/configs/app";
+import { useSession } from "../authentication/hooks/useSession";
 import { useProfile } from "../profile/useProfile";
 import {
   courseCatalog,
@@ -33,11 +33,11 @@ const CATEGORY_COLORS: Record<string, string> = {
 // ============================================
 const CourseCard = ({ course }: { course: CourseCatalogItem }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useSession();
 
   const handleClick = () => {
     if (!course.isAvailable) return;
-    const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
-    if (!token) {
+    if (!isAuthenticated) {
       toast.warning("Kamu harus login terlebih dahulu untuk mengakses materi mandiri ini!");
       navigate(`/sign-in?return=${encodeURIComponent(course.path)}`);
       return;
@@ -163,7 +163,7 @@ export default function CourseCatalogPage() {
   const [activeCategory, setActiveCategory] = useState<CourseCategory>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const isLoggedIn = !!localStorage.getItem(CONFIG_APP.TOKEN_KEY);
+  const { isAuthenticated: isLoggedIn } = useSession();
   const { data: profile } = useProfile();
   const firstName = profile?.data?.name?.split(" ")[0] ?? "";
 
