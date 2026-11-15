@@ -28,8 +28,6 @@ export interface ApiResponse<Res = unknown> {
   meta?: MetaResponse;
 }
 
-export type ApiErrorResponse<Res = unknown> = Res;
-
 export const getContentType = (type?: ApiOption["contentType"]) => {
   switch (type) {
     case "form-data":
