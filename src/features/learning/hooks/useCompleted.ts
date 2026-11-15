@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { completedModulesService } from "../../../core/services/completed-modules";
-import { ApiResponse } from "../../../core/libs/api/types";
+import { getErrorMessage } from "../../_global/helper/get-error-message";
 import { toast } from "react-toastify";
 
 interface CompletedModuleProps {
@@ -17,7 +17,7 @@ export const useCompletedModules = () => {
       completedModulesService.completed(undefined, {
         path: moduleId,
       }),
-    onError: (err: ApiResponse) => toast.error(err.message),
+    onError: (err) => toast.error(getErrorMessage(err)),
     onSuccess: () => {
       toast.success("Module Completed");
       queryClient.invalidateQueries({

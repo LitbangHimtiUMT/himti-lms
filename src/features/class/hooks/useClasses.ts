@@ -1,11 +1,8 @@
-import {
-  ApiErrorResponse,
-  ApiResponse,
-  QueryParams,
-} from "@core/libs/api/types";
+import { QueryParams } from "@core/libs/api/types";
 import { classesService } from "@core/services/classes";
 import { useSession } from "@features/authentication/hooks/useSession";
 import useDebounce from "@features/_global/hooks/useDebounce";
+import { getErrorMessage } from "../../_global/helper/get-error-message";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -106,7 +103,7 @@ export function useClassesCreation() {
       }
     },
     onSuccess: (res, vars) => {
-      toast.success(res.message, {
+      toast.success(res?.message || "Berhasil.", {
         position: "top-right",
         autoClose: 2500,
         pauseOnHover: true,
@@ -136,8 +133,8 @@ export function useClassesCreation() {
       queryClient.removeQueries({ queryKey: ["classesById"] });
       return;
     },
-    onError: (err: ApiErrorResponse<ApiResponse>) => {
-      toast.error(err.message, {
+    onError: (err) => {
+      toast.error(getErrorMessage(err), {
         position: "top-right",
         autoClose: 3000,
         pauseOnHover: true,

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { assignmentService } from "../../../../core/services/assignments";
+import { getErrorMessage } from "../../../_global/helper/get-error-message";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -36,12 +37,12 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
         path: `approve/${submissionId}`,
       }),
     onSuccess: (res) => {
-      toast.success(res.message);
+      toast.success(res?.message || "Submission berhasil disetujui.");
       queryClient.invalidateQueries({
         queryKey: ["submission-by-assignment"],
       });
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => toast.error(getErrorMessage(err)),
   });
 
   const rejectSubmission = useMutation({
@@ -53,12 +54,12 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
         }
       ),
       onSuccess: (res) => {
-        toast.success(res.message);
+        toast.success(res?.message || "Submission berhasil ditolak.");
         queryClient.invalidateQueries({
           queryKey: ["submission-by-assignment"],
         });
       },
-      onError: (err) => toast.error(err.message),
+      onError: (err) => toast.error(getErrorMessage(err)),
   });
 
   return {

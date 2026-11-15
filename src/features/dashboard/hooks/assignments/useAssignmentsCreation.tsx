@@ -6,6 +6,7 @@ import {
   CreateAssignmentDTO,
 } from "../../../../core/model/assignments";
 import { assignmentService } from "../../../../core/services/assignments";
+import { getErrorMessage } from "../../../_global/helper/get-error-message";
 
 interface AssignmentVars {
   type: "create" | "submit" | "update" | "delete";
@@ -56,9 +57,9 @@ export const useAssignmentsCreation = () => {
           });
       }
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => toast.error(getErrorMessage(err)),
     onSuccess: (res, vars) => {
-      toast.success(res.message);
+      toast.success(res?.message || "Berhasil.");
       queryClient.invalidateQueries({
         queryKey: ["modules"],
       });
