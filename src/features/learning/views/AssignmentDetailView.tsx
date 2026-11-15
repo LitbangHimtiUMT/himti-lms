@@ -1,19 +1,56 @@
+import { useAtom } from "jotai";
 import { useParams } from "react-router-dom";
 import { useDetailAssignment } from "../../dashboard/hooks/assignments/useAssignmentsCreation";
 import { useSubmissions } from "../hooks/submissions/useSubmissions";
+import { QueryErrorState } from "../../_global/components/QueryErrorState";
+import { LearningSidebarAtom } from "../../_global/store";
 import { AssignmentDataProps, AssignmentDetailContent } from "../components/AssignmentDetailContent";
 
 export const AssignmentDetailView = () => {
   const { submissionId, assignmentId } = useParams();
+  const [sidebarOpen] = useAtom(LearningSidebarAtom);
   const mode = {
     assignment: !!assignmentId && !submissionId,
     submission: submissionId && assignmentId,
   };
-  const { data: assignment, isFetching: isFetchingAssignment } =
-    useDetailAssignment(mode.assignment);
   const {
-    get: { data: submissions, isFetching: isFetchingSubmission },
+    data: assignment,
+    isFetching: isFetchingAssignment,
+    isError: isErrorAssignment,
+    refetch: refetchAssignment,
+  } = useDetailAssignment(mode.assignment);
+  const {
+    get: {
+      data: submissions,
+      isFetching: isFetchingSubmission,
+      isError: isErrorSubmission,
+      refetch: refetchSubmission,
+    },
   } = useSubmissions(mode.submission ? ["get"] : []);
+
+  // Only the active query can fail this page: the other one is disabled.
+  const isLoadError = mode.assignment
+    ? isErrorAssignment && !assignment?.data
+    : isErrorSubmission && !submissions?.data;
+
+  if (isLoadError) {
+    return (
+      <div
+        className={`p-4 md:p-6 transition-all duration-300 ${
+          sidebarOpen ? "md:ml-64" : "md:ml-20"
+        }`}
+      >
+        <QueryErrorState
+          description={[
+            "Failed to load assignment.",
+            "Please check your connection and try again.",
+          ]}
+          onRetry={mode.assignment ? refetchAssignment : refetchSubmission}
+        />
+      </div>
+    );
+  }
+
   return (
     <>
       <div>

@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "../../../_global/components/Button";
 import { Drawer } from "../../../_global/components/Drawer";
 import { Input } from "../../../_global/components/Input";
+import { QueryErrorState } from "../../../_global/components/QueryErrorState";
 import { useParticipants } from "../../hooks/participants/useParticipants";
 import { Skeleton } from "../../../_global/components/Shimer";
 
@@ -26,7 +27,7 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = React.useState("");
 
-  const { data: participants, isFetching } = useParticipants({
+  const { data: participants, isFetching, isError, refetch } = useParticipants({
     path: `participant/${classId}`,
     search: searchQuery,
     enabled: show && !!classId,
@@ -65,6 +66,15 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
                 <Skeleton width="100%" height="3.5rem" />
               </div>
             </>
+          ) : isError && !participants?.data ? (
+            <QueryErrorState
+              customMinHeight={200}
+              description={[
+                "Failed to load participants.",
+                "Please check your connection and try again.",
+              ]}
+              onRetry={refetch}
+            />
           ) : participants?.data?.length ? (
             <ul className="flex-col gap-3 items-center justify-center">
               {participants?.data?.map((participant, index) => (

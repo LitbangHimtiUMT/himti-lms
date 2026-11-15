@@ -3,6 +3,7 @@ import { Menu } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { Skeleton } from "../../_global/components/Shimer";
 import { EmptyState } from "../../_global/components/Empty";
+import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import { LearningSidebarAtom } from "../../_global/store";
 import { useDetailModule } from "../../dashboard/hooks/modules/useModules";
 import { LearningModuleContent } from "../components/LearningModuleContent";
@@ -15,7 +16,8 @@ export const LearningDashboardView = () => {
 
   const moduleIdQs = searchParams.get("moduleId") || "";
 
-  const { data: module, isFetching } = useDetailModule(moduleIdQs);
+  const { data: module, isFetching, isError, refetch } =
+    useDetailModule(moduleIdQs);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -48,6 +50,14 @@ export const LearningDashboardView = () => {
               <Skeleton width="100%" height="300px" />
             </div>
           </>
+        ) : isError && !module ? (
+          <QueryErrorState
+            description={[
+              "Failed to load module.",
+              "Please check your connection and try again.",
+            ]}
+            onRetry={refetch}
+          />
         ) : module ? (
           <LearningModuleContent module={module?.data as ModuleDTO} />
         ) : (

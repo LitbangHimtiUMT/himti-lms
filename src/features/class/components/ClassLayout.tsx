@@ -2,13 +2,18 @@ import React from "react";
 import { ClassCard } from "./ClassCard";
 import { useClasses } from "../hooks/useClasses";
 import { Pagination } from "@features/_global/components/Pagination";
+import { QueryErrorState } from "@features/_global/components/QueryErrorState";
 import { convertQueryParamsToObject } from "@features/_global/helper";
 import { useSearchParams } from "react-router-dom";
 import DefaultImage from "@core/assets/default-photo.svg";
 import { Poppins } from "../../_global/components/Text";
 
 const ClassLayout: React.FC = () => {
-  const { data: classes, isFetching } = useClasses();
+  const { data: classes, isFetching, isError, refetch } = useClasses();
+
+  // A failed refetch keeps stale data: only treat it as an error
+  // when there is nothing to show at all.
+  const isLoadError = isError && !classes?.data;
 
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParams = convertQueryParamsToObject(searchParams.toString());
@@ -48,7 +53,19 @@ const ClassLayout: React.FC = () => {
               </div>
             </>
           )}
-          {!isFetching && !classes?.data?.length && (
+          {!isFetching && isLoadError && (
+            <div className="w-full">
+              <QueryErrorState
+                description={[
+                  "Gagal Memuat Kelas",
+                  "Periksa koneksi Anda lalu coba lagi.",
+                ]}
+                retryLabel="Coba Lagi"
+                onRetry={refetch}
+              />
+            </div>
+          )}
+          {!isFetching && !isLoadError && !classes?.data?.length && (
             <div className="text-center w-full py-16 flex flex-col items-center justify-center gap-2">
               <Poppins className="text-lg text-slate-700 font-semibold">Tidak Ada Kelas Ditemukan</Poppins>
               <Poppins className="text-sm text-slate-400">Coba cari dengan kata kunci lain atau hubungi admin.</Poppins>

@@ -2,6 +2,7 @@ import { Button } from "../Button";
 import { ConditionNode } from "../ConditionNode";
 import { EmptyState } from "../Empty";
 import { IPaginationProps, Pagination } from "../Pagination";
+import { QueryErrorState } from "../QueryErrorState";
 import { Skeleton } from "../Shimer";
 import { Table, TableBody, TableHead } from "../Table";
 
@@ -22,6 +23,8 @@ interface IMasterTableProps<T extends DefaultKey> {
   pagination?: IPaginationProps;
   onClickItem?: (item: T) => void;
   notFoundMessage?: string[];
+  isError?: boolean;
+  onRetry?: () => void;
 }
 
 export const MasterTable = <T extends DefaultKey>({
@@ -33,6 +36,8 @@ export const MasterTable = <T extends DefaultKey>({
   pagination,
   onClickItem,
   notFoundMessage = ["Data is not found."],
+  isError,
+  onRetry,
 }: IMasterTableProps<T>) => {
   return (
     <div className="flex flex-col">
@@ -74,6 +79,11 @@ export const MasterTable = <T extends DefaultKey>({
                   <Skeleton width="100%" height="3rem" />
                 </div>
               </td>
+            ) : isError && onRetry ? (
+              <QueryErrorState
+                colspan={columnTable.length + (withAction ? 1 : 0)}
+                onRetry={onRetry}
+              />
             ) : (
               <EmptyState
                 colspan={columnTable.length + (withAction ? 1 : 0)}

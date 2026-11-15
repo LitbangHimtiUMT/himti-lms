@@ -1,6 +1,7 @@
 import DefaultPhoto from "@core/assets/default-photo.svg";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
 import { useMentors } from "../hooks/useMentors";
+import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import { Poppins } from "../../_global/components/Text";
 
 const MentorCard = ({ mentor }: { mentor: any }) => {
@@ -89,7 +90,7 @@ const SkeletonCard = () => (
 );
 
 const MentorGrid = () => {
-  const { data: mentors, isFetching } = useMentors();
+  const { data: mentors, isFetching, isError, refetch } = useMentors();
 
   return (
     <div>
@@ -99,6 +100,15 @@ const MentorGrid = () => {
           <SkeletonCard />
           <SkeletonCard />
         </div>
+      ) : isError && !mentors?.data ? (
+        <QueryErrorState
+          description={[
+            "Gagal Memuat Mentor",
+            "Periksa koneksi Anda lalu coba lagi.",
+          ]}
+          retryLabel="Coba Lagi"
+          onRetry={refetch}
+        />
       ) : !mentors?.data?.length ? (
         <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
           <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center">

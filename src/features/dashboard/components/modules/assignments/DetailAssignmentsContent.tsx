@@ -17,6 +17,7 @@ import { Button } from "../../../../_global/components/Button";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
 import { Dialog } from "../../../../_global/components/Dialog";
 import { EmptyState } from "../../../../_global/components/Empty";
+import { QueryErrorState } from "../../../../_global/components/QueryErrorState";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import {
   Table,
@@ -35,10 +36,19 @@ interface DialogType {
 }
 
 export const DetailAssignmentContent = () => {
-  const { assignmentData: assignment, isFetching: isFetchingAssignment } =
-    useDetailAssignment();
   const {
-    getByAssignment: { data: submissions, isFetching: isFetchingSubmission },
+    assignmentData: assignment,
+    isFetching: isFetchingAssignment,
+    isError: isErrorAssignment,
+    refetch: refetchAssignment,
+  } = useDetailAssignment();
+  const {
+    getByAssignment: {
+      data: submissions,
+      isFetching: isFetchingSubmission,
+      isError: isErrorSubmission,
+      refetch: refetchSubmissions,
+    },
     approve,
     reject,
   } = useSubmissions(["get-by-assignment"]);
@@ -66,6 +76,24 @@ export const DetailAssignmentContent = () => {
         <Skeleton width="100%" height="500px" />
         <Skeleton width="100%" height="300px" />
       </div>
+    );
+  }
+
+  if (
+    (isErrorAssignment && !assignment) ||
+    (isErrorSubmission && !submissions?.data)
+  ) {
+    return (
+      <QueryErrorState
+        description={[
+          "Failed to load assignment.",
+          "Please check your connection and try again.",
+        ]}
+        onRetry={() => {
+          refetchAssignment();
+          refetchSubmissions();
+        }}
+      />
     );
   }
 

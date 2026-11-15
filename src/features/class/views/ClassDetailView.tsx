@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DefaultImage from "@core/assets/default-photo.svg";
 import { Poppins } from "../../_global/components/Text";
 import { Button } from "../../_global/components/Button";
+import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import {
   FaUsers,
   FaUserTie,
@@ -27,7 +28,7 @@ const levelColor: Record<string, string> = {
 
 export const ClassDetailView = () => {
   const navigate = useNavigate();
-  const { data: res, isFetching } = useDetailClass("id");
+  const { data: res, isFetching, isError, refetch } = useDetailClass("id");
   const course = res?.data;
 
   if (isFetching) {
@@ -45,6 +46,19 @@ export const ClassDetailView = () => {
           <div className="h-64 bg-slate-200 rounded-2xl" />
         </div>
       </div>
+    );
+  }
+
+  if (isError && !course) {
+    return (
+      <QueryErrorState
+        description={[
+          "Gagal Memuat Kelas",
+          "Periksa koneksi Anda lalu coba lagi.",
+        ]}
+        retryLabel="Coba Lagi"
+        onRetry={refetch}
+      />
     );
   }
 

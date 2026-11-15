@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import { useDetailClass } from "../../class/hooks/useClasses";
 import { DashboardNavbar } from "../../dashboard/components/navbar";
+import { QueryErrorState } from "../components/QueryErrorState";
 import { Skeleton } from "../components/Shimer";
 import { DarkModeAtom, LearningSidebarAtom } from "../store";
 import { convertQueryParamsToObject } from "../helper";
@@ -27,7 +28,7 @@ export const LearningUserRoot = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const moduleIdQs = searchParams.get("moduleId") || "";
-  const { data: classes, isFetching } = useDetailClass();
+  const { data: classes, isFetching, isError, refetch } = useDetailClass();
   // Perbaikan 1: Gunakan useMemo untuk inisialisasi awal modules
   const initialModules = useMemo(() => {
     return classes?.data?.sessions.map((item, index) => {
@@ -224,6 +225,12 @@ export const LearningUserRoot = () => {
                     <Skeleton key={i} width="100%" height="40px" />
                   ))}
                 </div>
+              ) : isError && !classes?.data ? (
+                <QueryErrorState
+                  customMinHeight={140}
+                  description={["Failed to load modules."]}
+                  onRetry={refetch}
+                />
               ) : (
                 (modules || []).map((module, index) => (
                   <div

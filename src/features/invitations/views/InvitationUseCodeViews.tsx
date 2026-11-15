@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { Button } from "../../_global/components/Button";
 import { ConditionNode } from "../../_global/components/ConditionNode";
+import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import { Skeleton } from "../../_global/components/Shimer";
 import { Poppins } from "../../_global/components/Text";
 import {
@@ -10,7 +11,12 @@ import {
 import { useProfile } from "../../profile/useProfile";
 
 export const InvitationUseCodeViews = () => {
-  const { data: classes, isFetching: classFetching } = useDetailClass("code");
+  const {
+    data: classes,
+    isFetching: classFetching,
+    isError: isErrorClass,
+    refetch: refetchClass,
+  } = useDetailClass("code");
   const { data: profile, isFetching: profileFetching } = useProfile();
 
   const mutation = useClassesCreation();
@@ -42,6 +48,15 @@ export const InvitationUseCodeViews = () => {
             <Skeleton width="75%" height="1.5rem" />
             <Skeleton width="60%" height="1rem" />
           </div>
+        ) : isErrorClass && !classes?.data ? (
+          <QueryErrorState
+            customMinHeight={200}
+            description={[
+              "Failed to load class.",
+              "Please check your connection and try again.",
+            ]}
+            onRetry={refetchClass}
+          />
         ) : (
           <div className="flex flex-col items-center">
             <div className="mb-4">
