@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { SessionCreationDTO } from "../../../../core/model/sessions";
 import { sessionService } from "../../../../core/services/sessions";
+import { getErrorMessage } from "../../../_global/helper/get-error-message";
 
 interface CreationPayload {
   type: "create" | "update" | "delete";
@@ -53,9 +54,9 @@ export const useSessionsCreation = () => {
           );
       }
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => toast.error(getErrorMessage(err)),
     onSuccess: (res) => {
-      toast.success(res.message);
+      toast.success(res?.message || "Berhasil.");
       queryClient.invalidateQueries({
         queryKey: ["sessions"],
       });

@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { SESSION_QUERY_KEY } from "./useSession";
+import { getErrorMessage } from "../../_global/helper/get-error-message";
 
 interface ITypeAuth {
   body: AuthLoginDTO | AuthRegisterDTO;
@@ -25,7 +26,7 @@ export function useAuthCreation() {
       }
     },
     onSuccess: (res) => {
-      toast.success(res.message, {
+      toast.success(res?.message || "Berhasil.", {
         position: "top-right",
         autoClose: 3000,
         pauseOnHover: true,
@@ -45,7 +46,7 @@ export function useAuthCreation() {
       }
     },
     onError: (err) => {
-      toast.error(err.message, {
+      toast.error(getErrorMessage(err), {
         position: "top-right",
         autoClose: 3000,
         pauseOnHover: true,

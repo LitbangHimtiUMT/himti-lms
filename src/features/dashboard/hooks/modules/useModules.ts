@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { moduleService } from "../../../../core/services/modules";
+import { getErrorMessage } from "../../../_global/helper/get-error-message";
 
 interface ModulesCreationPayload {
   data?: FormData;
@@ -92,12 +93,12 @@ export const useModulesCreation = () => {
     },
     onSuccess: (res) => {
       navigate(`/dashboard/${classId}/${sessionId}`);
-      toast.success(res.message);
+      toast.success(res?.message || "Berhasil.");
       queryClient.removeQueries({
         queryKey: ["modules"],
       });
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => toast.error(getErrorMessage(err)),
   });
 
   return mutation;

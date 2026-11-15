@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { certificateService } from "../../../../core/services/certificates";
+import { getErrorMessage } from "../../../_global/helper/get-error-message";
 import { toast } from "react-toastify";
 
 export const useGenerateCertificate = () => {
@@ -9,12 +10,12 @@ export const useGenerateCertificate = () => {
       certificateService.generate(undefined, {
         path: `generate/${classId}`,
       }),
-    onError: (err) => toast.error(err.message),
+    onError: (err) => toast.error(getErrorMessage(err)),
     onSuccess: (res) => {
       queryClient.invalidateQueries({
         queryKey: ["classes"],
       });
-      toast.success(res.message);
+      toast.success(res?.message || "Sertifikat berhasil dibuat.");
     },
   });
 };
