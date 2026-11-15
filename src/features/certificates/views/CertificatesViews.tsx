@@ -9,7 +9,8 @@ import { formatTime } from "../../_global/lib/format-time";
 import { useCertificates } from "../hooks/useCertificates";
 
 export const CertificatesViews = () => {
-  const { data: certificates, isFetching } = useCertificates();
+  const { data: certificates, isFetching, isError, refetch } =
+    useCertificates();
   const [searchParams, setSearchParams] = useSearchParams();
   const queries = convertQueryParamsToObject(searchParams.toString());
 
@@ -28,6 +29,8 @@ export const CertificatesViews = () => {
             onPageChange: (page) => handleChangePage(String(page)),
           }}
           title={["Certificate ID", "Class", "Category", "Issue Date" , '']}
+          isError={isError}
+          onRetry={refetch}
           columnTable={[
             {
               return: ({ code }) => (
