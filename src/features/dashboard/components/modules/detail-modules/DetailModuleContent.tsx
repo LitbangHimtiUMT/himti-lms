@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { sanitizeHtml } from "@core/libs/sanitize";
 import { Button } from "../../../../_global/components/Button";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
+import { QueryErrorState } from "../../../../_global/components/QueryErrorState";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { useDetailModule } from "../../../hooks/modules/useModules";
 import { YoutubeEmbed } from "./EmbededYoutube";
@@ -34,7 +35,12 @@ interface DrawerState {
 }
 
 export const DetailModuleContent = () => {
-  const { data: modules, isFetching: isFetchingModules } = useDetailModule();
+  const {
+    data: modules,
+    isFetching: isFetchingModules,
+    isError,
+    refetch,
+  } = useDetailModule();
   const { classId, sessionId, moduleId } = useParams();
   const navigate = useNavigate();
   const [show, setShow] = useState<DrawerState>({
@@ -56,6 +62,18 @@ export const DetailModuleContent = () => {
         <Skeleton width="100%" height="500px" />
         <Skeleton width="100%" height="300px" />
       </>
+    );
+  }
+
+  if (isError && !modules?.data) {
+    return (
+      <QueryErrorState
+        description={[
+          "Failed to load module.",
+          "Please check your connection and try again.",
+        ]}
+        onRetry={refetch}
+      />
     );
   }
   return (
