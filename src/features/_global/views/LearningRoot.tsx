@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 
 import { Navigate } from "react-router-dom";
-import { CONFIG_APP } from "../../../core/configs/app";
+import { useSession } from "../../authentication/hooks/useSession";
 import { DashboardNavbar } from "../../dashboard/components/navbar";
 import { GeneralSidebar } from "../../dashboard/components/sidebar/GeneralSidebar";
 import { useMenus } from "../hooks/useMenus";
@@ -19,8 +19,9 @@ export const LearningRoot: React.FC<LearningRootProps> = ({
   children,
 }) => {
   const menu = useMenus();
-  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
-  if (!token) return <Navigate to={"/sign-in"} />;
+  const { isAuthenticated, isLoading } = useSession();
+  if (isLoading) return null;
+  if (!isAuthenticated) return <Navigate to={"/sign-in"} />;
 
   return (
     <div className="bg-gray-100">

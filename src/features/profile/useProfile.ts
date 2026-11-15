@@ -1,35 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { CONFIG_APP } from "../../core/configs/app";
-import { ApiResponse } from "../../core/libs/api/types";
 import { profileService } from "../../core/services/profile";
-import { useRefreshToken } from "../authentication/hooks/useAuth";
+import { useSession } from "../authentication/hooks/useSession";
 
 export const useProfile = () => {
-  const [enabled, setEnabled] = useState<boolean>(false);
-  const refreshToken = useRefreshToken(enabled);
-
-  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY) ?? "";
+  const { isAuthenticated, isLoading: isSessionLoading } = useSession();
 
   const query = useQuery({
-    queryKey: ["profile", { token, enabled, refreshToken: refreshToken.data }],
+    queryKey: ["profile"],
     queryFn: () => profileService.get(),
-    enabled: !!token,
+    // Guests must not fire the profile request: a 401 there would
+    // make the request wrapper refresh and redirect off public pages.
+    enabled: isAuthenticated,
   });
 
-  useEffect(() => {
-    const error = query.error as ApiResponse;
-    if (
-      query?.data?.code === "UNAUTHORIZED" ||
-      error?.code === "UNAUTHORIZED"
-    ) {
-      setEnabled(true);
-      const data = refreshToken.data?.data;
-      if (data?.accessToken && data?.refreshToken) {
-        localStorage.setItem(CONFIG_APP.TOKEN_KEY, data.accessToken);
-        localStorage.setItem(CONFIG_APP.REFRESH_TOKEN_KEY, data.refreshToken);
-      }
-    }
-  }, [query.data, query.error, refreshToken.data]);
-  return query;
+  // While the session probe is pending the profile cannot load yet.
+  // Report that as loading so guards (MentorGuard) neither render
+  // nor redirect before the role is known. A 401 on the profile
+  // itself is handled by the request wrapper (refresh, then retry),
+  // so there is no manual refresh path here.
+  return {
+    ...query,
+    isLoading: isSessionLoading || query.isLoading,
+    isFetching: isSessionLoading || query.isFetching,
+  };
 };

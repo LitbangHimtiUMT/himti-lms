@@ -1,31 +1,18 @@
 import { AuthLoginDTO, AuthRegisterDTO } from "@core/model/auth";
 import { authService } from "@core/services/auth";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AuthLoginModel } from "@core/model/auth";
-import { CONFIG_APP } from "@core/configs/app";
+import { SESSION_QUERY_KEY } from "./useSession";
 
 interface ITypeAuth {
   body: AuthLoginDTO | AuthRegisterDTO;
   type: "login" | "register";
 }
 
-function isAuthLoginModel(data: AuthLoginModel): boolean {
-  if (data.accessToken)
-    localStorage.setItem(CONFIG_APP.TOKEN_KEY, data.accessToken);
-  if (data.refreshToken)
-    localStorage.setItem(CONFIG_APP.REFRESH_TOKEN_KEY, data.refreshToken);
-  return (
-    data !== null &&
-    typeof data === "object" &&
-    "accessToken" in data &&
-    typeof (data as AuthLoginModel).accessToken === "string"
-  );
-}
-
 export function useAuthCreation() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: ({ body, type }: ITypeAuth) => {
       switch (type) {
@@ -44,7 +31,14 @@ export function useAuthCreation() {
         pauseOnHover: true,
         theme: "dark",
       });
-      if (res.data && isAuthLoginModel(res.data)) {
+      // Drop any cached probe result (e.g. a guest 401 from before
+      // login) so the guards re-probe with the fresh session cookie
+      // instead of redirecting on the stale error.
+      queryClient.removeQueries({ queryKey: SESSION_QUERY_KEY });
+      // Login returns data, register (201) does not. The tokens in
+      // the login body are never read: auth travels in httpOnly
+      // cookies set by the server.
+      if (res.data) {
         navigate("/dashboard/enrolled-class");
       } else {
         navigate("/sign-in");
@@ -63,14 +57,10 @@ export function useAuthCreation() {
 }
 
 export const useRefreshToken = (enabled = false) => {
-  const token = localStorage.getItem(CONFIG_APP.REFRESH_TOKEN_KEY) ?? "";
   const query = useQuery({
     queryKey: ["refresh-token", { enabled }],
-    queryFn: () =>
-      authService.refreshToken(undefined, {
-        bearerToken: token,
-      }),
-    enabled: !!token && enabled,
+    queryFn: () => authService.refreshToken(undefined),
+    enabled,
   });
 
   return query;

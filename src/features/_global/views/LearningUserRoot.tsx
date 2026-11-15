@@ -17,9 +17,10 @@ import { DashboardNavbar } from "../../dashboard/components/navbar";
 import { Skeleton } from "../components/Shimer";
 import { DarkModeAtom, LearningSidebarAtom } from "../store";
 import { convertQueryParamsToObject } from "../helper";
-import { CONFIG_APP } from "../../../core/configs/app";
+import { useSession } from "../../authentication/hooks/useSession";
 
 export const LearningUserRoot = () => {
+  const { isAuthenticated, isLoading } = useSession();
   const [darkMode, setDarkMode] = useAtom(DarkModeAtom);
 
   const [sidebarOpen, setSidebarOpen] = useAtom(LearningSidebarAtom);
@@ -123,8 +124,8 @@ export const LearningUserRoot = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const token = localStorage.getItem(CONFIG_APP.TOKEN_KEY);
-    if (!token) return <Navigate to={"/sign-in"} />;
+  if (isLoading) return null;
+  if (!isAuthenticated) return <Navigate to={"/sign-in"} />;
   return (
     <>
       <DashboardNavbar />
