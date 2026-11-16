@@ -66,7 +66,8 @@ export const CertificatesViews = () => {
                   onClick={() =>
                     window.open(
                       `${CONFIG_APP.BASE_URL}/lms/certificates/file?code=${code}`,
-                      "_blank"
+                      "_blank",
+                      "noopener,noreferrer"
                     )
                   }
                 >

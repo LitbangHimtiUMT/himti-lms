@@ -134,7 +134,8 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
                     e.stopPropagation();
                     window.open(
                       `${CONFIG_APP.BASE_URL}/lms/certificates/file?code=${certificate.code}`,
-                      "_blank"
+                      "_blank",
+                      "noopener,noreferrer"
                     );
                   }}
                 >

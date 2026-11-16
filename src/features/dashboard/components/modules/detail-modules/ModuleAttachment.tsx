@@ -10,7 +10,13 @@ export const ModuleAttachment = () => {
     <div className="group relative">
       <div
         className="w-full h-24 rounded-lg p-4 border-2 border-dashed border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50 overflow-hidden flex items-center justify-between cursor-pointer hover:border-blue-300 transition-all duration-300 shadow-sm hover:shadow-md"
-        onClick={() => window.open(modules?.data?.file.url ?? "")}
+        onClick={() =>
+          window.open(
+            modules?.data?.file.url ?? "",
+            "_blank",
+            "noopener,noreferrer"
+          )
+        }
       >
         <div className="flex items-center gap-4">
           <div className="p-3 rounded-lg bg-white shadow-sm hover:bg-blue-50 transition-colors">
