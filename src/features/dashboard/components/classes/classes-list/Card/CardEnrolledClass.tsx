@@ -7,7 +7,7 @@ import { Badge } from "../../../../../_global/components/Badge";
 import { Button } from "../../../../../_global/components/Button";
 import { formatRupiah } from "../../../../../_global/helper";
 import { useProfile } from "../../../../../profile/useProfile";
-import { useGenerateCertificate } from "../../../../hooks/certificates/useCertificates";
+import { useGenerateCertificate } from "../../../../hooks/certificates/useGenerateCertificate";
 import { Poppins } from "../../../../../_global/components/Text";
 import { CONFIG_APP } from "../../../../../../core/configs/app";
 
