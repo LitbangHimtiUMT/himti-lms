@@ -29,23 +29,28 @@ export const SessionDrawerCreation: React.FC<Props> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (data) {
-      await mutation.mutateAsync({
-        type: "update",
-        data: {
-          ...form,
-          id: data.id,
-        },
-      });
-    } else {
-      await mutation.mutateAsync({
-        type: "create",
-        data: form,
-        classId,
-      });
+    try {
+      if (data) {
+        await mutation.mutateAsync({
+          type: "update",
+          data: {
+            ...form,
+            id: data.id,
+          },
+        });
+      } else {
+        await mutation.mutateAsync({
+          type: "create",
+          data: form,
+          classId,
+        });
+      }
+      onHide();
+      setForm({ name: "" });
+    } catch {
+      // The mutation's onError toast already reports the failure;
+      // leave the drawer open so the user can retry.
     }
-    onHide();
-    setForm({ name: "" });
   };
   return (
     <>

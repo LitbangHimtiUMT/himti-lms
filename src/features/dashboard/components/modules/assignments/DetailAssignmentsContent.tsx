@@ -59,11 +59,16 @@ export const DetailAssignmentContent = () => {
   const [assignmentId, setAssignmentId] = useState('')
   const handleDeleteAssignment = async() => {
     if(assignmentId) {
-      await mutation.mutateAsync({
-        type: 'delete',
-        id: assignmentId
-      })
-      setAssignmentId('')
+      try {
+        await mutation.mutateAsync({
+          type: 'delete',
+          id: assignmentId
+        })
+        setAssignmentId('')
+      } catch {
+        // The mutation's onError toast already reports the failure;
+        // keep the dialog state so the user can retry.
+      }
     }
   }
 
@@ -98,18 +103,28 @@ export const DetailAssignmentContent = () => {
   }
 
   const handleApprove = async () => {
-    await approve.mutateAsync({
-      submissionId: approval?.submissionId ?? "",
-    });
-    setApproval(null);
+    try {
+      await approve.mutateAsync({
+        submissionId: approval?.submissionId ?? "",
+      });
+      setApproval(null);
+    } catch {
+      // The mutation's onError toast already reports the failure;
+      // keep the dialog open so the user can retry.
+    }
   };
 
   const handleReject = async () => {
-    await reject.mutateAsync({
-      submissionId: approval?.submissionId ?? "",
-      feedback: approval?.feedback,
-    });
-    setApproval(null);
+    try {
+      await reject.mutateAsync({
+        submissionId: approval?.submissionId ?? "",
+        feedback: approval?.feedback,
+      });
+      setApproval(null);
+    } catch {
+      // The mutation's onError toast already reports the failure;
+      // keep the dialog open so the user can retry.
+    }
   };
   return (
     <>
