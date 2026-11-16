@@ -6,6 +6,7 @@ export interface SubmissionDTO {
   submittedBy: string;
   file: string;
   status: SubmissionStatus;
+  feedback: string | null;
   createdAt: Date;
   updatedAt: Date;
   assignment: AssignmentDTO;
