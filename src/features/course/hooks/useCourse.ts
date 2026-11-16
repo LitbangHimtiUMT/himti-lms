@@ -53,6 +53,26 @@ const readCompletedModules = (
   }
 };
 
+// The evaluation endpoint returns the AI model's parsed JSON verbatim,
+// with no shape validation server-side. A malformed 200 (missing or
+// mistyped fields) must fail the evaluation like any other error —
+// never reach the render path, where a non-string feedback or a
+// non-number score crashes the page.
+const isEvaluationResult = (data: unknown): data is CourseEvaluationResult => {
+  if (!data || typeof data !== "object" || Array.isArray(data)) return false;
+  const { score, feedback, isPassed } = data as {
+    score?: unknown;
+    feedback?: unknown;
+    isPassed?: unknown;
+  };
+  return (
+    typeof score === "number" &&
+    Number.isFinite(score) &&
+    typeof feedback === "string" &&
+    typeof isPassed === "boolean"
+  );
+};
+
 export function useCourse() {
   const { courseId } = useParams<{ courseId: string }>();
 
@@ -202,6 +222,10 @@ export function useCourse() {
       const data = await request.post<CourseEvaluationResult>(
         API_ENDPOINT.courseEvaluate
       )(payload);
+
+      if (!isEvaluationResult(data)) {
+        throw new Error("Evaluation returned an unexpected response shape");
+      }
 
       handleEvaluationSuccess({
         score: data.score,
