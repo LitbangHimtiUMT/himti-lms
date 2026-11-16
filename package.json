@@ -31,7 +31,8 @@
     "react-router-dom": "^6.25.1",
     "react-toastify": "^10.0.5",
     "suneditor": "^2.47.5",
-    "suneditor-react": "^3.6.1"
+    "suneditor-react": "^3.6.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
