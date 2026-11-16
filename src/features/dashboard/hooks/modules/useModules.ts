@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { moduleService } from "../../../../core/services/modules";
@@ -34,11 +33,15 @@ export const useModules = (id?: string) => {
   return query;
 };
 
+// No cache clearing here on purpose: switching modules changes no
+// server state, so the sessions/modules/classes caches stay valid.
+// Freshness after real changes comes from the mutations themselves
+// (useCompleted clears ["classes"], useModulesCreation clears
+// ["modules"], and so on).
 export const useDetailModule = (id?: string) => {
   const { moduleId } = useParams();
   const [searchParams] = useSearchParams();
   const module = searchParams.get("moduleId") || undefined;
-  const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ["detail-module", { moduleId, id, module }],
     queryFn: () =>
@@ -47,18 +50,6 @@ export const useDetailModule = (id?: string) => {
       }),
     enabled: !!moduleId || !!module || !!id,
   });
-
-  useEffect(() => {
-    queryClient.removeQueries({
-      queryKey: ["sessions"],
-    });
-    queryClient.removeQueries({
-      queryKey: ["modules"],
-    });
-    queryClient.removeQueries({
-      queryKey: ["classes"],
-    });
-  }, [id, queryClient]);
 
   return query;
 };
