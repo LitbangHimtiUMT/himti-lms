@@ -19,15 +19,27 @@ export const CertificatesViews = () => {
   return (
     <>
       <div className="flex justify-end mb-3">
-        <a
-          href="https://himtiumt.org/sertifikat"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-sm text-[#3966bf] hover:underline"
-        >
-          Verify a certificate
-          <FaExternalLinkAlt size={11} />
-        </a>
+        <div className="w-max">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              window.open(
+                "https://himtiumt.org/sertifikat",
+                "_blank",
+                "noopener,noreferrer"
+              )
+            }
+          >
+            <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+              <FaExternalLinkAlt
+                size={11}
+                className="text-gray-600 dark:text-gray-300"
+              />
+              <Poppins>Verify a certificate</Poppins>
+            </div>
+          </Button>
+        </div>
       </div>
       <div>
         <MasterTable
