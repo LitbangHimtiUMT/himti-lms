@@ -1,4 +1,4 @@
-import { FaUsers, FaBookOpen } from "react-icons/fa";
+import { FaUsers, FaBookOpen, FaStar } from "react-icons/fa";
 import Learning from "@core/assets/learning-assets.jpg";
 import DefaultImg from "@core/assets/default-photo.svg";
 import { ClassModel } from "@core/model/classes";
@@ -30,6 +30,16 @@ export const ClassCard: React.FC<{ course: ClassModel }> = ({ course }) => {
               </span>
             )}
           </div>
+          {/* Aggregate rating: only when the API sent it and at least
+              one review exists. */}
+          {course.rating &&
+            course.rating.count > 0 &&
+            course.rating.average != null && (
+              <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 bg-white/95 text-slate-800 text-[11px] px-2 py-1 rounded-full font-bold shadow-sm">
+                <FaStar size={11} className="text-amber-400" />
+                {course.rating.average.toFixed(1)} ({course.rating.count})
+              </span>
+            )}
         </div>
 
         {/* Content Section */}

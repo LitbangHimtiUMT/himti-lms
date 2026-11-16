@@ -17,6 +17,10 @@ export interface DashboardStatsPerClassDTO {
   participants: number;
   pendingReviews: number;
   avgProgress: number;
+  // Optional: older stats responses do not carry them; the row shows
+  // the rating only when both are present and count is above zero.
+  ratingAverage?: number | null;
+  ratingCount?: number | null;
 }
 
 export interface DashboardStatsReviewQueueDTO {

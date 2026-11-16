@@ -196,6 +196,14 @@ export const MentorDashboardStats = () => {
                   <div className="text-sm text-gray-600 dark:text-gray-400">
                     {item.participants} peserta · {item.pendingReviews} menunggu
                     review
+                    {item.ratingCount != null &&
+                      item.ratingCount > 0 &&
+                      item.ratingAverage != null && (
+                        <>
+                          {" "}· ★ {item.ratingAverage.toFixed(1)} (
+                          {item.ratingCount})
+                        </>
+                      )}
                   </div>
                 </div>
               ))}
