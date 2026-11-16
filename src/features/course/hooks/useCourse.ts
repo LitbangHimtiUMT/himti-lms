@@ -12,11 +12,75 @@ interface CourseEvaluationResult {
   isPassed: boolean;
 }
 
+// Progress readers: localStorage values are untrusted input (hand-edited,
+// written by another version, or corrupted). A bad value falls back to
+// fresh progress and never throws: there is no error boundary, so a throw
+// here whitescreens the whole page. Entries that fail shape validation
+// are dropped; valid ones are kept, mirroring the defensive reader in
+// CourseCatalogPage.
+const readUnlockedModules = (key: string): string[] => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return ["modul-1"];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return ["modul-1"];
+    const ids = parsed.filter((item): item is string => typeof item === "string");
+    return ids.length > 0 ? ids : ["modul-1"];
+  } catch {
+    return ["modul-1"];
+  }
+};
+
+const readCompletedModules = (
+  key: string
+): Record<string, { score: number; feedback: string }> => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return {};
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+    const valid: Record<string, { score: number; feedback: string }> = {};
+    for (const [moduleId, entry] of Object.entries(parsed)) {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) continue;
+      const { score, feedback } = entry as { score?: unknown; feedback?: unknown };
+      if (typeof score !== "number" || !Number.isFinite(score)) continue;
+      if (typeof feedback !== "string") continue;
+      valid[moduleId] = { score, feedback };
+    }
+    return valid;
+  } catch {
+    return {};
+  }
+};
+
+// The evaluation endpoint returns the AI model's parsed JSON verbatim,
+// with no shape validation server-side. A malformed 200 (missing or
+// mistyped fields) must fail the evaluation like any other error —
+// never reach the render path, where a non-string feedback or a
+// non-number score crashes the page.
+const isEvaluationResult = (data: unknown): data is CourseEvaluationResult => {
+  if (!data || typeof data !== "object" || Array.isArray(data)) return false;
+  const { score, feedback, isPassed } = data as {
+    score?: unknown;
+    feedback?: unknown;
+    isPassed?: unknown;
+  };
+  return (
+    typeof score === "number" &&
+    Number.isFinite(score) &&
+    typeof feedback === "string" &&
+    typeof isPassed === "boolean"
+  );
+};
+
 export function useCourse() {
-  const { courseId = "javascript" } = useParams<{ courseId: string }>();
-  
-  const courseInfo = coursesCatalogData[courseId] || coursesCatalogData.javascript;
-  const courseModules = courseInfo.modules;
+  const { courseId } = useParams<{ courseId: string }>();
+
+  // An unknown courseId used to silently load the JavaScript course while
+  // storing progress under the bogus id. Surface it instead: the page
+  // renders NotFound when there is no such course.
+  const courseInfo = courseId ? coursesCatalogData[courseId] : undefined;
+  const courseModules = courseInfo?.modules ?? [];
 
   const [activeModuleIndex, setActiveModuleIndex] = useState<number>(0);
   const [unlockedModules, setUnlockedModules] = useState<string[]>(["modul-1"]);
@@ -36,7 +100,7 @@ export function useCourse() {
   });
 
   const activeModule = courseModules[activeModuleIndex];
-  const tocList = extractTOC(activeModule.markdown);
+  const tocList = extractTOC(activeModule?.markdown ?? "");
   const contentRef = useRef<HTMLDivElement>(null);
   const mainScrollRef = useRef<HTMLElement>(null);
 
@@ -45,19 +109,8 @@ export function useCourse() {
 
   // Load progress from localStorage on mount or when courseId changes
   useEffect(() => {
-    const savedUnlocked = localStorage.getItem(unlockedKey);
-    const savedCompleted = localStorage.getItem(completedKey);
-
-    if (savedUnlocked) {
-      setUnlockedModules(JSON.parse(savedUnlocked));
-    } else {
-      setUnlockedModules(["modul-1"]);
-    }
-    if (savedCompleted) {
-      setCompletedModules(JSON.parse(savedCompleted));
-    } else {
-      setCompletedModules({});
-    }
+    setUnlockedModules(readUnlockedModules(unlockedKey));
+    setCompletedModules(readCompletedModules(completedKey));
     setActiveModuleIndex(0);
     setEvalResult(null);
   }, [courseId, unlockedKey, completedKey]);
@@ -148,6 +201,7 @@ export function useCourse() {
 
   const handleSubmitAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!activeModule) return;
     if (!studentAnswer.trim()) {
       toast.error("Tolong tulis jawaban Anda terlebih dahulu!");
       return;
@@ -168,6 +222,10 @@ export function useCourse() {
       const data = await request.post<CourseEvaluationResult>(
         API_ENDPOINT.courseEvaluate
       )(payload);
+
+      if (!isEvaluationResult(data)) {
+        throw new Error("Evaluation returned an unexpected response shape");
+      }
 
       handleEvaluationSuccess({
         score: data.score,
@@ -196,7 +254,7 @@ export function useCourse() {
 
   const totalModules = courseModules.length;
   const completedCount = Object.keys(completedModules).length;
-  const progressPercent = Math.round((completedCount / totalModules) * 100);
+  const progressPercent = totalModules > 0 ? Math.round((completedCount / totalModules) * 100) : 0;
 
   return {
     activeModuleIndex,

@@ -140,7 +140,7 @@ const CourseCard = ({ course }: { course: CourseCatalogItem }) => {
 // ============================================
 // Completed modules per course, written by useCourse.saveProgress as
 // `himti_completed_<courseId>`. Parsed defensively: corrupt storage
-// must never crash the catalog (unlike the reader in useCourse).
+// must never crash the catalog.
 const readCompletedScores = (courseId: string): number[] => {
   try {
     const raw = localStorage.getItem(`himti_completed_${courseId}`);
