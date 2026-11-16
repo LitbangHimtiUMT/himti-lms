@@ -1,10 +1,12 @@
 import Default from "@core/assets/default-photo.svg";
-import { Search } from "lucide-react";
+import { Download, Search } from "lucide-react";
 import React from "react";
+import { toast } from "react-toastify";
 import { Button } from "../../../_global/components/Button";
 import { Drawer } from "../../../_global/components/Drawer";
 import { Input } from "../../../_global/components/Input";
 import { QueryErrorState } from "../../../_global/components/QueryErrorState";
+import { getErrorMessage } from "../../../_global/helper/get-error-message";
 import { useParticipants } from "../../hooks/participants/useParticipants";
 import { Skeleton } from "../../../_global/components/Shimer";
 
@@ -17,6 +19,18 @@ interface DrawerParticipantsProps {
   position?: "left" | "right";
 }
 
+// File name from the drawer title plus today's date, safe for every OS:
+// anything that is not a letter or digit collapses to a dash.
+const buildExportFileName = (title: string): string => {
+  const slug =
+    title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "participants";
+  const date = new Date().toISOString().slice(0, 10);
+  return `${slug}-${date}.xlsx`;
+};
+
 export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
   show,
   onHide,
@@ -26,12 +40,44 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
   classId,
 }) => {
   const [searchQuery, setSearchQuery] = React.useState("");
+  const [isExporting, setIsExporting] = React.useState(false);
 
   const { data: participants, isFetching, isError, refetch } = useParticipants({
     path: `participant/${classId}`,
     search: searchQuery,
     enabled: show && !!classId,
   });
+
+  const canExport =
+    !isFetching && !isExporting && (participants?.data?.length ?? 0) > 0;
+
+  // Exports the participants already loaded in this drawer — the
+  // endpoint returns every participant in one response, so no extra
+  // request is needed and nothing gets cut off. When a search filter
+  // is active, the export matches the filtered list on screen.
+  const handleExport = async () => {
+    const rows = participants?.data ?? [];
+    if (!rows.length) return;
+    setIsExporting(true);
+    try {
+      // Lazy-loaded on purpose: SheetJS stays out of the initial bundle.
+      const XLSX = await import("xlsx");
+      const sheet = XLSX.utils.json_to_sheet(
+        rows.map((participant) => ({
+          Nama: participant.user.name,
+          Email: participant.user.email,
+          Role: participant.user.role,
+        }))
+      );
+      const book = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(book, sheet, "Peserta");
+      XLSX.writeFile(book, buildExportFileName(title));
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <Drawer
@@ -54,6 +100,17 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+          </div>
+          <div className="mt-3">
+            <Button
+              variant={canExport ? "secondary" : "disabled"}
+              onClick={handleExport}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <Download className="h-4 w-4" />
+                {isExporting ? "Exporting..." : "Export XLSX"}
+              </span>
+            </Button>
           </div>
         </div>
 
