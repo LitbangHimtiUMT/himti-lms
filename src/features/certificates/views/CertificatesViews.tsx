@@ -94,7 +94,10 @@ export const CertificatesViews = () => {
                     )
                   }
                 >
-                  <FaEye className="text-gray-600 dark:text-gray-300" />
+                  <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+                    <FaEye className="shrink-0 text-gray-600 dark:text-gray-300" />
+                    <Poppins>View</Poppins>
+                  </div>
                 </Button>
               ),
             },
