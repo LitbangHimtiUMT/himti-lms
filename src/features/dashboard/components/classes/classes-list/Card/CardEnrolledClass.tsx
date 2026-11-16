@@ -109,46 +109,57 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
           </div>
 
           {/* Action buttons */}
-          <div className="flex justify-between items-center">
-            <Button
-              size="md"
-              variant="secondary"
-              onClick={() => navigate(`/learning/${id}`)}
-              title="Detail"
-            >
-              <div className="flex items-center gap-4">
-                <IoDocumentOutline className="text-gray-600 dark:text-gray-300" />
-                <Poppins>Detail</Poppins>
-              </div>
-            </Button>
-
-            {certificate && progressStatus === "Completed" ? (
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
               <Button
                 size="sm"
                 variant="secondary"
-                tooltip="View Certificate"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(
-                    `${CONFIG_APP.BASE_URL}/lms/certificates/file?code=${certificate.code}`,
-                    "_blank"
-                  );
-                }}
+                onClick={() => navigate(`/learning/${id}`)}
+                title="Detail"
               >
-                <FaEye className="text-gray-600 dark:text-gray-300" />
+                <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+                  <IoDocumentOutline className="shrink-0 text-gray-600 dark:text-gray-300" />
+                  <Poppins>Detail</Poppins>
+                </div>
               </Button>
+            </div>
+
+            {certificate && progressStatus === "Completed" ? (
+              <div className="flex-1">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  tooltip="View Certificate"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(
+                      `${CONFIG_APP.BASE_URL}/lms/certificates/file?code=${certificate.code}`,
+                      "_blank"
+                    );
+                  }}
+                >
+                  <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+                    <FaEye className="shrink-0 text-gray-600 dark:text-gray-300" />
+                    <Poppins>View Certificate</Poppins>
+                  </div>
+                </Button>
+              </div>
             ) : progressStatus === "Completed" && !certificate && !owner ? (
-              <Button
-                tooltip="Claim Certificate"
-                size="sm"
-                variant={mutation.isPending ? "disabled" : "primary"}
-                onClick={(e) => {
-                  e.stopPropagation(); // menghindari effect onClick pada parent
-                  handleGenerate(id);
-                }}
-              >
-                {mutation.isPending ? "Generating..." : "Claim"}
-              </Button>
+              <div className="flex-1">
+                <Button
+                  tooltip="Claim Certificate"
+                  size="sm"
+                  variant={mutation.isPending ? "disabled" : "primary"}
+                  onClick={(e) => {
+                    e.stopPropagation(); // menghindari effect onClick pada parent
+                    handleGenerate(id);
+                  }}
+                >
+                  <span className="flex items-center justify-center whitespace-nowrap">
+                    {mutation.isPending ? "Generating..." : "Claim Certificate"}
+                  </span>
+                </Button>
+              </div>
             ) : null}
           </div>
         </div>
