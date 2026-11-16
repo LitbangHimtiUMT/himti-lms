@@ -52,7 +52,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
           key={i}
           onClick={() => handlePageChange(i)}
           className={`w-9 h-9 ${
-            i === totalPages
+            i === currentPage
               ? "border border-solid bg-indigo-500 shadow-[#466c8e] border-gray-800 rounded-md text-white"
               : "border border-solid border-gray-800 rounded-md text-black"
           }`}
