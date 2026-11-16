@@ -49,6 +49,7 @@ export default function CoursePage() {
     handleSubmitAnswer,
     handleResetProgress,
     totalModules,
+    completedCount,
     progressPercent,
     showResetModal,
     setShowResetModal,
@@ -126,7 +127,7 @@ export default function CoursePage() {
           <div className="text-xs font-bold text-slate-600 flex flex-col">
             <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider leading-none mb-1">Status</span>
             <div className="mt-0.5">
-              <span className="text-emerald-600 font-black">{Object.keys(completedModules).length}</span>
+              <span className="text-emerald-600 font-black">{completedCount}</span>
               <span className="text-slate-400 font-semibold">/{totalModules} Modul</span>
             </div>
           </div>

@@ -195,7 +195,8 @@ export function useCourse() {
   };
 
   const totalModules = courseModules.length;
-  const progressPercent = Math.round((unlockedModules.length / totalModules) * 100);
+  const completedCount = Object.keys(completedModules).length;
+  const progressPercent = Math.round((completedCount / totalModules) * 100);
 
   return {
     activeModuleIndex,
@@ -223,6 +224,7 @@ export function useCourse() {
     handleSubmitAnswer,
     handleResetProgress,
     totalModules,
+    completedCount,
     progressPercent,
     showResetModal,
     setShowResetModal,
