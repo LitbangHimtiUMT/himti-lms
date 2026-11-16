@@ -29,6 +29,8 @@ import modernWebModul4 from "../../core/modul/modern-web-toko-online/modul-4-kom
 import modernWebModul5 from "../../core/modul/modern-web-toko-online/modul-5-responsive-dark-mode.md?raw";
 import modernWebModul6 from "../../core/modul/modern-web-toko-online/modul-6-proyek-akhir-publish.md?raw";
 
+import { courseCatalog } from "./catalogData";
+
 export interface ModuleData {
   id: string;
   title: string;
@@ -266,25 +268,37 @@ export const modernWebCourseModules: ModuleData[] = [
   }
 ];
 
+// Course titles live in catalogData.ts (the single catalog source) — this map
+// only attaches the module content to them. Edit a title there, not here.
+const COURSE_CATEGORY = "Web Development Course";
+
+const catalogTitle = (courseKey: string): string => {
+  const entry = courseCatalog.find((item) => item.path === `/course/${courseKey}`);
+  if (!entry) {
+    throw new Error(`No catalog entry found for course "${courseKey}"`);
+  }
+  return entry.title;
+};
+
 export const coursesCatalogData: Record<string, { title: string; category: string; modules: ModuleData[] }> = {
   javascript: {
-    title: "Fundamental JavaScript",
-    category: "Web Development Course",
+    title: catalogTitle("javascript"),
+    category: COURSE_CATEGORY,
     modules: jsCourseModules,
   },
   react: {
-    title: "React Fundamentals",
-    category: "Web Development Course",
+    title: catalogTitle("react"),
+    category: COURSE_CATEGORY,
     modules: reactCourseModules,
   },
   "modern-react": {
-    title: "Modern React Application",
-    category: "Web Development Course",
+    title: catalogTitle("modern-react"),
+    category: COURSE_CATEGORY,
     modules: modernReactCourseModules,
   },
   "modern-web": {
-    title: "Modern Web: Toko Online",
-    category: "Web Development Course",
+    title: catalogTitle("modern-web"),
+    category: COURSE_CATEGORY,
     modules: modernWebCourseModules,
   }
 };
