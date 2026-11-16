@@ -5,11 +5,13 @@ import { Button } from "../../../../_global/components/Button";
 import { MasterTable } from "../../../../_global/components/MasterTable";
 import { Poppins } from "../../../../_global/components/Text";
 import { convertQueryParamsToObject } from "../../../../_global/helper";
+import { useDetailClass } from "../../../../class/hooks/useClasses";
 import {
   useModules,
   useModulesCreation,
 } from "../../../hooks/modules/useModules";
 import { AssignmentDrawerCreation } from "../../drawer/AssignmentDrawerCreation";
+import { CompletedClassNotice } from "../../classes/ClassContentNotices";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
 import { Dialog } from "../../../../_global/components/Dialog";
 import { BiEditAlt, BiTrashAlt } from "react-icons/bi";
@@ -35,6 +37,8 @@ export const DetailSessionContent = () => {
 
   const { data: modules, isFetching, isError, refetch } =
     useModules(sessionId);
+  const { data: classes } = useDetailClass();
+  const isCompleted = !!classes?.data?.completedAt;
   const navigate = useNavigate();
 
   const handleChangePage = (page: string) =>
@@ -50,6 +54,11 @@ export const DetailSessionContent = () => {
 
   return (
     <>
+      {isCompleted && (
+        <div className="mb-4">
+          <CompletedClassNotice />
+        </div>
+      )}
       <MasterTable
         pagination={{
           totalPages: modules?.meta?.totalPages || 1,
@@ -89,7 +98,7 @@ export const DetailSessionContent = () => {
                   </div>
                   <div className="w-10 flex items-center">
                     <Button
-                      variant="success"
+                      variant={isCompleted ? "disabled" : "success"}
                       onClick={() =>
                         navigate(
                           `/dashboard/${classId}/${sessionId}/edit-modules/${item.id}${
@@ -103,7 +112,13 @@ export const DetailSessionContent = () => {
                   </div>
                   <div className="flex items-center">
                     <Button
-                      variant={item.assignment ? "secondary" : "success"}
+                      variant={
+                        item.assignment
+                          ? "secondary"
+                          : isCompleted
+                          ? "disabled"
+                          : "success"
+                      }
                       size="sm"
                       onClick={() => {
                         if (!item.assignment) {
@@ -126,7 +141,7 @@ export const DetailSessionContent = () => {
                   </div>
                   <div className="flex items-center">
                     <Button
-                      variant={"danger"}
+                      variant={isCompleted ? "disabled" : "danger"}
                       size="md"
                       onClick={() => {
                         setModuleId(item.id);

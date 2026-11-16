@@ -26,8 +26,10 @@ import {
 } from "../../../../_global/components/Table";
 import { formatTime } from "../../../../_global/lib/format-time";
 import { useSubmissions } from "../../../../learning/hooks/submissions/useSubmissions";
+import { useDetailClass } from "../../../../class/hooks/useClasses";
 import { useAssignmentsCreation, useDetailAssignment } from "../../../hooks/assignments/useAssignmentsCreation";
 import { AssignmentDrawerCreation } from "../../drawer/AssignmentDrawerCreation";
+import { CompletedClassNotice } from "../../classes/ClassContentNotices";
 
 interface DialogType {
   type: "approve" | "reject";
@@ -53,6 +55,9 @@ export const DetailAssignmentContent = () => {
     reject,
   } = useSubmissions(["get-by-assignment"]);
   const [approval, setApproval] = useState<DialogType | null>(null);
+
+  const { data: classes } = useDetailClass();
+  const isCompleted = !!classes?.data?.completedAt;
 
   const mutation = useAssignmentsCreation()
 
@@ -129,11 +134,16 @@ export const DetailAssignmentContent = () => {
   return (
     <>
       <div className="container mx-auto px-4 py-6 sm:py-8">
+        {isCompleted && (
+          <div className="mb-6">
+            <CompletedClassNotice />
+          </div>
+        )}
         {/* Header */}
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="w-full sm:w-auto">
             <Button
-              variant="success"
+              variant={isCompleted ? "disabled" : "success"}
               className="w-full sm:w-auto"
               onClick={onHide}
             >
@@ -141,7 +151,7 @@ export const DetailAssignmentContent = () => {
             </Button>
           </div>
           <div className="w-full sm:w-auto">
-            <Button variant="danger" className="w-full sm:w-auto" onClick={() => setAssignmentId(assignment?.id ?? '')}>
+            <Button variant={isCompleted ? "disabled" : "danger"} className="w-full sm:w-auto" onClick={() => setAssignmentId(assignment?.id ?? '')}>
               Delete Assignment
             </Button>
           </div>

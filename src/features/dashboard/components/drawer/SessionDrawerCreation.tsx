@@ -4,7 +4,9 @@ import { SessionCreationDTO } from "../../../../core/model/sessions";
 import { Button } from "../../../_global/components/Button";
 import { Drawer } from "../../../_global/components/Drawer";
 import { InputLabel } from "../../../_global/components/InputLabel";
+import { useDetailClass } from "../../../class/hooks/useClasses";
 import { useSessionsCreation } from "../../hooks/sessions/useSessions";
+import { CompletedClassNotice } from "../classes/ClassContentNotices";
 
 interface Props {
   onHide: VoidFunction;
@@ -22,6 +24,8 @@ export const SessionDrawerCreation: React.FC<Props> = ({
 }) => {
   const mutation = useSessionsCreation();
   const { classId } = useParams();
+  const { data: classes } = useDetailClass();
+  const isCompleted = !!classes?.data?.completedAt;
 
   const [form, setForm] = useState<SessionCreationDTO>({
     name: data?.name || "",
@@ -29,6 +33,7 @@ export const SessionDrawerCreation: React.FC<Props> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isCompleted) return;
     try {
       if (data) {
         await mutation.mutateAsync({
@@ -72,6 +77,7 @@ export const SessionDrawerCreation: React.FC<Props> = ({
             className="px-5 flex flex-col items-center gap-3"
             onSubmit={handleSubmit}
           >
+            {isCompleted && <CompletedClassNotice />}
             <InputLabel
               title="Session Name"
               titleSize="sm"
@@ -79,11 +85,14 @@ export const SessionDrawerCreation: React.FC<Props> = ({
                 onChange: (e) => setForm({ ...form, name: e.target.value }),
                 value: form?.name || data?.name || "",
                 placeholder: 'Session name',
+                disabled: isCompleted,
               }}
             />
             <Button
               type="submit"
-              variant={mutation.isPending ? "disabled" : "primary"}
+              variant={
+                mutation.isPending || isCompleted ? "disabled" : "primary"
+              }
             >
               {mutation.isPending ? "Loading..." : data ? "Update" : "Create"}
             </Button>

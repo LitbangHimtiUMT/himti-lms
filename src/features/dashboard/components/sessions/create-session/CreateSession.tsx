@@ -16,6 +16,7 @@ export const CreateSession = () => {
   const { data: classes } = useDetailClass();
 
   const isOwner = profile?.data?.id === classes?.data?.creator?.id;
+  const isCompleted = !!classes?.data?.completedAt;
 
   const onHide = () => setShow((prev) => ({ ...prev, show: !prev.show }));
   return (
@@ -30,6 +31,7 @@ export const CreateSession = () => {
         ) : (
           <div className="cursor-pointer">
             <Button
+              variant={isCompleted ? "disabled" : "primary"}
               onClick={onHide}
               style={{
                 cursor: "pointer",

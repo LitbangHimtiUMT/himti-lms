@@ -3,6 +3,7 @@ import { QueryErrorState } from "../../../../_global/components/QueryErrorState"
 import { SessionTable } from "../../SessionTable";
 import { CardDetailClass } from "./CardDetailClass";
 import { HeaderDetailClass } from "./HeaderDetailClass";
+import { CompletedClassNotice } from "../ClassContentNotices";
 
 export const DetailClassContent = () => {
   const { data: classes, isFetching, isError, refetch } = useDetailClass();
@@ -11,6 +12,7 @@ export const DetailClassContent = () => {
       <div className="flex flex-col gap-8">
         <div className="flex flex-col gap-4">
           <HeaderDetailClass />
+          {classes?.data?.completedAt && <CompletedClassNotice />}
           {isError && !classes?.data ? (
             <QueryErrorState
               description={[

@@ -8,9 +8,11 @@ import { ConditionNode } from "../../../../_global/components/ConditionNode";
 import { QueryErrorState } from "../../../../_global/components/QueryErrorState";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { useDetailModule } from "../../../hooks/modules/useModules";
+import { useDetailClass } from "../../../../class/hooks/useClasses";
 import { YoutubeEmbed } from "./EmbededYoutube";
 import { ModuleAttachment } from "./ModuleAttachment";
 import { AssignmentDrawerCreation } from "../../drawer/AssignmentDrawerCreation";
+import { CompletedClassNotice } from "../../classes/ClassContentNotices";
 import { useState } from "react";
 
 export type SubmissionStatus = "REVIEW" | "APPROVE" | "REJECT";
@@ -29,6 +31,8 @@ export const DetailModuleContent = () => {
   } = useDetailModule();
   const { classId, sessionId, moduleId } = useParams();
   const navigate = useNavigate();
+  const { data: classes } = useDetailClass();
+  const isCompleted = !!classes?.data?.completedAt;
   const [show, setShow] = useState<DrawerState>({
     show: false,
     moduleId: "",
@@ -69,12 +73,13 @@ export const DetailModuleContent = () => {
           isFetchingModules ? "opacity-70" : ""
         }`}
       >
+        {isCompleted && <CompletedClassNotice />}
         {!modules?.data?.assignment && !isFetchingModules ? (
           <>
             <div className="flex items-center justify-end">
               <div className="w-48">
                 <Button
-                  variant="success"
+                  variant={isCompleted ? "disabled" : "success"}
                   onClick={() =>
                     setShow({ show: true, moduleId: modules?.data?.id || "" })
                   }
