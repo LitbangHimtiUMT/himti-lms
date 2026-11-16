@@ -96,7 +96,7 @@ export const NavigationModule = () => {
 
   const handleCompleteModule = useCallback(
     async (type: "complete" | "next") => {
-      mutation.mutateAsync({
+      mutation.mutate({
         moduleId: module?.data?.id || "",
         type,
       });

@@ -25,8 +25,13 @@ export const HeaderDetailClass = () => {
 
   const handleDeleteClass = async () => {
     if (classes?.data?.id) {
-      await mutation.mutateAsync({ id: classes?.data?.id, type: "delete" });
-      setShow((prev) => ({ ...prev, delete: !prev.delete }));
+      try {
+        await mutation.mutateAsync({ id: classes?.data?.id, type: "delete" });
+        setShow((prev) => ({ ...prev, delete: !prev.delete }));
+      } catch {
+        // The mutation's onError toast already reports the failure;
+        // keep the dialog open so the user can retry.
+      }
     }
   };
   return (

@@ -34,10 +34,10 @@ export const FormSignIn = () => {
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
-    await mutation.mutateAsync({
+    mutation.mutate({
       body: authBody,
       type: "login",
     });

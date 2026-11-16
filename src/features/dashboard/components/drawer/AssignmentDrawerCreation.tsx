@@ -72,28 +72,33 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
       toast.error("Due date must not be in the past.");
       return;
     }
-    if (data) {
-      await mutation.mutateAsync({
-        type: "update",
-        data: {
-          ...form,
-          id: data.id,
-          allowedFile: form.type === "URL" ? undefined : form.allowedFile,
-        },
-        moduleId: moduleId ?? "",
-      });
-    } else {
-      await mutation.mutateAsync({
-        type: "create",
-        data: {
-          ...form,
-          allowedFile: form.type === "URL" ? undefined : form.allowedFile,
-        },
-        moduleId: moduleId ?? "",
-      });
+    try {
+      if (data) {
+        await mutation.mutateAsync({
+          type: "update",
+          data: {
+            ...form,
+            id: data.id,
+            allowedFile: form.type === "URL" ? undefined : form.allowedFile,
+          },
+          moduleId: moduleId ?? "",
+        });
+      } else {
+        await mutation.mutateAsync({
+          type: "create",
+          data: {
+            ...form,
+            allowedFile: form.type === "URL" ? undefined : form.allowedFile,
+          },
+          moduleId: moduleId ?? "",
+        });
+      }
+      onHide();
+      setForm(getDefaultFormState());
+    } catch {
+      // The mutation's onError toast already reports the failure;
+      // leave the drawer open so the user can retry.
     }
-    onHide();
-    setForm(getDefaultFormState());
   };
 
   useEffect(() => {

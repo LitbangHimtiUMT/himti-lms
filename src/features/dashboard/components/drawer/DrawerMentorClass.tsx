@@ -52,15 +52,20 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
   const mutation = useClassesCreation();
 
   const handleInviteMentor = async () => {
-    await mutation.mutateAsync({
-      data: {
-        classId,
-        mentorId,
-      } as InviteMentorDTO,
-      type: "invite-mentor",
-    });
-    setMentorId("");
-    setSearchQuery((prev) => ({ ...prev, mentor: "" }));
+    try {
+      await mutation.mutateAsync({
+        data: {
+          classId,
+          mentorId,
+        } as InviteMentorDTO,
+        type: "invite-mentor",
+      });
+      setMentorId("");
+      setSearchQuery((prev) => ({ ...prev, mentor: "" }));
+    } catch {
+      // The mutation's onError toast already reports the failure;
+      // keep the selection so the user can retry.
+    }
   };
 
   const handleBack = () => {

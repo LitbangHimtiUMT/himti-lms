@@ -56,14 +56,19 @@ export const TableCreatedClassesList = () => {
   const [classId, setClassId] = useState("");
   const [className, setClassName] = useState("");
 
-  const handlePublishClass = async (id: string) => {
-    await mutation.mutateAsync({ id, type: "publish" });
+  const handlePublishClass = (id: string) => {
+    mutation.mutate({ id, type: "publish" });
   };
 
   const handleDeleteClass = async (id: string) => {
-    await mutation.mutateAsync({ id, type: "delete" });
-    setDialog("");
-    queryClient.invalidateQueries({ queryKey: ["classes"] });
+    try {
+      await mutation.mutateAsync({ id, type: "delete" });
+      setDialog("");
+      queryClient.invalidateQueries({ queryKey: ["classes"] });
+    } catch {
+      // The mutation's onError toast already reports the failure;
+      // keep the dialog open so the user can retry.
+    }
   };
 
   return (

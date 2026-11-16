@@ -96,15 +96,20 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
           formData.append(key, value as string);
         }
       });
-      await mutation.mutateAsync({
-        type: "update",
-        data: formData,
-        id: form.id,
-      });
-      setForm(undefined);
-      setImage(undefined);
-      setIsFree(false);
-      onHide();
+      try {
+        await mutation.mutateAsync({
+          type: "update",
+          data: formData,
+          id: form.id,
+        });
+        setForm(undefined);
+        setImage(undefined);
+        setIsFree(false);
+        onHide();
+      } catch {
+        // The mutation's onError toast already reports the failure;
+        // leave the drawer open so the user can retry.
+      }
     }
   };
 
