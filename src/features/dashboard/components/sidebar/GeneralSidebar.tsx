@@ -1,7 +1,7 @@
 import DefaultImage from "@core/assets/default-photo.svg";
 import clsx from "clsx";
 import { useAtom } from "jotai";
-import { LogOut } from "lucide-react";
+import { LogOut, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Skeleton } from "../../../_global/components/Shimer";
 import { useScreen } from "../../../_global/hooks/useScreen";
@@ -55,7 +55,7 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({
         )}
       >
         <div
-          className={`flex px-2 pb-[22px] pt-[2px] ${
+          className={`flex items-center justify-between px-2 pb-[22px] pt-[2px] ${
             collapsed ? "lg:justify-center lg:px-0" : ""
           }`}
         >
@@ -66,6 +66,15 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({
               collapsed ? "lg:h-7" : ""
             }`}
           />
+          {/* Mobile only: the open sidebar covers the navbar toggle,
+              so without this the only way to hide it is a menu tap. */}
+          <button
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 lg:hidden"
+            onClick={handleShow}
+            aria-label="Tutup sidebar"
+          >
+            <X size={19} />
+          </button>
         </div>
 
         {/* Scrollable Items */}
