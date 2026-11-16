@@ -6,7 +6,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { FiEdit2 } from "react-icons/fi";
 import { IoDocumentOutline, IoWarningOutline } from "react-icons/io5";
 import { MdOutlinePublishedWithChanges } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ClassModel } from "../../../../../core/model/classes";
 import { Badge } from "../../../../_global/components/Badge";
@@ -16,7 +16,10 @@ import { Dialog } from "../../../../_global/components/Dialog";
 import { DropdownMenu } from "../../../../_global/components/DropdownMenu";
 import { Input } from "../../../../_global/components/Input";
 import { MasterTable } from "../../../../_global/components/MasterTable";
-import { formatRupiah } from "../../../../_global/helper";
+import {
+  convertQueryParamsToObject,
+  formatRupiah,
+} from "../../../../_global/helper";
 import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
 import {
   useClasses,
@@ -29,6 +32,12 @@ import { UpdateClassDrawer } from "../../drawer/UpdateClassDrawer";
 export const TableCreatedClassesList = () => {
   const navigate = useNavigate();
   const { data: classes, isFetching, isError, refetch } = useClasses();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queries = convertQueryParamsToObject(searchParams.toString());
+
+  const handleChangePage = (page: string) =>
+    setSearchParams({ ...queries, page });
+
   const { data: profile } = useProfile();
   const { handleInputChange } = useSearchParamsInput("search");
   const [dialog, setDialog] = useState<string>("");
@@ -75,6 +84,11 @@ export const TableCreatedClassesList = () => {
         onRetry={refetch}
         withAction={false}
         data={classes?.data || []}
+        pagination={{
+          totalPages: classes?.meta?.totalPages || 1,
+          currentPage: classes?.meta?.page || 1,
+          onPageChange: (page) => handleChangePage(String(page)),
+        }}
         title={[
           "Class Name",
           "Price",
