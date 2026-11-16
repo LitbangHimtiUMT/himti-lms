@@ -139,6 +139,13 @@ export function useClassesCreation() {
           queryKey: ["class-mentors"],
         });
       }
+      if (vars.type === "complete") {
+        // Marking a class completed unlocks claiming for
+        // participants with all assignments approved.
+        queryClient.invalidateQueries({
+          queryKey: ["certificate-eligibility"],
+        });
+      }
 
       if (vars.type === "delete") {
         navigate(`/dashboard/my-class`);

@@ -203,12 +203,22 @@ export const ClassDetailView = () => {
                 Progres Sertifikat
               </h2>
               <p className="text-sm text-slate-600 leading-relaxed mb-3">
-                Sertifikat bisa diklaim setelah semua tugas disetujui mentor.
+                Sertifikat bisa diklaim setelah semua tugas disetujui mentor
+                dan mentor menandai kelas selesai.
               </p>
               <p className="text-sm font-semibold text-slate-800 mb-3">
                 Tugas disetujui {eligibility.data.approvedAssignments} dari{" "}
                 {eligibility.data.totalAssignments}
               </p>
+              {eligibility.data.totalAssignments > 0 &&
+                eligibility.data.approvedAssignments ===
+                  eligibility.data.totalAssignments &&
+                eligibility.data.classCompleted === false && (
+                  <p className="text-sm text-slate-500 mb-3">
+                    Semua tugas sudah disetujui. Menunggu mentor menandai
+                    kelas selesai.
+                  </p>
+                )}
               {eligibility.data.totalAssignments === 0 ? (
                 <p className="text-sm text-slate-500">
                   Belum ada tugas di kelas ini.

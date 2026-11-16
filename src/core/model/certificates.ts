@@ -24,9 +24,11 @@ export interface EligibilityAssignmentDTO {
 
 // GET /lms/certificates/eligibility/:classId — the single source of
 // truth for certificate claiming: eligible iff every assignment in
-// the class has an APPROVE submission from the caller.
+// the class has an APPROVE submission from the caller and the mentor
+// has marked the class completed.
 export interface CertificateEligibilityDTO {
     eligible: boolean
+    classCompleted: boolean
     totalAssignments: number
     approvedAssignments: number
     assignments: EligibilityAssignmentDTO[]
