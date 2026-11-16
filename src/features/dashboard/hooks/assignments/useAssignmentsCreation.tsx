@@ -60,6 +60,18 @@ export const useAssignmentsCreation = () => {
     onError: (err) => toast.error(getErrorMessage(err)),
     onSuccess: (res, vars) => {
       toast.success(res?.message || "Berhasil.");
+      // Submit, create and delete change certificate eligibility
+      // (approvals and the assignment count); update only renames
+      // or reschedules, so it leaves eligibility alone.
+      if (
+        vars.type === "submit" ||
+        vars.type === "create" ||
+        vars.type === "delete"
+      ) {
+        queryClient.invalidateQueries({
+          queryKey: ["certificate-eligibility"],
+        });
+      }
       queryClient.invalidateQueries({
         queryKey: ["modules"],
       });

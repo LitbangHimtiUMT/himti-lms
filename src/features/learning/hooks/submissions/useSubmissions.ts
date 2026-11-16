@@ -44,6 +44,9 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
       queryClient.invalidateQueries({
         queryKey: ["dashboard-stats"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["certificate-eligibility"],
+      });
     },
     onError: (err) => toast.error(getErrorMessage(err)),
   });
@@ -63,6 +66,9 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
         });
         queryClient.invalidateQueries({
           queryKey: ["dashboard-stats"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["certificate-eligibility"],
         });
       },
       onError: (err) => toast.error(getErrorMessage(err)),

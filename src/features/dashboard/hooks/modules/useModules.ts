@@ -86,9 +86,17 @@ export const useModulesCreation = () => {
         }
       }
     },
-    onSuccess: (res) => {
+    onSuccess: (res, vars) => {
       navigate(`/dashboard/${classId}/${sessionId}`);
       toast.success(res?.message || "Berhasil.");
+      // Deleting a module can take its assignment with it, which
+      // changes the eligibility count; create/update add no
+      // assignment, so they leave eligibility alone.
+      if (vars.type === "delete") {
+        queryClient.invalidateQueries({
+          queryKey: ["certificate-eligibility"],
+        });
+      }
       queryClient.removeQueries({
         queryKey: ["modules"],
       });
