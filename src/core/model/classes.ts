@@ -1,4 +1,3 @@
-import { File } from "buffer";
 import { CategoriesModel } from "./categories";
 import { UserModel } from "./user";
 import { ModuleDTO } from "./modules";
@@ -47,15 +46,6 @@ export interface ClassModel {
 }
 
 export type ClassLevel = "BEGINNER" | "INTERMEDIATE" | "EXPERT"
-
-export interface ClassDTO {
-  name: string;
-  description?: string;
-  thumbnail?: File;
-  level: ClassLevel;
-  categoryId: string;
-  price: number;
-}
 
 export interface JoinInvitationClassDTO {
   classId: string;

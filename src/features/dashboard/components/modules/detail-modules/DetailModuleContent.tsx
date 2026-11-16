@@ -15,20 +15,6 @@ import { useState } from "react";
 
 export type SubmissionStatus = "REVIEW" | "APPROVE" | "REJECT";
 
-export interface Submission {
-  id: string;
-  name: string;
-  files: {
-    name: string;
-    size: number;
-    url: string;
-  };
-  status: SubmissionStatus;
-  submittedAt: Date;
-  grade?: number;
-  feedback?: string;
-}
-
 interface DrawerState {
   show: boolean;
   moduleId: string;
