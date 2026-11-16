@@ -204,8 +204,8 @@ export const modernReactCourseModules: ModuleData[] = [
     title: "Modul 6: Gemini AI Integration",
     order: 6,
     markdown: modernReactModul6,
-    question: "Sebutkan nama package SDK resmi yang digunakan untuk integrasi Gemini AI di aplikasi React modern dan bagaimana cara menyimpan API Key secara aman di environment variables!",
-    criteria: "Menyebutkan package '@google/genai' dan penyimpanan menggunakan file '.env' dengan prefix 'VITE_GEMINI_API_KEY' atau sejenisnya."
+    question: "Jelaskan kenapa API Key Gemini tidak boleh disimpan di kode frontend (misalnya variabel prefix VITE_*), dan bagaimana pola proxy backend yang benar untuk memanggil Gemini AI dari aplikasi React!",
+    criteria: "Menyebutkan bahwa variabel prefix VITE_* ikut ter-inline ke dalam bundle JavaScript sehingga bisa dibaca siapa saja dari browser; API Key hanya boleh dibaca server dari file .env tanpa prefix VITE_; frontend memanggil endpoint backend sendiri dan backend yang memanggil Gemini API menggunakan package '@google/genai'."
   },
   {
     id: "modul-7",
