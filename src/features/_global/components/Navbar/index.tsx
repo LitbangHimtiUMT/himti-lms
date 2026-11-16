@@ -34,7 +34,7 @@ export const Navbar = () => {
           <img src="/HIMTI.png" alt="HIMTI" className="h-9 w-auto" />
         </Link>
         <Group />
-        <div className="flex items-center justify-end gap-2">
+        <div className="col-start-3 flex items-center justify-end gap-2">
           <div className="hidden lg:block">
             <AuthSection />
           </div>
