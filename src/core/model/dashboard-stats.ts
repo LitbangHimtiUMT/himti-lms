@@ -1,3 +1,5 @@
+import { StatusClasses } from "./classes";
+
 export interface DashboardStatsTotalsDTO {
   classes: number;
   participants: number;
@@ -8,7 +10,10 @@ export interface DashboardStatsTotalsDTO {
 export interface DashboardStatsPerClassDTO {
   id: string;
   name: string;
-  status: "PUBLISH" | "DRAFT";
+  status: StatusClasses;
+  // Optional: the stats endpoint may not carry it; the completed
+  // badge renders only when it is present.
+  completedAt?: string | null;
   participants: number;
   pendingReviews: number;
   avgProgress: number;

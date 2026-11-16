@@ -3,7 +3,7 @@ import { UserModel } from "./user";
 import { ModuleDTO } from "./modules";
 import { CourseType } from "../../features/dashboard/store";
 
-export type StatusClasses = 'PUBLISH' | 'DRAFT'
+export type StatusClasses = 'PUBLISH' | 'DRAFT' | 'ARCHIVED'
 export type ProgressStatus = "Completed" | "In Progress"
 
 export interface SessionDTO {
@@ -21,6 +21,12 @@ export interface ClassModel {
   description: string;
   isAlreadyJoin: boolean;
   status: StatusClasses;
+  // null = not completed. Optional: list responses from an older API
+  // may not carry it; absence is treated as not completed.
+  completedAt?: string | null;
+  // Count of issued certificates. Only the class detail response
+  // carries it; absence is treated as zero.
+  totalCertificates?: number;
   code?: string;
   level: CourseType;
   category: CategoriesModel;

@@ -39,6 +39,7 @@ export const CardDetailClass: React.FC<CardDetailClassProps> = ({
   const statusColor: Record<StatusClasses, BadgeVariant> = {
     PUBLISH: "success",
     DRAFT: "outline",
+    ARCHIVED: "warning",
   };
 
   if (isFetching) {
