@@ -1,6 +1,7 @@
 import { CiSearch } from "react-icons/ci";
 import { EmptyState } from "../../../../_global/components/Empty";
 import { Input } from "../../../../_global/components/Input";
+import { Pagination } from "../../../../_global/components/Pagination";
 import { QueryErrorState } from "../../../../_global/components/QueryErrorState";
 import { Skeleton } from "../../../../_global/components/Shimer";
 import { useSearchParamsInput } from "../../../../_global/hooks/useSearchParamsInput";
@@ -23,6 +24,9 @@ export const EnrolledClassContent = () => {
     queries,
     setSearchParams,
   } = useSearchParamsInput("categoryId");
+
+  const handleChangePage = (page: number) =>
+    setSearchParams({ ...queries, page: String(page) });
 
   const [enabled, setEnabled] = useState(false);
 
@@ -64,7 +68,13 @@ export const EnrolledClassContent = () => {
                     }))
               }
               onChange={(e) =>
-                setSearchParams({ ...queries, categoryId: e.value })
+                // A new filter starts at page 1: keeping a stale ?page=
+                // could land on an empty page of the filtered list.
+                setSearchParams({
+                  ...queries,
+                  categoryId: e.value,
+                  page: "1",
+                })
               }
             />
           </div>
@@ -140,6 +150,11 @@ export const EnrolledClassContent = () => {
           </div>
         )}
       </div>
+      <Pagination
+        totalPages={classes?.meta?.totalPages || 1}
+        currentPage={classes?.meta?.page || 1}
+        onPageChange={handleChangePage}
+      />
     </div>
   );
 };
