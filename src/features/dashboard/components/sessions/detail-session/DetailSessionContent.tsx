@@ -12,7 +12,7 @@ import {
 import { AssignmentDrawerCreation } from "../../drawer/AssignmentDrawerCreation";
 import { ConditionNode } from "../../../../_global/components/ConditionNode";
 import { Dialog } from "../../../../_global/components/Dialog";
-import { BiTrashAlt } from "react-icons/bi";
+import { BiEditAlt, BiTrashAlt } from "react-icons/bi";
 
 interface IShowDrawer {
   show: boolean;
@@ -23,6 +23,7 @@ export const DetailSessionContent = () => {
   const { sessionId, classId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const queries = convertQueryParamsToObject(searchParams.toString());
+  const from = searchParams.get("from");
 
   const [show, setShow] = useState<IShowDrawer>({
     moduleId: "",
@@ -84,6 +85,20 @@ export const DetailSessionContent = () => {
                       }
                     >
                       <IoDocumentOutline />
+                    </Button>
+                  </div>
+                  <div className="w-10 flex items-center">
+                    <Button
+                      variant="success"
+                      onClick={() =>
+                        navigate(
+                          `/dashboard/${classId}/${sessionId}/edit-modules/${item.id}${
+                            from ? `?from=${from}` : ""
+                          }`
+                        )
+                      }
+                    >
+                      <BiEditAlt />
                     </Button>
                   </div>
                   <div className="flex items-center">
