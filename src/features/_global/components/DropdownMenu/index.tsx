@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { HiDotsVertical } from "react-icons/hi";
 
@@ -28,32 +28,55 @@ export const DropdownMenu = ({
   // Handle click outside to close dropdown
   const dropdownMenuRef = useRef<HTMLDivElement>(null);
 
+  // Menu height: estimated until the open menu is measured (each
+  // item is 36px tall, plus 8px container padding and 2px border).
+  // The estimate keeps the first frame close; the measured height
+  // corrects the flip decision right after.
+  const [menuHeight, setMenuHeight] = useState(items.length * 36 + 10);
+
+  useLayoutEffect(() => {
+    if (isOpen && dropdownMenuRef.current) {
+      const height = dropdownMenuRef.current.offsetHeight;
+      if (height > 0 && height !== menuHeight) {
+        setMenuHeight(height);
+      }
+    }
+  }, [isOpen, items.length, menuHeight]);
+
   // Calculate dropdown position
   const getDropdownPosition = () => {
-    if (!buttonRef.current) return { top: 0, left: 0 };
+    if (!buttonRef.current) return { top: 0, left: 0, openUpward: false };
 
     const rect = buttonRef.current.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
-    // Position dropdown below the button
-    const top = rect.bottom + scrollTop + 4; // 4px gap
-    
+    // Flip upward when the menu would not fit below the button
+    // and there is more room above (e.g. the last table rows).
+    const gap = 4;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+    const openUpward =
+      menuHeight + gap > spaceBelow && spaceAbove > spaceBelow;
+    const top = openUpward
+      ? rect.top + scrollTop - menuHeight - gap
+      : rect.bottom + scrollTop + gap;
+
     // Calculate left position to keep dropdown within viewport
     const dropdownWidth = 224; // w-56 = 14rem = 224px
     const viewportWidth = window.innerWidth;
-    
+
     let left = rect.left + scrollLeft;
-    
+
     // If dropdown would go outside right edge, align to right
     if (left + dropdownWidth > viewportWidth) {
       left = rect.right + scrollLeft - dropdownWidth;
     }
-    
+
     // Ensure minimum left position (don't go negative)
     left = Math.max(8, left); // 8px minimum margin from left edge
 
-    return { top, left };
+    return { top, left, openUpward };
   };
 
   const position = getDropdownPosition()
@@ -116,7 +139,7 @@ export const DropdownMenu = ({
         createPortal(
           <div
             ref={dropdownMenuRef}
-            className="absolute z-[991] mt-1 w-56 origin-top-left rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200 dark:border-gray-700 transition-all duration-200 transform"
+            className={`absolute z-[991] w-56 ${position.openUpward ? "origin-bottom-left" : "origin-top-left"} rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200 dark:border-gray-700 transition-all duration-200 transform`}
             style={{
               // position: "absolute",
               // top: buttonRef.current?.getBoundingClientRect().bottom ?? 0,
