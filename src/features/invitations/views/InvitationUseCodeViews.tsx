@@ -10,6 +10,19 @@ import {
 } from "../../class/hooks/useClasses";
 import { useProfile } from "../../profile/useProfile";
 
+// The class code arrives base64-encoded (the API btoa()s it before
+// sending). Decoding happens during render and nothing above this
+// page catches render errors, so a malformed value must never throw.
+// Display-only: joining uses the raw URL code, never this value.
+const decodeInvitationCode = (code: unknown): string | null => {
+  if (typeof code !== "string" || code === "") return null;
+  try {
+    return atob(code);
+  } catch {
+    return null;
+  }
+};
+
 export const InvitationUseCodeViews = () => {
   const {
     data: classes,
@@ -23,15 +36,28 @@ export const InvitationUseCodeViews = () => {
 
   const { code } = useParams();
 
-  const handleJoinInvitation = async () => {
-    await mutation.mutateAsync({
+  const classData = classes?.data;
+  const isCreator = classData?.creator?.id === profile?.data?.id;
+  const isFetching = classFetching || profileFetching;
+  // Join only makes sense once the invited class actually loaded: no
+  // data (or a failed load) must never leave an active Join button
+  // next to an empty class name.
+  const canJoin =
+    !!classData &&
+    !!code &&
+    !isErrorClass &&
+    !isFetching &&
+    !mutation.isPending &&
+    !isCreator &&
+    !classData.isAlreadyJoin;
+
+  const handleJoinInvitation = () => {
+    if (!canJoin) return;
+    mutation.mutate({
       code,
       type: "join-invitation",
     });
   };
-
-  const isCreator = classes?.data?.creator?.id === profile?.data?.id;
-  const isFetching = classFetching || profileFetching;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -48,7 +74,7 @@ export const InvitationUseCodeViews = () => {
             <Skeleton width="75%" height="1.5rem" />
             <Skeleton width="60%" height="1rem" />
           </div>
-        ) : isErrorClass && !classes?.data ? (
+        ) : isErrorClass || !classData ? (
           <QueryErrorState
             customMinHeight={200}
             description={[
@@ -61,21 +87,21 @@ export const InvitationUseCodeViews = () => {
           <div className="flex flex-col items-center">
             <div className="mb-4">
               <p className="text-lg font-semibold text-gray-700">
-                {classes?.data?.name}
+                {classData.name}
               </p>
               <div className="flex items-center justify-center gap-2 mt-2">
                 <Poppins className="text-sm text-gray-400">
                   Invitation Code:
                 </Poppins>
                 <Poppins className="font-medium text-sm text-gray-600">
-                  {atob(classes?.data?.code ?? "")}
+                  {decodeInvitationCode(classData.code) ?? "-"}
                 </Poppins>
               </div>
             </div>
             <div className="flex flex-col items-center gap-3 w-full">
               <ConditionNode
                 condition={
-                  !!classes?.data?.isAlreadyJoin && !isCreator && !isFetching
+                  !!classData.isAlreadyJoin && !isCreator && !isFetching
                 }
               >
                 <div className="bg-red-100 w-[75#] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
@@ -84,7 +110,7 @@ export const InvitationUseCodeViews = () => {
               </ConditionNode>
               <ConditionNode
                 condition={
-                  isCreator && !classes?.data?.isAlreadyJoin && !isFetching
+                  isCreator && !classData.isAlreadyJoin && !isFetching
                 }
               >
                 <div className="bg-red-100 w-[75#] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
@@ -94,14 +120,7 @@ export const InvitationUseCodeViews = () => {
               <div className="w-1/3">
                 <Button
                   size="lg"
-                  variant={
-                    isCreator ||
-                    classes?.data?.isAlreadyJoin ||
-                    isFetching ||
-                    mutation.isPending
-                      ? "disabled"
-                      : "primary"
-                  }
+                  variant={canJoin ? "primary" : "disabled"}
                   onClick={handleJoinInvitation}
                 >
                   {mutation.isPending ? "Loading..." : "Join Class"}
