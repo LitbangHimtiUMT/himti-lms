@@ -26,6 +26,12 @@ export const useGenerateCertificate = () => {
       queryClient.invalidateQueries({
         queryKey: ["certificate-eligibility"],
       });
+      // A new certificate also makes the holder eligible to review,
+      // so the review status (canReview/myReview) must refresh on
+      // the detail page and the enrolled card prompt.
+      queryClient.invalidateQueries({
+        queryKey: ["class-reviews"],
+      });
       toast.success(res?.message || "Sertifikat berhasil dibuat.");
     },
   });

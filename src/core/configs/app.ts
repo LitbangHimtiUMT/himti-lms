@@ -39,6 +39,7 @@ export const API_ENDPOINT = {
   sessions: `${CONFIG_APP.BASE_URL}/lms/sessions`,
   classes: `${CONFIG_APP.BASE_URL}/lms/class`,
   certificates: `${CONFIG_APP.BASE_URL}/lms/certificates`,
+  reviews: `${CONFIG_APP.BASE_URL}/lms/reviews`,
   profile: `${CONFIG_APP.BASE_URL}/profile`,
   completedModules: `${CONFIG_APP.BASE_URL}/lms/completed-modules`,
   participant: `${CONFIG_APP.BASE_URL}/lms/class-participants`,

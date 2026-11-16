@@ -27,6 +27,9 @@ export interface ClassModel {
   // Count of issued certificates. Only the class detail response
   // carries it; absence is treated as zero.
   totalCertificates?: number;
+  // Aggregate rating. Only present when the API sends it (the list
+  // endpoint may not); absence hides the catalog badge.
+  rating?: { average: number | null; count: number } | null;
   code?: string;
   level: CourseType;
   category: CategoriesModel;
