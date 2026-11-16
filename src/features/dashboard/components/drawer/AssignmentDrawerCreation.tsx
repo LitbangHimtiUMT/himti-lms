@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { Button } from "../../../_global/components/Button";
 import { Drawer } from "../../../_global/components/Drawer";
 import { DropdownRevamp } from "../../../_global/components/Dropdown/DropdownRevamp";
@@ -24,12 +25,27 @@ interface FormState {
   type: "URL" | "FILE";
 }
 
-const defaultValue: FormState = {
-  description: "",
-  dueDate: new Date(),
-  title: "",
-  type: "FILE",
-  allowedFile: undefined,
+const getDefaultFormState = (): FormState => {
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + 7);
+  return {
+    description: "",
+    dueDate,
+    title: "",
+    type: "FILE",
+    allowedFile: undefined,
+  };
+};
+
+// Mirrors the API's checkDueDate: a due date stays open until the end
+// of its day, so today is still valid and only past days are rejected.
+// Accepts Date or string — prefilled values arrive from the API as
+// strings, picker selections arrive as Date objects.
+const isDueDateOpen = (dueDate: Date | string): boolean => {
+  const due = new Date(dueDate);
+  if (isNaN(due.getTime())) return false;
+  due.setHours(23, 59, 59, 999);
+  return new Date() <= due;
 };
 
 const AllowedFileMap: Record<".zip" | ".rar" | ".pdf", string> = {
@@ -44,7 +60,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
   moduleId,
   data,
 }) => {
-  const [form, setForm] = useState<FormState>(data || defaultValue);
+  const [form, setForm] = useState<FormState>(data || getDefaultFormState());
 
   const mutation = useAssignmentsCreation();
 
@@ -52,6 +68,10 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+    if (!isDueDateOpen(form.dueDate)) {
+      toast.error("Due date must not be in the past.");
+      return;
+    }
     if (data) {
       await mutation.mutateAsync({
         type: "update",
@@ -73,13 +93,12 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
       });
     }
     onHide();
-    setForm(defaultValue);
+    setForm(getDefaultFormState());
   };
 
   useEffect(() => {
     if (show) {
-      console.log({data: data?.dueDate})
-      setForm(data || defaultValue);
+      setForm(data || getDefaultFormState());
     }
   }, [show, data]);
   
