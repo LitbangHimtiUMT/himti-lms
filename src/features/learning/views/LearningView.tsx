@@ -67,10 +67,21 @@ export const LearningDashboardView = () => {
               ></div>
             </div>
             {eligibility?.data && (
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1.5">
-                Tugas disetujui {eligibility.data.approvedAssignments}/
-                {eligibility.data.totalAssignments}
-              </p>
+              <>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1.5">
+                  Tugas disetujui {eligibility.data.approvedAssignments}/
+                  {eligibility.data.totalAssignments}
+                </p>
+                {eligibility.data.totalAssignments > 0 &&
+                  eligibility.data.approvedAssignments ===
+                    eligibility.data.totalAssignments &&
+                  eligibility.data.classCompleted === false && (
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      Semua tugas disetujui. Menunggu mentor menandai kelas
+                      selesai.
+                    </p>
+                  )}
+              </>
             )}
           </div>
         )}

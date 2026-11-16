@@ -72,7 +72,8 @@ export const MarkCompletedDialog: React.FC<MarkCompletedDialogProps> = ({
           Once completed, the class content is locked: sessions, modules,
           assignments, and class details can no longer be created or edited.
           Participants can still submit assignments, mentors can still review
-          submissions, and certificates can still be claimed.
+          submissions, and participants with all assignments approved can
+          claim their certificates.
         </p>
         <div className="flex justify-end gap-3 pt-2">
           <Button variant="secondary" onClick={onHide}>

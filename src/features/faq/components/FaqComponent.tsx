@@ -24,7 +24,7 @@ const FaqComponent = () => {
     {
       question: "Bagaimana cara mendapatkan sertifikat kelulusan?",
       answer:
-        "Sertifikat kelulusan bisa diklaim setelah semua tugas kelas disetujui oleh mentor kelas. Klaim dilakukan dari halaman kelas yang Anda ikuti.",
+        "Sertifikat kelulusan bisa diklaim setelah semua tugas kelas disetujui oleh mentor kelas dan mentor menandai kelas selesai. Klaim dilakukan dari halaman kelas yang Anda ikuti.",
     },
     {
       question: "Apakah saya bisa berinteraksi langsung dengan mentor?",

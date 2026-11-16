@@ -49,6 +49,14 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
   const eligible = eligibility?.data?.eligible ?? false;
   const showHint =
     !certificate && !owner && !!eligibility?.data && !eligible;
+  // Waiting state: every assignment approved, but the mentor has not
+  // marked the class completed yet, so the claim stays locked.
+  const allApproved =
+    (eligibility?.data?.totalAssignments ?? 0) > 0 &&
+    eligibility?.data?.approvedAssignments ===
+      eligibility?.data?.totalAssignments;
+  const waitingForCompletion =
+    allApproved && eligibility?.data?.classCompleted === false;
   // Review prompt: only for certificate holders. One review per page
   // is enough — the prompt only reads canReview, which the server
   // computes (holder + not a class manager + no review yet). Until
@@ -131,7 +139,9 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
             {showHint && (
               <>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
-                  Get all assignments approved to claim your certificate.
+                  {waitingForCompletion
+                    ? "All assignments approved. Waiting for the mentor to mark the class as completed."
+                    : "Get all assignments approved to claim your certificate."}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                   {eligibility?.data?.approvedAssignments ?? 0}/
