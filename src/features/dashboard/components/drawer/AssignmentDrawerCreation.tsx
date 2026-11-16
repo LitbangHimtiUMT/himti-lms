@@ -7,7 +7,13 @@ import { InputLabel } from "../../../_global/components/InputLabel";
 import { Poppins } from "../../../_global/components/Text";
 import { TextEditor } from "../../../_global/components/TextEditor";
 import { useAssignmentsCreation } from "../../hooks/assignments/useAssignmentsCreation";
+import { useDetailClass } from "../../../class/hooks/useClasses";
 import { DatePicker } from "../../../_global/components/DatePicker";
+import {
+  CertificatesIssuedNotice,
+  CompletedClassNotice,
+  ConfirmContentChangeDialog,
+} from "../classes/ClassContentNotices";
 
 interface Props {
   onHide: VoidFunction;
@@ -63,15 +69,13 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
   const [form, setForm] = useState<FormState>(data || getDefaultFormState());
 
   const mutation = useAssignmentsCreation();
+  const { data: classes } = useDetailClass();
+  const isCompleted = !!classes?.data?.completedAt;
+  const totalCertificates = classes?.data?.totalCertificates ?? 0;
+  const showWarning = !isCompleted && totalCertificates > 0;
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleCreateAssignment = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-    if (!isDueDateOpen(form.dueDate)) {
-      toast.error("Due date must not be in the past.");
-      return;
-    }
+  const doSubmit = async () => {
     try {
       if (data) {
         await mutation.mutateAsync({
@@ -101,6 +105,22 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
     }
   };
 
+  const handleCreateAssignment = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    if (isCompleted) return;
+    if (!isDueDateOpen(form.dueDate)) {
+      toast.error("Due date must not be in the past.");
+      return;
+    }
+    if (showWarning) {
+      setShowConfirm(true);
+      return;
+    }
+    await doSubmit();
+  };
+
   useEffect(() => {
     if (show) {
       setForm(data || getDefaultFormState());
@@ -125,34 +145,45 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
           className="px-5 flex flex-col items-center gap-3"
           onSubmit={handleCreateAssignment}
         >
+          {isCompleted && <CompletedClassNotice />}
+          {showWarning && (
+            <CertificatesIssuedNotice totalCertificates={totalCertificates} />
+          )}
           <InputLabel
             title="Title"
             titleSize="sm"
             inputProps={{
               value: form.title,
               onChange: (e) => setForm({ ...form, title: e.target.value }),
+              disabled: isCompleted,
             }}
           />
           <div className="flex flex-col gap-2 w-full">
             <Poppins className="text-sm">Due Date</Poppins>
-            <DatePicker
-              value={form?.dueDate}
-              fullWidth={false}
-              mode="date"
-              placeholder="Pick a date"
-              onChange={(e) => setForm({ ...form, dueDate: e as Date })}
-            />
+            {/* DatePicker has no disabled prop: block pointer input
+                instead of leaving an editable picker in a locked form. */}
+            <div className={isCompleted ? "pointer-events-none opacity-60" : undefined}>
+              <DatePicker
+                value={form?.dueDate}
+                fullWidth={false}
+                mode="date"
+                placeholder="Pick a date"
+                onChange={(e) => setForm({ ...form, dueDate: e as Date })}
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-2 w-full">
             <Poppins className="text-sm">Description</Poppins>
             <TextEditor
               value={form.description}
               onChange={(e) => setForm((prev) => ({ ...prev, description: e }))}
+              textEditorProps={{ disable: isCompleted }}
             />
           </div>
           <div className="flex flex-col gap-2 w-full">
             <Poppins className="text-sm">Allowed File</Poppins>
             <DropdownRevamp
+              disabled={isCompleted}
               onChange={(e) =>
                 setForm((prev) => ({
                   ...prev,
@@ -199,7 +230,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
 
           <Button
             type="submit"
-            variant={mutation.isPending ? "disabled" : "primary"}
+            variant={mutation.isPending || isCompleted ? "disabled" : "primary"}
           >
             {mutation.isPending
               ? "Loading..."
@@ -209,6 +240,16 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
           </Button>
         </form>
       </Drawer>
+      <ConfirmContentChangeDialog
+        show={showConfirm}
+        onHide={() => setShowConfirm(false)}
+        onConfirm={() => {
+          setShowConfirm(false);
+          void doSubmit();
+        }}
+        isPending={mutation.isPending}
+        totalCertificates={totalCertificates}
+      />
     </>
   );
 };

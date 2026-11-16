@@ -21,6 +21,7 @@ import { useCategories } from "../../../categories/hooks/useCategories";
 import { dataFetching } from "../../../_global/components/Dropdown/data-fetching";
 import { UploadFile } from "../../../_global/components/UploadFiles";
 import { Skeleton } from "../../../_global/components/Shimer";
+import { CompletedClassNotice } from "../classes/ClassContentNotices";
 
 type Clasess = Omit<ClassModel, "thumbnail"> & {
   thumbnail?: File;
@@ -79,8 +80,18 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
     setImage(selectedFile);
   };
 
+  const { data: detail, isFetching: classFetching } = useDetailClass(
+    "id",
+    show ? form?.id : undefined
+  );
+  // Detail is authoritative; the row data covers the fetch gap.
+  const isCompleted = !!(
+    detail?.data?.completedAt ?? form?.completedAt
+  );
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isCompleted) return;
     const formData = new FormData();
     const updateData = {
       name: form?.name,
@@ -112,11 +123,6 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
       }
     }
   };
-
-  const { data: detail, isFetching: classFetching } = useDetailClass(
-    "id",
-    show ? form?.id : undefined
-  );
 
   const getImagePreview = () => {
     if (image) {
@@ -161,12 +167,14 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
             className="px-5 flex flex-col items-center gap-3"
             onSubmit={handleSubmit}
           >
+            {isCompleted && <CompletedClassNotice />}
             <InputLabel
               title="Class Name"
               titleSize="sm"
               inputProps={{
                 onChange: (e) => generalOnChange("name", e.target.value),
                 value: form?.name,
+                disabled: isCompleted,
               }}
             />
             <div className="w-full flex flex-col gap-2">
@@ -178,12 +186,14 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
                 }}
                 defaultValue={form?.description}
                 onChange={(e) => generalOnChange("description", e.target.value)}
+                disabled={isCompleted}
               ></TextArea>
             </div>
             <div className="w-full flex flex-col gap-2">
               <Poppins className="text-sm">Level</Poppins>
               <DropdownRevamp
                 list={CourseLevelList}
+                disabled={isCompleted}
                 defaultValue={
                   form
                     ? {
@@ -199,7 +209,7 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
               <Poppins className="text-sm">Category</Poppins>
               <DropdownRevamp
                 searchInput
-                disabled={isFetching}
+                disabled={isFetching || isCompleted}
                 defaultValue={
                   form
                     ? {
@@ -230,27 +240,31 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
                   height={"5rem"}
                 />
               ) : null}
-              <UploadFile
-                title="Thumbnail"
-                extensions={[".jpg", ".jpeg", ".png"]}
-                onChange={handleFileChange}
-                file={image}
-                defaultFile={
-                  !image && form?.thumbnail
-                    ? {
-                        name:
-                          (form?.thumbnail as unknown as string)
-                            ?.split("/")
-                            .pop() || "",
-                        size: detail?.data?.thumbnailFileSize ?? 0,
-                      }
-                    : undefined
-                }
-              />
+              {/* UploadFile has no disabled prop: block pointer input
+                  instead of leaving a working picker in a locked form. */}
+              <div className={isCompleted ? "pointer-events-none opacity-60" : undefined}>
+                <UploadFile
+                  title="Thumbnail"
+                  extensions={[".jpg", ".jpeg", ".png"]}
+                  onChange={handleFileChange}
+                  file={image}
+                  defaultFile={
+                    !image && form?.thumbnail
+                      ? {
+                          name:
+                            (form?.thumbnail as unknown as string)
+                              ?.split("/")
+                              .pop() || "",
+                          size: detail?.data?.thumbnailFileSize ?? 0,
+                        }
+                      : undefined
+                  }
+                />
+              </div>
               {image || form?.thumbnail ? (
                 <div className="-mt-4 mb-8">
                   <Button
-                    variant="danger"
+                    variant={isCompleted ? "disabled" : "danger"}
                     onClick={() => {
                       setForm(
                         (prev) => ({ ...prev, thumbnail: undefined } as Clasess)
@@ -269,6 +283,7 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
                 type="checkbox"
                 checked={isFree || false}
                 onChange={() => setIsFree((prev) => !prev)}
+                disabled={isCompleted}
                 className="checkbox rounded-md w-[1.25rem] h-[1.25rem]"
               />
               <Poppins className="text-sm">Free</Poppins>
@@ -280,7 +295,7 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
                 title="Price"
                 inputProps={{
                   inputSize: "md",
-                  disabled: isFree,
+                  disabled: isFree || isCompleted,
                   inputStyle: "addons",
                   currency: true,
                   onChange: (e) => {
@@ -302,7 +317,7 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
 
             <Button
               type="submit"
-              variant={mutation.isPending ? "disabled" : "primary"}
+              variant={mutation.isPending || isCompleted ? "disabled" : "primary"}
             >
               {mutation.isPending ? "Loading..." : "Update Class"}
             </Button>

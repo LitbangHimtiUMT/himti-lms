@@ -9,7 +9,13 @@ import {
 } from "../../../../_global/helper/validate-file";
 import { ModuleCreationDTO, ModuleDTO } from "../../../../../core/model/modules";
 import { Button } from "../../../../_global/components/Button";
+import { useDetailClass } from "../../../../class/hooks/useClasses";
 import { useModulesCreation } from "../../../hooks/modules/useModules";
+import {
+  CertificatesIssuedNotice,
+  CompletedClassNotice,
+  ConfirmContentChangeDialog,
+} from "../../classes/ClassContentNotices";
 
 interface FormCreateModulesProps {
   data?: ModuleDTO;
@@ -17,6 +23,11 @@ interface FormCreateModulesProps {
 
 export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps = {}) => {
   const isEdit = !!moduleData;
+  const { data: classes } = useDetailClass();
+  const isCompleted = !!classes?.data?.completedAt;
+  const totalCertificates = classes?.data?.totalCertificates ?? 0;
+  const showWarning = !isCompleted && totalCertificates > 0;
+  const [showConfirm, setShowConfirm] = useState(false);
   const [data, setData] = useState<ModuleCreationDTO>({
     name: moduleData?.name ?? "",
     fileModule: undefined,
@@ -42,6 +53,15 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
   };
 
   const handleSubmit = () => {
+    if (isCompleted) return;
+    if (showWarning) {
+      setShowConfirm(true);
+      return;
+    }
+    doSubmit();
+  };
+
+  const doSubmit = () => {
     const formData = new FormData();
 
     formData.append("name", data.name);
@@ -71,6 +91,10 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
   return (
     <>
       <div className="flex flex-col gap-4">
+        {isCompleted && <CompletedClassNotice />}
+        {showWarning && (
+          <CertificatesIssuedNotice totalCertificates={totalCertificates} />
+        )}
         <div className="lg:w-1/2 w-full">
           <InputLabel
             titleSize="sm"
@@ -79,6 +103,7 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
               inputSize: "md",
               value: data.name,
               onChange: (e) => setData(prev => ({ ...prev, name: e.target.value })),
+              disabled: isCompleted,
             }}
           />
         </div>
@@ -90,6 +115,7 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
               inputSize: "md",
               value: data.videoUrl ?? "",
               onChange: (e) => setData(prev => ({ ...prev, videoUrl: e.target.value })),
+              disabled: isCompleted,
             }}
           />
         </div>
@@ -107,20 +133,35 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
             accept=".pdf, .ppt, .pptx, .doc, .docx"
             multiple={false}
             onChange={handleFileChange}
+            disabled={isCompleted}
           />
         </div>
         <div className="flex flex-col gap-2">
           <Poppins className="text-sm">Content</Poppins>
-          <TextEditor value={data.textModule} onChange={(e) => setData(prev => ({ ...prev, textModule: e }))} />
+          <TextEditor
+            value={data.textModule}
+            onChange={(e) => setData(prev => ({ ...prev, textModule: e }))}
+            textEditorProps={{ disable: isCompleted }}
+          />
         </div>
         <Button
           size="lg"
           onClick={handleSubmit}
-          variant={mutation.isPending ? "disabled" : "primary"}
+          variant={mutation.isPending || isCompleted ? "disabled" : "primary"}
         >
           {mutation.isPending ? "Loading..." : isEdit ? "Update Module" : "Create Module"}
         </Button>
       </div>
+      <ConfirmContentChangeDialog
+        show={showConfirm}
+        onHide={() => setShowConfirm(false)}
+        onConfirm={() => {
+          setShowConfirm(false);
+          doSubmit();
+        }}
+        isPending={mutation.isPending}
+        totalCertificates={totalCertificates}
+      />
     </>
   );
 };

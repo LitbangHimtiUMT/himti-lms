@@ -21,6 +21,9 @@ type PayloadType =
   | "delete"
   | "join-invitation"
   | "publish"
+  | "archive"
+  | "unarchive"
+  | "complete"
   | "invite-mentor";
 
 interface ClassesCreation {
@@ -92,6 +95,18 @@ export function useClassesCreation() {
           return classesService.publish(undefined, {
             path: `publish/${id}`,
           });
+        case "archive":
+          return classesService.archive(undefined, {
+            path: `archive/${id}`,
+          });
+        case "unarchive":
+          return classesService.unarchive(undefined, {
+            path: `unarchive/${id}`,
+          });
+        case "complete":
+          return classesService.complete(undefined, {
+            path: `complete/${id}`,
+          });
         case "invite-mentor":
           return classesService.inviteMentor(
             data as unknown as InviteMentorDTO
@@ -132,8 +147,9 @@ export function useClassesCreation() {
       queryClient.removeQueries({ queryKey: ["classes"] });
       queryClient.removeQueries({ queryKey: ["classesById"] });
       // Class mutations change the numbers the mentor dashboard
-      // aggregates; delete/publish happen on the same page as the
-      // stats, so navigating back does not remount and refetch.
+      // aggregates; delete/publish/archive/unarchive/complete happen
+      // on the same page as the stats, so navigating back does not
+      // remount and refetch.
       queryClient.invalidateQueries({
         queryKey: ["dashboard-stats"],
       });

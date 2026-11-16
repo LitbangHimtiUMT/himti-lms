@@ -55,8 +55,16 @@ export const useSessionsCreation = () => {
       }
     },
     onError: (err) => toast.error(getErrorMessage(err)),
-    onSuccess: (res) => {
+    onSuccess: (res, vars) => {
       toast.success(res?.message || "Berhasil.");
+      // Deleting a session can take modules and their assignments
+      // with it, which changes the eligibility count; create/update
+      // leave eligibility alone.
+      if (vars.type === "delete") {
+        queryClient.invalidateQueries({
+          queryKey: ["certificate-eligibility"],
+        });
+      }
       queryClient.invalidateQueries({
         queryKey: ["sessions"],
       });

@@ -13,7 +13,10 @@ interface CardDetailClassProps {
   category: string;
   level: ClassLevel;
   totalParticipant: number;
-  status: StatusClasses;
+  // Optional on purpose: a missing status renders no badge instead of
+  // a default that would hide a data problem.
+  status?: StatusClasses;
+  completedAt?: string | null;
   isFetching?: boolean;
   id: string;
 }
@@ -26,6 +29,7 @@ export const CardDetailClass: React.FC<CardDetailClassProps> = ({
   level,
   totalParticipant,
   status,
+  completedAt,
   isFetching,
   name,
 }) => {
@@ -39,6 +43,7 @@ export const CardDetailClass: React.FC<CardDetailClassProps> = ({
   const statusColor: Record<StatusClasses, BadgeVariant> = {
     PUBLISH: "success",
     DRAFT: "outline",
+    ARCHIVED: "warning",
   };
 
   if (isFetching) {
@@ -66,9 +71,16 @@ export const CardDetailClass: React.FC<CardDetailClassProps> = ({
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Badge size="sm" variant={statusColor[status]}>
-              {status}
-            </Badge>
+            {status && (
+              <Badge size="sm" variant={statusColor[status]}>
+                {status}
+              </Badge>
+            )}
+            {completedAt && (
+              <Badge size="sm" variant="primary">
+                COMPLETED
+              </Badge>
+            )}
             <Badge size="sm" variant={levelMappingVariant[level]}>
               {level}
             </Badge>

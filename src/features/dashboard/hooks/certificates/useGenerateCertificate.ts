@@ -21,6 +21,11 @@ export const useGenerateCertificate = () => {
       queryClient.invalidateQueries({
         queryKey: ["certificates"],
       });
+      // A generated certificate makes the owner ineligible (one
+      // certificate per class), so the hint and meter must go away.
+      queryClient.invalidateQueries({
+        queryKey: ["certificate-eligibility"],
+      });
       toast.success(res?.message || "Sertifikat berhasil dibuat.");
     },
   });

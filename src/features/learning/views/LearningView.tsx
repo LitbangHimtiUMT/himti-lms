@@ -7,6 +7,7 @@ import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import { LearningSidebarAtom } from "../../_global/store";
 import { useDetailModule } from "../../dashboard/hooks/modules/useModules";
 import { useDetailClass } from "../../class/hooks/useClasses";
+import { useCertificateEligibility } from "../../certificates/hooks/useCertificateEligibility";
 import { LearningModuleContent } from "../components/LearningModuleContent";
 import { NavigationModule } from "../components/NavigationModule";
 import { ModuleDTO } from "../../../core/model/modules";
@@ -22,6 +23,11 @@ export const LearningDashboardView = () => {
 
   const { data: classes } = useDetailClass();
   const total = classes?.data?.total;
+
+  // Approval meter, separate from module progress: only the
+  // participant's own eligibility decides the claim. Non-participants
+  // get a 403 from the endpoint, so the meter hides itself on error.
+  const { data: eligibility } = useCertificateEligibility(classes?.data?.id);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -60,6 +66,12 @@ export const LearningDashboardView = () => {
                 style={{ width: `${total.precentage}%` }}
               ></div>
             </div>
+            {eligibility?.data && (
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1.5">
+                Tugas disetujui {eligibility.data.approvedAssignments}/
+                {eligibility.data.totalAssignments}
+              </p>
+            )}
           </div>
         )}
 

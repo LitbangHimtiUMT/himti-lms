@@ -16,4 +16,7 @@ export const classesService = {
     Omit<JoinInvitationClassDTO, "classId">
   >(API_ENDPOINT.classes),
   publish: request.patch<ApiResponse>(API_ENDPOINT.classes),
+  archive: request.patch<ApiResponse>(API_ENDPOINT.classes),
+  unarchive: request.patch<ApiResponse>(API_ENDPOINT.classes),
+  complete: request.patch<ApiResponse>(API_ENDPOINT.classes),
 };

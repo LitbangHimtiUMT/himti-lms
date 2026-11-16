@@ -6,6 +6,7 @@ import { Button } from "../../_global/components/Button";
 import { MasterTable } from "../../_global/components/MasterTable";
 import { Poppins } from "../../_global/components/Text";
 import { convertQueryParamsToObject } from "../../_global/helper";
+import { useDetailClass } from "../../class/hooks/useClasses";
 import {
   useSessions,
   useSessionsCreation,
@@ -20,6 +21,8 @@ export const SessionTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { classId } = useParams();
   const { data: sessions, isFetching, isError, refetch } = useSessions();
+  const { data: classes } = useDetailClass();
+  const isCompleted = !!classes?.data?.completedAt;
   const queries = convertQueryParamsToObject(searchParams.toString());
   const navigate = useNavigate();
   const page = searchParams.get("page") || 1;
@@ -93,7 +96,7 @@ export const SessionTable = () => {
                   </div>
                   <div className="w-10">
                     <Button
-                      variant={"success"}
+                      variant={isCompleted ? "disabled" : "success"}
                       onClick={() => {
                         setSession((prev) => ({
                           show: !prev.show,
@@ -109,7 +112,7 @@ export const SessionTable = () => {
                   </div>
                   <div className="w-10">
                     <Button
-                      variant={"danger"}
+                      variant={isCompleted ? "disabled" : "danger"}
                       onClick={() => {
                         setSessionId(item.id);
                       }}

@@ -167,12 +167,21 @@ export const MentorDashboardStats = () => {
                       <Badge
                         size="sm"
                         variant={
-                          item.status === "PUBLISH" ? "success" : "outline"
+                          item.status === "PUBLISH"
+                            ? "success"
+                            : item.status === "ARCHIVED"
+                            ? "warning"
+                            : "outline"
                         }
                         className="capitalize"
                       >
                         {item.status.toLowerCase()}
                       </Badge>
+                      {item.completedAt && (
+                        <Badge size="sm" variant="primary">
+                          Completed
+                        </Badge>
+                      )}
                     </div>
                     <span className="shrink-0 text-sm font-medium text-gray-700 dark:text-gray-300">
                       {item.avgProgress}%
