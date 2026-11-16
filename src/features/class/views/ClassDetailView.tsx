@@ -1,4 +1,5 @@
 import { useDetailClass } from "../hooks/useClasses";
+import { ClassReviewsSection } from "../components/ClassReviewsSection";
 import { useSession } from "../../authentication/hooks/useSession";
 import { useProfile } from "../../profile/useProfile";
 import { useCertificateEligibility } from "../../certificates/hooks/useCertificateEligibility";
@@ -239,6 +240,10 @@ export const ClassDetailView = () => {
               )}
             </section>
           )}
+
+          {/* Reviews (certificate holders can review; hides itself
+              when the API has no reviews endpoint yet) */}
+          <ClassReviewsSection key={course.id} classId={course.id} />
 
           {/* Instructor */}
           <section>
