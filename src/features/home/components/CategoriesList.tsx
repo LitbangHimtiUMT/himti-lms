@@ -24,7 +24,7 @@ export const CategoriesList = () => {
                 Kombinasikan HTML, CSS, JavaScript, serta framework mutakhir seperti React, NextJS, atau Laravel untuk membangun ekosistem web modern.
               </Poppins>
             </div>
-            <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
+            <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
           </div>
           <div className="col-span-5 p-4 flex items-center justify-center">
             <div className="w-full h-5/6 rounded-2xl overflow-hidden shadow-md border border-slate-100 group-hover:scale-[1.03] transition-transform duration-500">
@@ -51,7 +51,7 @@ export const CategoriesList = () => {
                 Kembangkan aplikasi mobile berkinerja tinggi untuk iOS & Android menggunakan Flutter atau React Native dengan user experience premium.
               </Poppins>
             </div>
-            <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
+            <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
           </div>
           <div className="col-span-5 p-4 flex items-center justify-center">
             <div className="w-full h-5/6 rounded-2xl overflow-hidden shadow-md border border-slate-100 group-hover:scale-[1.03] transition-transform duration-500">
@@ -84,7 +84,7 @@ export const CategoriesList = () => {
             />
           </div>
 
-          <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
+          <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
         </div>
 
         {/* Card 4: UI UX Design (Col Span 2) */}
@@ -107,7 +107,7 @@ export const CategoriesList = () => {
             />
           </div>
 
-          <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
+          <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
         </div>
 
         {/* Card 5: Cyber Security (Col Span 2) */}
@@ -130,7 +130,7 @@ export const CategoriesList = () => {
             />
           </div>
 
-          <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
+          <Link to="/class" className="text-xs text-[#2b6394] font-semibold flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">Lihat Kelas →</Link>
         </div>
 
       </div>
