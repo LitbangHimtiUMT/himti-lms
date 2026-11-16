@@ -6,6 +6,7 @@ import { EmptyState } from "../../_global/components/Empty";
 import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import { LearningSidebarAtom } from "../../_global/store";
 import { useDetailModule } from "../../dashboard/hooks/modules/useModules";
+import { useDetailClass } from "../../class/hooks/useClasses";
 import { LearningModuleContent } from "../components/LearningModuleContent";
 import { NavigationModule } from "../components/NavigationModule";
 import { ModuleDTO } from "../../../core/model/modules";
@@ -18,6 +19,9 @@ export const LearningDashboardView = () => {
 
   const { data: module, isFetching, isError, refetch } =
     useDetailModule(moduleIdQs);
+
+  const { data: classes } = useDetailClass();
+  const total = classes?.data?.total;
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -40,6 +44,24 @@ export const LearningDashboardView = () => {
           />
           <h1 className="text-xl font-bold">Learning Dashboard</h1>
         </div>
+
+        {/* Progress bar */}
+        {total && (
+          <div className="px-6 pt-6">
+            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
+              <span>
+                {total.completed} dari {total.module} modul selesai
+              </span>
+              <span>{total.precentage}%</span>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div
+                className="bg-indigo-500 h-2 rounded-full"
+                style={{ width: `${total.precentage}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
 
         {/* Di dalam div Main Content (sebelum div penutup) */}
         {isFetching ? (
