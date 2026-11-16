@@ -54,6 +54,7 @@ export const TableCreatedClassesList = () => {
   };
 
   const [classId, setClassId] = useState("");
+  const [className, setClassName] = useState("");
 
   const handlePublishClass = async (id: string) => {
     await mutation.mutateAsync({ id, type: "publish" });
@@ -157,7 +158,10 @@ export const TableCreatedClassesList = () => {
                       icon: (
                         <FaUserGroup className="text-gray-600 dark:text-gray-300" />
                       ),
-                      onClick: () => setClassId(item.id),
+                      onClick: () => {
+                        setClassId(item.id);
+                        setClassName(item.name);
+                      },
                     },
                     ...(item.status === "DRAFT"
                       ? [
@@ -234,9 +238,13 @@ export const TableCreatedClassesList = () => {
         </Dialog>
       </ConditionNode>
       <DrawerParticipants
-        onHide={() => setClassId("")}
+        onHide={() => {
+          setClassId("");
+          setClassName("");
+        }}
         show={!!classId}
         title="Participants"
+        exportName={className}
         classId={classId}
       />
       <UpdateClassDrawer
