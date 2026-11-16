@@ -8,6 +8,7 @@ import { Button } from "../../../../../_global/components/Button";
 import { formatRupiah } from "../../../../../_global/helper";
 import { useProfile } from "../../../../../profile/useProfile";
 import { useGenerateCertificate } from "../../../../hooks/certificates/useGenerateCertificate";
+import { useCertificateEligibility } from "../../../../../certificates/hooks/useCertificateEligibility";
 import { Poppins } from "../../../../../_global/components/Text";
 import { CONFIG_APP } from "../../../../../../core/configs/app";
 
@@ -35,6 +36,18 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
     });
 
   const owner = profile?.data?.id === creator.id;
+  // Eligibility decides the claim, not module progress: the hint and
+  // the Claim button only exist for participants without a
+  // certificate, so no request is made for owners or holders.
+  // Until the answer arrives (or when it errors), neither shows:
+  // claiming on unknown eligibility would be a guess.
+  const { data: eligibility } = useCertificateEligibility(
+    id,
+    !certificate && !owner
+  );
+  const eligible = eligibility?.data?.eligible ?? false;
+  const showHint =
+    !certificate && !owner && !!eligibility?.data && !eligible;
   return (
     <>
       <div
@@ -106,10 +119,17 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
                 style={{ width: `${total.precentage}%` }}
               ></div>
             </div>
-            {progressStatus !== "Completed" && !owner && (
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
-                Complete all modules (100%) to claim your certificate.
-              </p>
+            {showHint && (
+              <>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
+                  Get all assignments approved to claim your certificate.
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  {eligibility?.data?.approvedAssignments ?? 0}/
+                  {eligibility?.data?.totalAssignments ?? 0} assignments
+                  approved
+                </p>
+              </>
             )}
           </div>
 
@@ -129,7 +149,7 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
               </Button>
             </div>
 
-            {certificate && progressStatus === "Completed" ? (
+            {certificate ? (
               <div className="flex-1">
                 <Button
                   size="sm"
@@ -150,7 +170,7 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
                   </div>
                 </Button>
               </div>
-            ) : progressStatus === "Completed" && !certificate && !owner ? (
+            ) : eligible && !owner ? (
               <div className="flex-1">
                 <Button
                   tooltip="Claim Certificate"
