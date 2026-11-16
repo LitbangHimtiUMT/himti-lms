@@ -8,9 +8,7 @@ import { Button } from "../../_global/components/Button";
 import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import {
   FaUsers,
-  FaUserTie,
   FaLayerGroup,
-  FaCalendarAlt,
   FaArrowLeft,
   FaTag,
 } from "react-icons/fa";
@@ -133,20 +131,15 @@ export const ClassDetailView = () => {
           </section>
 
           {/* Stats Row */}
-          <section className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <section className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col items-center gap-2 text-center">
               <FaUsers className="text-[#2b6394]" size={20} />
               <p className="text-2xl font-bold text-slate-800">{course.totalParticipant ?? 0}</p>
               <p className="text-xs text-slate-500">Peserta</p>
             </div>
             <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col items-center gap-2 text-center">
-              <FaUserTie className="text-[#2b6394]" size={20} />
-              <p className="text-2xl font-bold text-slate-800">{(course as any).totalMentor ?? 1}</p>
-              <p className="text-xs text-slate-500">Mentor</p>
-            </div>
-            <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col items-center gap-2 text-center">
               <FaLayerGroup className="text-[#2b6394]" size={20} />
-              <p className="text-2xl font-bold text-slate-800">{course.totalSession ?? 0}</p>
+              <p className="text-2xl font-bold text-slate-800">{course.sessions?.length ?? 0}</p>
               <p className="text-xs text-slate-500">Sesi</p>
             </div>
             <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col items-center gap-2 text-center">
@@ -215,16 +208,7 @@ export const ClassDetailView = () => {
                   </li>
                   <li className="flex justify-between py-2">
                     <span className="text-slate-500">Total Sesi</span>
-                    <span className="font-semibold">{course.totalSession ?? 0}</span>
-                  </li>
-                  <li className="flex justify-between py-2 items-center">
-                    <span className="text-slate-500">Tanggal Dibuat</span>
-                    <span className="font-semibold text-xs text-right">
-                      <span className="flex items-center gap-1">
-                        <FaCalendarAlt size={11} className="text-[#2b6394]" />
-                        {(course as any).createdAt ?? "-"}
-                      </span>
-                    </span>
+                    <span className="font-semibold">{course.sessions?.length ?? 0}</span>
                   </li>
                 </ul>
 

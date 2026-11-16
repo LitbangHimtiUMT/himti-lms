@@ -41,6 +41,14 @@ export const FormCreateClasses = () => {
 
   const { data: categories, isFetching } = useCategories();
 
+  const handleFreeChange = () => {
+    const next = !isFree;
+    setIsFree(next);
+    if (next) {
+      setForm((prev) => ({ ...prev, price: 0 }));
+    }
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
@@ -69,7 +77,7 @@ export const FormCreateClasses = () => {
     const formData = new FormData();
 
     Object.entries(form).forEach(([key, value]) => {
-      if (value !== undefined || value !== null || value !== '') {
+      if (value !== undefined && value !== null && value !== "") {
         formData.append(key, value as string);
       }
     });
@@ -163,7 +171,7 @@ export const FormCreateClasses = () => {
           <input
             type="checkbox"
             checked={isFree || false}
-            onChange={() => setIsFree((prev) => !prev)}
+            onChange={handleFreeChange}
             className="checkbox rounded-md w-[1.25rem] h-[1.25rem]"
           />
           <Poppins className="text-sm">Free</Poppins>
@@ -171,6 +179,7 @@ export const FormCreateClasses = () => {
 
         <div className="w-full flex flex-col gap-2">
           <InputLabel
+            key={String(isFree)}
             titleSize="sm"
             title="Price"
             inputProps={{
@@ -178,6 +187,7 @@ export const FormCreateClasses = () => {
               disabled: isFree,
               inputStyle: "addons",
               currency: true,
+              value: form.price || "",
               onChange: (e) => {
                 setForm((prev) => ({ ...prev, price: Number(e.target.value) }));
               },
