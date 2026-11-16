@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { DropdownRevamp } from "../../../../_global/components/Dropdown/DropdownRevamp";
 import { InputLabel } from "../../../../_global/components/InputLabel";
@@ -27,7 +27,6 @@ interface ICourseForm {
 }
 
 export const FormCreateClasses = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isFree, setIsFree] = useState<boolean>(false);
   const [form, setForm] = useState<ICourseForm>({
     name: "",
@@ -50,7 +49,8 @@ export const FormCreateClasses = () => {
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
+    const input = e.target;
+    const selectedFile = input.files?.[0];
     if (!selectedFile) return;
 
     const error = validateUploadFile(selectedFile, {
@@ -59,14 +59,21 @@ export const FormCreateClasses = () => {
     });
     if (error) {
       toast.error(error);
-      e.target.value = "";
+      input.value = "";
       return;
     }
 
-    const isValid = await validateImageAspectRatio(selectedFile);
+    let isValid: boolean;
+    try {
+      isValid = await validateImageAspectRatio(selectedFile);
+    } catch {
+      toast.error("Failed to load image. Please upload a valid image file.");
+      input.value = "";
+      return;
+    }
     if (!isValid) {
       toast.error("Please upload an image with a 16:9 aspect ratio");
-      inputRef.current!.value = ""; // reset input value
+      input.value = "";
       return;
     }
     setForm((prev) => ({ ...prev, thumbnail: selectedFile })); // simpan file kalau valid
