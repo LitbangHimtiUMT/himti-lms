@@ -67,6 +67,9 @@ export const useAssignmentsCreation = () => {
         queryKey: ["detail-module"],
       });
       if (vars.type === "submit") {
+        queryClient.invalidateQueries({
+          queryKey: ["dashboard-stats"],
+        });
         queryClient.removeQueries({
           queryKey: ["detail-module"],
         });

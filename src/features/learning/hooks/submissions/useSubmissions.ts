@@ -41,6 +41,9 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
       queryClient.invalidateQueries({
         queryKey: ["submission-by-assignment"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard-stats"],
+      });
     },
     onError: (err) => toast.error(getErrorMessage(err)),
   });
@@ -57,6 +60,9 @@ export const useSubmissions = (modules: SubmissionTypeHooks[]) => {
         toast.success(res?.message || "Submission berhasil ditolak.");
         queryClient.invalidateQueries({
           queryKey: ["submission-by-assignment"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["dashboard-stats"],
         });
       },
       onError: (err) => toast.error(getErrorMessage(err)),

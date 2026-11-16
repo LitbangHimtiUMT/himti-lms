@@ -26,6 +26,9 @@ export const useCompletedModules = () => {
       queryClient.invalidateQueries({
         queryKey: ["classesById"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard-stats"],
+      });
     },
   });
 };
