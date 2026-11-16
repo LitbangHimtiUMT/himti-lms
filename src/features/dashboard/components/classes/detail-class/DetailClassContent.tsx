@@ -27,7 +27,8 @@ export const DetailClassContent = () => {
               createdBy={classes?.data?.creator?.name || ""}
               level={classes?.data?.level || "BEGINNER"}
               price={classes?.data?.price || 0}
-              status={classes?.data?.status || "PUBLISH"}
+              status={classes?.data?.status}
+              completedAt={classes?.data?.completedAt}
               thumbnail={classes?.data?.thumbnail || ""}
               totalParticipant={classes?.data?.totalParticipant || 0}
               isFetching={isFetching}

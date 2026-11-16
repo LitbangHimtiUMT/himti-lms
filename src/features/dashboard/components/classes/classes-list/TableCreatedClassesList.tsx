@@ -133,14 +133,27 @@ export const TableCreatedClassesList = () => {
             ),
           },
           {
-            return: ({ status }) => (
-              <Badge
-                size="sm"
-                variant={status === "PUBLISH" ? "success" : "outline"}
-                className="capitalize"
-              >
-                {status.toLowerCase()}
-              </Badge>
+            return: ({ status, completedAt }) => (
+              <div className="flex flex-wrap items-center gap-1.5">
+                <Badge
+                  size="sm"
+                  variant={
+                    status === "PUBLISH"
+                      ? "success"
+                      : status === "ARCHIVED"
+                      ? "warning"
+                      : "outline"
+                  }
+                  className="capitalize"
+                >
+                  {status.toLowerCase()}
+                </Badge>
+                {completedAt && (
+                  <Badge size="sm" variant="primary">
+                    Completed
+                  </Badge>
+                )}
+              </div>
             ),
           },
           {

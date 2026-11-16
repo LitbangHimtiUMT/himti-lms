@@ -20,9 +20,16 @@ export const ClassCard: React.FC<{ course: ClassModel }> = ({ course }) => {
             alt={course.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <span className="absolute top-3 left-3 bg-yellow-500 text-slate-900 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">
-            {course.status}
-          </span>
+          <div className="absolute top-3 left-3 flex gap-1.5">
+            <span className="bg-yellow-500 text-slate-900 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">
+              {course.status}
+            </span>
+            {course.completedAt && (
+              <span className="bg-indigo-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider backdrop-blur-sm shadow-sm">
+                Completed
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Content Section */}
