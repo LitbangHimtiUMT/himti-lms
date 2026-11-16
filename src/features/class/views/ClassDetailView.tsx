@@ -1,4 +1,6 @@
 import { useDetailClass } from "../hooks/useClasses";
+import { useSession } from "../../authentication/hooks/useSession";
+import { useProfile } from "../../profile/useProfile";
 import { useNavigate } from "react-router-dom";
 import DefaultImage from "@core/assets/default-photo.svg";
 import { Poppins } from "../../_global/components/Text";
@@ -29,7 +31,13 @@ const levelColor: Record<string, string> = {
 export const ClassDetailView = () => {
   const navigate = useNavigate();
   const { data: res, isFetching, isError, refetch } = useDetailClass("id");
+  const { isAuthenticated, isLoading: isSessionLoading } = useSession();
+  const { data: profile } = useProfile();
   const course = res?.data;
+
+  // Same creator check as the invitation page. useProfile shares the
+  // navbar's cached query, so this adds no request.
+  const isCreator = course?.creator?.id === profile?.data?.id;
 
   if (isFetching) {
     return (
@@ -230,14 +238,28 @@ export const ClassDetailView = () => {
                     >
                       Lanjut Belajar
                     </Button>
+                  ) : isSessionLoading ? null : !isAuthenticated ? (
+                    <>
+                      <Button
+                        variant="primary"
+                        className="w-full"
+                        onClick={() => navigate("/sign-in")}
+                      >
+                        Masuk
+                      </Button>
+                      <p className="text-xs text-slate-500 text-center leading-relaxed">
+                        Pendaftaran kelas melalui link undangan dari mentor.
+                      </p>
+                    </>
+                  ) : isCreator ? (
+                    <p className="text-xs text-slate-500 text-center leading-relaxed">
+                      Anda pembuat kelas ini. Peserta bergabung lewat link
+                      undangan yang Anda bagikan.
+                    </p>
                   ) : (
-                    <Button
-                      variant="primary"
-                      className="w-full"
-                      onClick={() => navigate("/sign-in")}
-                    >
-                      Daftar Kelas
-                    </Button>
+                    <p className="text-xs text-slate-500 text-center leading-relaxed">
+                      Pendaftaran kelas melalui link undangan dari mentor.
+                    </p>
                   )}
                   <Button
                     variant="secondary"
