@@ -1,6 +1,26 @@
+// The API base URL is required by every endpoint below. Fail fast with a
+// clear message when it is missing or malformed, instead of silently
+// building "undefined/auth/login" URLs that fail one request at a time.
+function resolveBaseUrl(): string {
+  const raw = import.meta.env.HIMTI_BASE_URL;
+  if (!raw) {
+    throw new Error("HIMTI_BASE_URL is not set. See .env.example.");
+  }
+  let url: URL;
+  try {
+    url = new URL(raw);
+  } catch {
+    throw new Error("HIMTI_BASE_URL is not a valid absolute URL.");
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new Error("HIMTI_BASE_URL must use http or https.");
+  }
+  return url.toString().replace(/\/+$/, "");
+}
+
 export const CONFIG_APP = {
   APP_NAME: import.meta.env.HIMTI_APP_NAME,
-  BASE_URL: import.meta.env.HIMTI_BASE_URL,
+  BASE_URL: resolveBaseUrl(),
 };
 
 export const API_ENDPOINT = {
