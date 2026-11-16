@@ -1,9 +1,13 @@
 import { useDetailClass } from "../hooks/useClasses";
 import { useSession } from "../../authentication/hooks/useSession";
 import { useProfile } from "../../profile/useProfile";
+import { useCertificateEligibility } from "../../certificates/hooks/useCertificateEligibility";
 import { useNavigate } from "react-router-dom";
 import DefaultImage from "@core/assets/default-photo.svg";
+import { StatusClasses } from "@core/model/classes";
+import { EligibilityAssignmentStatus } from "@core/model/certificates";
 import { Poppins } from "../../_global/components/Text";
+import { Badge, BadgeVariant } from "../../_global/components/Badge";
 import { Button } from "../../_global/components/Button";
 import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import {
@@ -26,6 +30,35 @@ const levelColor: Record<string, string> = {
   EXPERT: "bg-rose-100 text-rose-700",
 };
 
+const statusLabel: Record<StatusClasses, string> = {
+  PUBLISH: "Dipublikasikan",
+  DRAFT: "Draf",
+  ARCHIVED: "Diarsipkan",
+};
+
+const statusPill: Record<StatusClasses, string> = {
+  PUBLISH: "bg-emerald-500 text-white",
+  DRAFT: "bg-slate-400 text-white",
+  ARCHIVED: "bg-amber-500 text-white",
+};
+
+const eligibilityStatusLabel: Record<EligibilityAssignmentStatus, string> = {
+  APPROVED: "Disetujui",
+  REVIEW: "Menunggu review",
+  REJECT: "Ditolak",
+  NONE: "Belum dikumpulkan",
+};
+
+const eligibilityStatusVariant: Record<
+  EligibilityAssignmentStatus,
+  BadgeVariant
+> = {
+  APPROVED: "success",
+  REVIEW: "warning",
+  REJECT: "danger",
+  NONE: "outline",
+};
+
 export const ClassDetailView = () => {
   const navigate = useNavigate();
   const { data: res, isFetching, isError, refetch } = useDetailClass("id");
@@ -36,6 +69,14 @@ export const ClassDetailView = () => {
   // Same creator check as the invitation page. useProfile shares the
   // navbar's cached query, so this adds no request.
   const isCreator = course?.creator?.id === profile?.data?.id;
+
+  // Eligibility is only meaningful for enrolled participants: guests
+  // and the class creator never see this section, and no request is
+  // made for them.
+  const { data: eligibility } = useCertificateEligibility(
+    course?.id,
+    !!course?.isAlreadyJoin && !isCreator
+  );
 
   if (isFetching) {
     return (
@@ -104,9 +145,12 @@ export const ClassDetailView = () => {
             <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#f1c857] text-slate-900">
               {course.category?.name}
             </span>
-            {course.status === "PUBLISH" && (
-              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500 text-white">
-                Dipublikasikan
+            <span className={`text-xs font-semibold px-3 py-1 rounded-full ${statusPill[course.status]}`}>
+              {statusLabel[course.status]}
+            </span>
+            {course.completedAt && (
+              <span className="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-600 text-white">
+                Selesai
               </span>
             )}
           </div>
@@ -150,6 +194,51 @@ export const ClassDetailView = () => {
               <p className="text-xs text-slate-500">Harga</p>
             </div>
           </section>
+
+          {/* Certificate progress (enrolled participants only) */}
+          {eligibility?.data && (
+            <section>
+              <h2 className="text-xl font-bold text-slate-800 mb-3 border-b border-slate-100 pb-2">
+                Progres Sertifikat
+              </h2>
+              <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                Sertifikat bisa diklaim setelah semua tugas disetujui mentor.
+              </p>
+              <p className="text-sm font-semibold text-slate-800 mb-3">
+                Tugas disetujui {eligibility.data.approvedAssignments} dari{" "}
+                {eligibility.data.totalAssignments}
+              </p>
+              {eligibility.data.totalAssignments === 0 ? (
+                <p className="text-sm text-slate-500">
+                  Belum ada tugas di kelas ini.
+                </p>
+              ) : (
+                <ul className="space-y-2">
+                  {eligibility.data.assignments.map((assignment) => (
+                    <li
+                      key={assignment.id}
+                      className="flex items-center justify-between gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="font-medium text-slate-800 truncate">
+                          {assignment.title}
+                        </p>
+                        <p className="text-xs text-slate-500 truncate">
+                          {assignment.moduleName}
+                        </p>
+                      </div>
+                      <Badge
+                        size="sm"
+                        variant={eligibilityStatusVariant[assignment.status]}
+                      >
+                        {eligibilityStatusLabel[assignment.status]}
+                      </Badge>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
 
           {/* Instructor */}
           <section>
