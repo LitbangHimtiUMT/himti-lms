@@ -26,6 +26,14 @@ export const useCompletedModules = () => {
       queryClient.invalidateQueries({
         queryKey: ["classesById"],
       });
+      // The enrolled class list shows progress percent and completion
+      // status from this data. Removal, not invalidation: the list is
+      // not mounted while learning, and refetchOnMount is false
+      // repo-wide, so an invalidated inactive query would never
+      // refetch when the user returns to the list.
+      queryClient.removeQueries({
+        queryKey: ["classes"],
+      });
       queryClient.invalidateQueries({
         queryKey: ["dashboard-stats"],
       });
