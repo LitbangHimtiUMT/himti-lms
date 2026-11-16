@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ClassModel } from "../../../../core/model/classes";
 import { Button } from "../../../_global/components/Button";
 import { Drawer } from "../../../_global/components/Drawer";
@@ -39,7 +39,6 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
   data,
 }) => {
   const [form, setForm] = useState<Clasess | undefined>(data);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: categories, isFetching } = useCategories();
 
@@ -57,7 +56,8 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
+    const input = e.target;
+    const selectedFile = input.files?.[0];
     if (!selectedFile) return;
 
     const error = validateUploadFile(selectedFile, {
@@ -66,14 +66,21 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
     });
     if (error) {
       toast.error(error);
-      e.target.value = "";
+      input.value = "";
       return;
     }
 
-    const isValid = await validateImageAspectRatio(selectedFile);
+    let isValid: boolean;
+    try {
+      isValid = await validateImageAspectRatio(selectedFile);
+    } catch {
+      toast.error("Failed to load image. Please upload a valid image file.");
+      input.value = "";
+      return;
+    }
     if (!isValid) {
       toast.error("Please upload an image with a 16:9 aspect ratio");
-      inputRef.current!.value = ""; // reset input value
+      input.value = "";
       return;
     }
     setForm((prev) => ({ ...prev, thumbnail: selectedFile } as Clasess));
