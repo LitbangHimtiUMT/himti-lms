@@ -96,13 +96,13 @@ export const LearningUserRoot = () => {
 
   useEffect(() => {
     if (moduleIdQs) return;
-    const firstModuleId = modules?.flatMap(
-      (session) => session.modules
-    )?.[0]?.id;
-    if (firstModuleId) {
+    const allModules = modules?.flatMap((session) => session.modules) ?? [];
+    const targetModule =
+      allModules.find((module) => !module.isCompleted) ?? allModules[0];
+    if (targetModule?.id) {
       setSearchParams({
         ...queries,
-        moduleId: firstModuleId,
+        moduleId: targetModule.id,
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
