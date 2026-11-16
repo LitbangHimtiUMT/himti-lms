@@ -1,5 +1,5 @@
 import { Button } from "../../_global/components/Button";
-import { FaEye } from "react-icons/fa";
+import { FaExternalLinkAlt, FaEye } from "react-icons/fa";
 import { useSearchParams } from "react-router-dom";
 import { CONFIG_APP } from "../../../core/configs/app";
 import { MasterTable } from "../../_global/components/MasterTable";
@@ -18,6 +18,17 @@ export const CertificatesViews = () => {
     setSearchParams({ ...queries, page });
   return (
     <>
+      <div className="flex justify-end mb-3">
+        <a
+          href="https://himtiumt.org/sertifikat"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-sm text-[#3966bf] hover:underline"
+        >
+          Verify a certificate
+          <FaExternalLinkAlt size={11} />
+        </a>
+      </div>
       <div>
         <MasterTable
           data={certificates?.data}
