@@ -12,6 +12,10 @@ const InitialValue = {
   confirmPassword: "",
 };
 
+// Mirrors the server-side email rule (registerSchema): an address with
+// a local part, @, and a dotted domain. The API remains the final judge.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const FormSignUp = () => {
   const [authBody, setAuthBody] = useState<AuthRegisterDTO>({
     ...InitialValue,
@@ -21,27 +25,36 @@ export const FormSignUp = () => {
   const mutation = useAuthCreation();
 
   const validate = () => {
-    if (!authBody.email || !authBody.password) {
-      const newErrors: AuthRegisterDTO = { ...InitialValue };
+    // Every field is checked on every submit, mirroring the server
+    // rules (registerSchema: name/email/password required, email
+    // format, password min 8) plus the confirm-password match, which
+    // only exists on the client.
+    const newErrors: AuthRegisterDTO = { ...InitialValue };
 
-      if (!authBody.name) {
-        newErrors.name = "Name is required";
-      }
-
-      if (!authBody.email) {
-        newErrors.email = "Email is required";
-      }
-      if (!authBody.password) {
-        newErrors.password = "Password is required";
-      }
-
-      if (!authBody.confirmPassword) {
-        newErrors.confirmPassword = "Confirm Password is required";
-      }
-      setErrors(newErrors);
-      return false;
+    if (!authBody.name) {
+      newErrors.name = "Name is required";
     }
-    return true;
+
+    if (!authBody.email) {
+      newErrors.email = "Email is required";
+    } else if (!EMAIL_PATTERN.test(authBody.email)) {
+      newErrors.email = "Email is invalid";
+    }
+
+    if (!authBody.password) {
+      newErrors.password = "Password is required";
+    } else if (authBody.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    if (!authBody.confirmPassword) {
+      newErrors.confirmPassword = "Confirm Password is required";
+    } else if (authBody.confirmPassword !== authBody.password) {
+      newErrors.confirmPassword = "Confirm Password does not match";
+    }
+
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(Boolean);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
