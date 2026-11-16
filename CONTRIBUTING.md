@@ -23,6 +23,13 @@ Cek `_global` dulu sebelum bikin komponen baru. Yang hidup dan dipakai:
 
 Dilarang bikin komponen duplikat baru tanpa cek `_global` dulu. Komponen ini sudah dihapus dan jangan dibikin ulang: `CropperImage`, `PageLayout`, Sidebar global lama, `EmptyData`, `Date` dan `Dropdown` lama, `LoaderHIMTI`, `SimpleLoadingTable`.
 
+### Dua Navbar (sengaja, jangan digabung)
+
+- `Navbar` (`_global/components/Navbar`) — layout umum/auth, dipakai `AuthLayout` dan `views/index.tsx`.
+- `DashboardNavbar` (`dashboard/components/navbar`) — layout belajar, dipakai `LearningRoot` dan `LearningUserRoot`.
+
+Keduanya hidup dan beda konteks, bukan duplikasi.
+
 ## Penamaan
 
 - `classes`, bukan `classess`. Typo lama ini sudah dibersihkan, jangan balik lagi.

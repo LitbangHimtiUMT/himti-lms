@@ -32,27 +32,3 @@ export const formatRupiah = (number: number) => {
         minimumFractionDigits: 2,
     }).format(number);
 };
-
-export const FormatIDTime = (date: Date) => {
-    const dates = new Date(date);
-    // const format = dates.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })
-    // return format
-    const timezoneOffset = 7 * 60; // 7 hours converted to minutes
-    const localDate = new Date(dates.getTime() + timezoneOffset * 60 * 1000);
-
-    // Convert to ISO string without affecting the timezone
-    const isoString = localDate.toISOString()
-    return isoString
-}
-
-export function formatSize(size: number): string {
-    if (size < 1024) {
-      return `${size} bytes`;
-    } else if (size < 1048576) {
-      return `${(size / 1024).toFixed(2)}KB`;
-    } else if (size < 1073741824) {
-      return `${(size / 1048576).toFixed(2)}MB`;
-    } else {
-      return `${(size / 1073741824).toFixed(2)}GB`;
-    }
-  }

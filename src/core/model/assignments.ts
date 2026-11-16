@@ -11,11 +11,6 @@ export interface CreateAssignmentDTO {
   allowedFile?: string;
 }
 
-export interface SubmitAssignmentDTO {
-  assignmentId: string;
-  file: string | File;
-}
-
 export interface AssignmentDTO {
   id: string;
   title: string;
