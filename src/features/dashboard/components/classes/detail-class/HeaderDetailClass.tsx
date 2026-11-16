@@ -11,6 +11,7 @@ import { DrawerParticipants } from "../../drawer/DrawerParticipants";
 import { Poppins } from "../../../../_global/components/Text";
 import { DrawerMentorClass } from "../../drawer/DrawerMentorClass";
 import { Dialog } from "../../../../_global/components/Dialog";
+import { MarkCompletedDialog } from "../MarkCompletedDialog";
 import { IoWarningOutline } from "react-icons/io5";
 
 export const HeaderDetailClass = () => {
@@ -20,8 +21,14 @@ export const HeaderDetailClass = () => {
     participant: false,
     mentor: false,
     delete: false,
+    complete: false,
   });
   const mutation = useClassesCreation();
+
+  const classId = classes?.data?.id;
+  const isCompleted = !!classes?.data?.completedAt;
+  const canComplete =
+    !!classId && classes?.data?.status !== "DRAFT" && !isCompleted;
 
   const handleDeleteClass = async () => {
     if (classes?.data?.id) {
@@ -89,6 +96,74 @@ export const HeaderDetailClass = () => {
               </Button>
             </ConditionNode>
           </div>
+          {classes?.data?.status === "PUBLISH" && (
+            <div className="md:w-48 w-full">
+              <ConditionNode
+                condition={!isFetching}
+                option={<Skeleton width="100%" height="2rem" />}
+              >
+                <Button
+                  variant={
+                    mutation.isPending &&
+                    mutation.variables.type === "archive"
+                      ? "disabled"
+                      : "secondary"
+                  }
+                  onClick={() =>
+                    classId && mutation.mutate({ id: classId, type: "archive" })
+                  }
+                >
+                  {mutation.isPending &&
+                  mutation.variables.type === "archive"
+                    ? "Archiving..."
+                    : "Archive Class"}
+                </Button>
+              </ConditionNode>
+            </div>
+          )}
+          {classes?.data?.status === "ARCHIVED" && (
+            <div className="md:w-48 w-full">
+              <ConditionNode
+                condition={!isFetching}
+                option={<Skeleton width="100%" height="2rem" />}
+              >
+                <Button
+                  variant={
+                    mutation.isPending &&
+                    mutation.variables.type === "unarchive"
+                      ? "disabled"
+                      : "secondary"
+                  }
+                  onClick={() =>
+                    classId &&
+                    mutation.mutate({ id: classId, type: "unarchive" })
+                  }
+                >
+                  {mutation.isPending &&
+                  mutation.variables.type === "unarchive"
+                    ? "Unarchiving..."
+                    : "Unarchive Class"}
+                </Button>
+              </ConditionNode>
+            </div>
+          )}
+          {canComplete && (
+            <div className="md:w-48 w-full">
+              <ConditionNode
+                condition={!isFetching}
+                option={<Skeleton width="100%" height="2rem" />}
+              >
+                <Button
+                  variant="warning"
+                  onClick={() =>
+                    setShow((prev) => ({ ...prev, complete: !prev.complete }))
+                  }
+                >
+                  Mark Completed
+                </Button>
+              </ConditionNode>
+            </div>
+          )}
         </div>
       </div>
       <DrawerParticipants
@@ -104,6 +179,16 @@ export const HeaderDetailClass = () => {
         show={show.mentor}
         title={`List Mentor`}
       />
+      {show.complete && classes?.data && (
+        <MarkCompletedDialog
+          onHide={() =>
+            setShow((prev) => ({ ...prev, complete: !prev.complete }))
+          }
+          classId={classes.data.id}
+          className={classes.data.name}
+          participantCount={classes.data.totalParticipant}
+        />
+      )}
       <ConditionNode condition={show.delete}>
         <Dialog
           onHide={() => setShow((prev) => ({ ...prev, delete: !prev.delete }))}

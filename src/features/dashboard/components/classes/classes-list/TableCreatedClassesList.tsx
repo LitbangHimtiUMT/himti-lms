@@ -5,7 +5,12 @@ import { CiSearch } from "react-icons/ci";
 import { FaUserGroup } from "react-icons/fa6";
 import { FiEdit2 } from "react-icons/fi";
 import { IoDocumentOutline, IoWarningOutline } from "react-icons/io5";
-import { MdOutlinePublishedWithChanges } from "react-icons/md";
+import {
+  MdArchive,
+  MdOutlineCheckCircle,
+  MdOutlinePublishedWithChanges,
+  MdUnarchive,
+} from "react-icons/md";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ClassModel } from "../../../../../core/model/classes";
@@ -28,6 +33,7 @@ import {
 import { useProfile } from "../../../../profile/useProfile";
 import { DrawerParticipants } from "../../drawer/DrawerParticipants";
 import { UpdateClassDrawer } from "../../drawer/UpdateClassDrawer";
+import { MarkCompletedDialog } from "../MarkCompletedDialog";
 
 export const TableCreatedClassesList = () => {
   const navigate = useNavigate();
@@ -59,6 +65,20 @@ export const TableCreatedClassesList = () => {
   const handlePublishClass = (id: string) => {
     mutation.mutate({ id, type: "publish" });
   };
+
+  const handleArchiveClass = (id: string) => {
+    mutation.mutate({ id, type: "archive" });
+  };
+
+  const handleUnarchiveClass = (id: string) => {
+    mutation.mutate({ id, type: "unarchive" });
+  };
+
+  const [completeTarget, setCompleteTarget] = useState<{
+    id: string;
+    name: string;
+    participants: number;
+  } | null>(null);
 
   const handleDeleteClass = async (id: string) => {
     try {
@@ -197,6 +217,52 @@ export const TableCreatedClassesList = () => {
                           },
                         ]
                       : []),
+                    ...(item.status === "PUBLISH"
+                      ? [
+                          {
+                            label:
+                              mutation.isPending &&
+                              mutation.variables.type === "archive"
+                                ? "Archiving..."
+                                : "Archive Class",
+                            icon: <MdArchive />,
+                            onClick: () => handleArchiveClass(item.id),
+                            disabled:
+                              mutation.isPending &&
+                              mutation.variables.type === "archive",
+                          },
+                        ]
+                      : []),
+                    ...(item.status === "ARCHIVED"
+                      ? [
+                          {
+                            label:
+                              mutation.isPending &&
+                              mutation.variables.type === "unarchive"
+                                ? "Unarchiving..."
+                                : "Unarchive Class",
+                            icon: <MdUnarchive />,
+                            onClick: () => handleUnarchiveClass(item.id),
+                            disabled:
+                              mutation.isPending &&
+                              mutation.variables.type === "unarchive",
+                          },
+                        ]
+                      : []),
+                    ...(item.status !== "DRAFT" && !item.completedAt
+                      ? [
+                          {
+                            label: "Mark Completed",
+                            icon: <MdOutlineCheckCircle />,
+                            onClick: () =>
+                              setCompleteTarget({
+                                id: item.id,
+                                name: item.name,
+                                participants: item.totalParticipant,
+                              }),
+                          },
+                        ]
+                      : []),
                     ...(item.creator.id === profile?.data?.id
                       ? [
                           {
@@ -265,6 +331,14 @@ export const TableCreatedClassesList = () => {
         exportName={className}
         classId={classId}
       />
+      {completeTarget && (
+        <MarkCompletedDialog
+          onHide={() => setCompleteTarget(null)}
+          classId={completeTarget.id}
+          className={completeTarget.name}
+          participantCount={completeTarget.participants}
+        />
+      )}
       <UpdateClassDrawer
         onHide={() => setData(undefined)}
         show={!!data}
