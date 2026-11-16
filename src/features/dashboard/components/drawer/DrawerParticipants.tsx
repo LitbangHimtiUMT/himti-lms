@@ -17,6 +17,10 @@ interface DrawerParticipantsProps {
   onInvite?: () => void;
   title?: string;
   position?: "left" | "right";
+  // Human-readable name used only for the export file name. The drawer
+  // title stays generic; without this, every class exports the same
+  // file name on the same day.
+  exportName?: string;
 }
 
 // File name from the drawer title plus today's date, safe for every OS:
@@ -37,6 +41,7 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
   onInvite,
   title = "Class Participants",
   position = "right",
+  exportName,
   classId,
 }) => {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -71,7 +76,7 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
       );
       const book = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(book, sheet, "Peserta");
-      XLSX.writeFile(book, buildExportFileName(title));
+      XLSX.writeFile(book, buildExportFileName(exportName || title));
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
