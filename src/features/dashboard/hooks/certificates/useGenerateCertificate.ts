@@ -15,6 +15,12 @@ export const useGenerateCertificate = () => {
       queryClient.invalidateQueries({
         queryKey: ["classes"],
       });
+      // The certificate list has its own cache key. Invalidation
+      // refreshes it when mounted; useCertificates also refetches on
+      // mount, since the global default never does.
+      queryClient.invalidateQueries({
+        queryKey: ["certificates"],
+      });
       toast.success(res?.message || "Sertifikat berhasil dibuat.");
     },
   });

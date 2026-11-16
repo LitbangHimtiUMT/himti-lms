@@ -21,5 +21,9 @@ export const useCertificates = () => {
           perPage: perPage ? Number(perPage) : undefined,
         },
       }),
+    // The global default is refetchOnMount: false; the list must be
+    // fresh every time the user lands here, or a just-claimed
+    // certificate stays invisible until a manual retry.
+    refetchOnMount: true,
   });
 };
