@@ -11,7 +11,11 @@ import { ModuleCreationDTO, ModuleDTO } from "../../../../../core/model/modules"
 import { Button } from "../../../../_global/components/Button";
 import { useDetailClass } from "../../../../class/hooks/useClasses";
 import { useModulesCreation } from "../../../hooks/modules/useModules";
-import { CompletedClassNotice } from "../../classes/ClassContentNotices";
+import {
+  CertificatesIssuedNotice,
+  CompletedClassNotice,
+  ConfirmContentChangeDialog,
+} from "../../classes/ClassContentNotices";
 
 interface FormCreateModulesProps {
   data?: ModuleDTO;
@@ -21,6 +25,9 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
   const isEdit = !!moduleData;
   const { data: classes } = useDetailClass();
   const isCompleted = !!classes?.data?.completedAt;
+  const totalCertificates = classes?.data?.totalCertificates ?? 0;
+  const showWarning = !isCompleted && totalCertificates > 0;
+  const [showConfirm, setShowConfirm] = useState(false);
   const [data, setData] = useState<ModuleCreationDTO>({
     name: moduleData?.name ?? "",
     fileModule: undefined,
@@ -47,6 +54,14 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
 
   const handleSubmit = () => {
     if (isCompleted) return;
+    if (showWarning) {
+      setShowConfirm(true);
+      return;
+    }
+    doSubmit();
+  };
+
+  const doSubmit = () => {
     const formData = new FormData();
 
     formData.append("name", data.name);
@@ -77,6 +92,9 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
     <>
       <div className="flex flex-col gap-4">
         {isCompleted && <CompletedClassNotice />}
+        {showWarning && (
+          <CertificatesIssuedNotice totalCertificates={totalCertificates} />
+        )}
         <div className="lg:w-1/2 w-full">
           <InputLabel
             titleSize="sm"
@@ -134,6 +152,16 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
           {mutation.isPending ? "Loading..." : isEdit ? "Update Module" : "Create Module"}
         </Button>
       </div>
+      <ConfirmContentChangeDialog
+        show={showConfirm}
+        onHide={() => setShowConfirm(false)}
+        onConfirm={() => {
+          setShowConfirm(false);
+          doSubmit();
+        }}
+        isPending={mutation.isPending}
+        totalCertificates={totalCertificates}
+      />
     </>
   );
 };

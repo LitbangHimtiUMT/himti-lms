@@ -6,7 +6,11 @@ import { Drawer } from "../../../_global/components/Drawer";
 import { InputLabel } from "../../../_global/components/InputLabel";
 import { useDetailClass } from "../../../class/hooks/useClasses";
 import { useSessionsCreation } from "../../hooks/sessions/useSessions";
-import { CompletedClassNotice } from "../classes/ClassContentNotices";
+import {
+  CertificatesIssuedNotice,
+  CompletedClassNotice,
+  ConfirmContentChangeDialog,
+} from "../classes/ClassContentNotices";
 
 interface Props {
   onHide: VoidFunction;
@@ -26,14 +30,15 @@ export const SessionDrawerCreation: React.FC<Props> = ({
   const { classId } = useParams();
   const { data: classes } = useDetailClass();
   const isCompleted = !!classes?.data?.completedAt;
+  const totalCertificates = classes?.data?.totalCertificates ?? 0;
+  const showWarning = !isCompleted && totalCertificates > 0;
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const [form, setForm] = useState<SessionCreationDTO>({
     name: data?.name || "",
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (isCompleted) return;
+  const doSubmit = async () => {
     try {
       if (data) {
         await mutation.mutateAsync({
@@ -57,6 +62,16 @@ export const SessionDrawerCreation: React.FC<Props> = ({
       // leave the drawer open so the user can retry.
     }
   };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (isCompleted) return;
+    if (showWarning) {
+      setShowConfirm(true);
+      return;
+    }
+    await doSubmit();
+  };
   return (
     <>
       <Drawer
@@ -78,6 +93,9 @@ export const SessionDrawerCreation: React.FC<Props> = ({
             onSubmit={handleSubmit}
           >
             {isCompleted && <CompletedClassNotice />}
+            {showWarning && (
+              <CertificatesIssuedNotice totalCertificates={totalCertificates} />
+            )}
             <InputLabel
               title="Session Name"
               titleSize="sm"
@@ -99,6 +117,16 @@ export const SessionDrawerCreation: React.FC<Props> = ({
           </form>
         ) : null}
       </Drawer>
+      <ConfirmContentChangeDialog
+        show={showConfirm}
+        onHide={() => setShowConfirm(false)}
+        onConfirm={() => {
+          setShowConfirm(false);
+          void doSubmit();
+        }}
+        isPending={mutation.isPending}
+        totalCertificates={totalCertificates}
+      />
     </>
   );
 };

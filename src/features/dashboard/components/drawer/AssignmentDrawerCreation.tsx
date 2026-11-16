@@ -9,7 +9,11 @@ import { TextEditor } from "../../../_global/components/TextEditor";
 import { useAssignmentsCreation } from "../../hooks/assignments/useAssignmentsCreation";
 import { useDetailClass } from "../../../class/hooks/useClasses";
 import { DatePicker } from "../../../_global/components/DatePicker";
-import { CompletedClassNotice } from "../classes/ClassContentNotices";
+import {
+  CertificatesIssuedNotice,
+  CompletedClassNotice,
+  ConfirmContentChangeDialog,
+} from "../classes/ClassContentNotices";
 
 interface Props {
   onHide: VoidFunction;
@@ -67,16 +71,11 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
   const mutation = useAssignmentsCreation();
   const { data: classes } = useDetailClass();
   const isCompleted = !!classes?.data?.completedAt;
+  const totalCertificates = classes?.data?.totalCertificates ?? 0;
+  const showWarning = !isCompleted && totalCertificates > 0;
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleCreateAssignment = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-    if (isCompleted) return;
-    if (!isDueDateOpen(form.dueDate)) {
-      toast.error("Due date must not be in the past.");
-      return;
-    }
+  const doSubmit = async () => {
     try {
       if (data) {
         await mutation.mutateAsync({
@@ -106,6 +105,22 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
     }
   };
 
+  const handleCreateAssignment = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    if (isCompleted) return;
+    if (!isDueDateOpen(form.dueDate)) {
+      toast.error("Due date must not be in the past.");
+      return;
+    }
+    if (showWarning) {
+      setShowConfirm(true);
+      return;
+    }
+    await doSubmit();
+  };
+
   useEffect(() => {
     if (show) {
       setForm(data || getDefaultFormState());
@@ -131,6 +146,9 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
           onSubmit={handleCreateAssignment}
         >
           {isCompleted && <CompletedClassNotice />}
+          {showWarning && (
+            <CertificatesIssuedNotice totalCertificates={totalCertificates} />
+          )}
           <InputLabel
             title="Title"
             titleSize="sm"
@@ -222,6 +240,16 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
           </Button>
         </form>
       </Drawer>
+      <ConfirmContentChangeDialog
+        show={showConfirm}
+        onHide={() => setShowConfirm(false)}
+        onConfirm={() => {
+          setShowConfirm(false);
+          void doSubmit();
+        }}
+        isPending={mutation.isPending}
+        totalCertificates={totalCertificates}
+      />
     </>
   );
 };
