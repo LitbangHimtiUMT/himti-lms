@@ -3,6 +3,7 @@ import { Button } from "../../_global/components/Button";
 import { ConditionNode } from "../../_global/components/ConditionNode";
 import { useProfile } from "../../profile/useProfile";
 import { TableCreatedClassesList } from "../components/classes/classes-list/TableCreatedClassesList";
+import { MentorDashboardStats } from "../components/dashboard/MentorDashboardStats";
 
 export const MyClassViews = () => {
   const { data: profile } = useProfile();
@@ -22,6 +23,7 @@ export const MyClassViews = () => {
           </div>
         </ConditionNode>
       </div>
+      <MentorDashboardStats />
       <TableCreatedClassesList />
     </div>
   );
