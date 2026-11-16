@@ -54,10 +54,13 @@ const readCompletedModules = (
 };
 
 export function useCourse() {
-  const { courseId = "javascript" } = useParams<{ courseId: string }>();
-  
-  const courseInfo = coursesCatalogData[courseId] || coursesCatalogData.javascript;
-  const courseModules = courseInfo.modules;
+  const { courseId } = useParams<{ courseId: string }>();
+
+  // An unknown courseId used to silently load the JavaScript course while
+  // storing progress under the bogus id. Surface it instead: the page
+  // renders NotFound when there is no such course.
+  const courseInfo = courseId ? coursesCatalogData[courseId] : undefined;
+  const courseModules = courseInfo?.modules ?? [];
 
   const [activeModuleIndex, setActiveModuleIndex] = useState<number>(0);
   const [unlockedModules, setUnlockedModules] = useState<string[]>(["modul-1"]);
@@ -77,7 +80,7 @@ export function useCourse() {
   });
 
   const activeModule = courseModules[activeModuleIndex];
-  const tocList = extractTOC(activeModule.markdown);
+  const tocList = extractTOC(activeModule?.markdown ?? "");
   const contentRef = useRef<HTMLDivElement>(null);
   const mainScrollRef = useRef<HTMLElement>(null);
 
@@ -178,6 +181,7 @@ export function useCourse() {
 
   const handleSubmitAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!activeModule) return;
     if (!studentAnswer.trim()) {
       toast.error("Tolong tulis jawaban Anda terlebih dahulu!");
       return;
@@ -226,7 +230,7 @@ export function useCourse() {
 
   const totalModules = courseModules.length;
   const completedCount = Object.keys(completedModules).length;
-  const progressPercent = Math.round((completedCount / totalModules) * 100);
+  const progressPercent = totalModules > 0 ? Math.round((completedCount / totalModules) * 100) : 0;
 
   return {
     activeModuleIndex,

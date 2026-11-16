@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { renderMarkdown } from "./utils/markdownUtils";
 import { useCourse } from "./hooks/useCourse";
+import { NotFound } from "../_global/components/NotFound";
 import { Link } from "react-router-dom";
 
 // ============================================
@@ -57,6 +58,11 @@ export default function CoursePage() {
     courseModules,
   } = useCourse();
 
+  // Unknown course id: no such course exists, so don't show another
+  // course's content under the wrong URL.
+  if (!courseInfo) {
+    return <NotFound />;
+  }
 
   return (
     <div className="h-screen bg-slate-50 text-slate-850 flex flex-col font-sans selection:bg-[#3966bf]/20 selection:text-slate-900 overflow-hidden">
