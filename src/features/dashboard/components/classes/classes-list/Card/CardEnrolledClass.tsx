@@ -20,6 +20,7 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
   name,
   price,
   progressStatus,
+  completedAt,
   thumbnail,
   certificate,
   id,
@@ -89,7 +90,7 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
             >
               {name}
             </h3>
-            <div className="w-max">
+            <div className="flex w-max gap-1.5">
               <Badge
                 size="sm"
                 variant={
@@ -98,6 +99,11 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
               >
                 {progressStatus}
               </Badge>
+              {completedAt && (
+                <Badge size="sm" variant="primary">
+                  Completed
+                </Badge>
+              )}
             </div>
           </div>
 
