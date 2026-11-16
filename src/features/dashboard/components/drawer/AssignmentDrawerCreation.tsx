@@ -24,12 +24,16 @@ interface FormState {
   type: "URL" | "FILE";
 }
 
-const defaultValue: FormState = {
-  description: "",
-  dueDate: new Date(),
-  title: "",
-  type: "FILE",
-  allowedFile: undefined,
+const getDefaultFormState = (): FormState => {
+  const dueDate = new Date();
+  dueDate.setDate(dueDate.getDate() + 7);
+  return {
+    description: "",
+    dueDate,
+    title: "",
+    type: "FILE",
+    allowedFile: undefined,
+  };
 };
 
 const AllowedFileMap: Record<".zip" | ".rar" | ".pdf", string> = {
@@ -44,7 +48,7 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
   moduleId,
   data,
 }) => {
-  const [form, setForm] = useState<FormState>(data || defaultValue);
+  const [form, setForm] = useState<FormState>(data || getDefaultFormState());
 
   const mutation = useAssignmentsCreation();
 
@@ -73,13 +77,12 @@ export const AssignmentDrawerCreation: React.FC<Props> = ({
       });
     }
     onHide();
-    setForm(defaultValue);
+    setForm(getDefaultFormState());
   };
 
   useEffect(() => {
     if (show) {
-      console.log({data: data?.dueDate})
-      setForm(data || defaultValue);
+      setForm(data || getDefaultFormState());
     }
   }, [show, data]);
   
