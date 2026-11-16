@@ -1,8 +1,12 @@
 import DefaultPhoto from "@core/assets/default-photo.svg";
+import { CiSearch } from "react-icons/ci";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
 import { useMentors } from "../hooks/useMentors";
+import { Input } from "../../_global/components/Input";
+import { Pagination } from "../../_global/components/Pagination";
 import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import { Poppins } from "../../_global/components/Text";
+import { useSearchParamsInput } from "../../_global/hooks/useSearchParamsInput";
 
 const MentorCard = ({ mentor }: { mentor: any }) => {
   return (
@@ -91,9 +95,28 @@ const SkeletonCard = () => (
 
 const MentorGrid = () => {
   const { data: mentors, isFetching, isError, refetch } = useMentors();
+  const {
+    value: search,
+    handleInputChange: handleSearch,
+    queries,
+    setSearchParams,
+  } = useSearchParamsInput("search");
+
+  const handleChangePage = (page: number) =>
+    setSearchParams({ ...queries, page: String(page) });
 
   return (
     <div>
+      <div className="flex justify-end mb-6">
+        <div className="w-full md:w-64">
+          <Input
+            LeftIcon={<CiSearch className="text-lg text-gray-400" />}
+            placeholder="Search mentors..."
+            onChange={handleSearch}
+            className="bg-white w-full"
+          />
+        </div>
+      </div>
       {isFetching ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <SkeletonCard />
@@ -114,9 +137,13 @@ const MentorGrid = () => {
           <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center">
             <FaEnvelope className="text-slate-300" size={24} />
           </div>
-          <Poppins className="text-lg font-semibold text-slate-600">Belum Ada Mentor</Poppins>
+          <Poppins className="text-lg font-semibold text-slate-600">
+            {search ? "Mentor Tidak Ditemukan" : "Belum Ada Mentor"}
+          </Poppins>
           <p className="text-slate-400 text-sm max-w-xs">
-            Mentor belum tersedia saat ini. Silakan kunjungi kembali nanti.
+            {search
+              ? "Tidak ada mentor yang cocok dengan pencarian. Coba kata kunci lain."
+              : "Mentor belum tersedia saat ini. Silakan kunjungi kembali nanti."}
           </p>
         </div>
       ) : (
@@ -126,6 +153,10 @@ const MentorGrid = () => {
             <span className="text-sm text-slate-500">
               Menampilkan{" "}
               <span className="font-bold text-[#2b6394]">{mentors.data.length}</span>{" "}
+              dari{" "}
+              <span className="font-bold text-[#2b6394]">
+                {mentors.meta?.totalData ?? mentors.data.length}
+              </span>{" "}
               mentor
             </span>
           </div>
@@ -137,6 +168,11 @@ const MentorGrid = () => {
           </div>
         </>
       )}
+      <Pagination
+        totalPages={mentors?.meta?.totalPages || 1}
+        currentPage={mentors?.meta?.page || 1}
+        onPageChange={handleChangePage}
+      />
     </div>
   );
 };
