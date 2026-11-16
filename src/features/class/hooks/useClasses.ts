@@ -131,6 +131,12 @@ export function useClassesCreation() {
 
       queryClient.removeQueries({ queryKey: ["classes"] });
       queryClient.removeQueries({ queryKey: ["classesById"] });
+      // Class mutations change the numbers the mentor dashboard
+      // aggregates; delete/publish happen on the same page as the
+      // stats, so navigating back does not remount and refetch.
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard-stats"],
+      });
       return;
     },
     onError: (err) => {
