@@ -12,6 +12,7 @@ import { ForgotPasswordViews } from "../../features/authentication/views/forgot-
 import { ClassViews } from "../../features/class/views/ClassViews";
 import { CreateClassesViews } from "../../features/dashboard/views/CreateClassesViews";
 import { CreateModules } from "../../features/dashboard/views/CreateModules";
+import { EditModules } from "../../features/dashboard/views/EditModules";
 import { DetailModuleView } from "../../features/dashboard/views/DetailModuleView";
 import { DetailSessionView } from "../../features/dashboard/views/DetailSessionView";
 import { EnrolledClassViews } from "../../features/dashboard/views/EnrolledClassViews";
@@ -101,6 +102,10 @@ export const router = createBrowserRouter([
           {
             path: "/dashboard/:classId/:sessionId/create-modules",
             element: <CreateModules />,
+          },
+          {
+            path: "/dashboard/:classId/:sessionId/edit-modules/:moduleId",
+            element: <EditModules />,
           },
           {
             path: "/dashboard/:classId/:sessionId",

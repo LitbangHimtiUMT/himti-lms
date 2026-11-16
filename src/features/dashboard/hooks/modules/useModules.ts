@@ -80,15 +80,19 @@ export const useModulesCreation = () => {
             path: `${session || sessionId}`,
             contentType: "form-data",
           });
+        case "update":
+          return moduleService.update(data, {
+            path: id,
+            contentType: "form-data",
+          });
         case "delete":
           return moduleService.delete({
             path: id,
           });
-        default:
-          return moduleService.create(data, {
-            path: `${session || sessionId}`,
-            contentType: "form-data",
-          });
+        default: {
+          const unknownType: never = type;
+          throw new Error(`Unknown module mutation type: ${unknownType}`);
+        }
       }
     },
     onSuccess: (res) => {
@@ -96,6 +100,9 @@ export const useModulesCreation = () => {
       toast.success(res?.message || "Berhasil.");
       queryClient.removeQueries({
         queryKey: ["modules"],
+      });
+      queryClient.removeQueries({
+        queryKey: ["detail-module"],
       });
     },
     onError: (err) => toast.error(getErrorMessage(err)),
