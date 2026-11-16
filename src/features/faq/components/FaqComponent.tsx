@@ -14,7 +14,7 @@ const FaqComponent = () => {
     {
       question: "Bagaimana cara mendaftar kelas di HIMTI LMS?",
       answer:
-        "Anda dapat mendaftar dengan membuat akun terlebih dahulu melalui halaman Sign Up, lalu masuk ke katalog kelas, pilih kelas yang Anda minati, dan klik tombol 'Daftar Kelas'.",
+        "Anda dapat mendaftar dengan membuat akun terlebih dahulu melalui halaman Sign Up, lalu membuka link undangan yang dibagikan mentor kelas yang Anda tuju.",
     },
     {
       question: "Apakah materi kelas dapat diakses selamanya?",
