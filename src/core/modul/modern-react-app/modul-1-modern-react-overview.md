@@ -96,7 +96,7 @@ Menulis file CSS yang berulang-ulang untuk tombol, input, dan popup akan membuan
 Kita menggunakan **REST API** dengan sistem **Bearer Token Authorization** untuk menarik data negara secara aman melalui **REST Countries API v5**.
 
 ### 5. AI Integration
-Kita akan menghubungkan asisten obrolan kita langsung ke kecerdasan buatan terkuat milik Google menggunakan **Gemini API** dan SDK `@google/genai` resmi.
+Kita akan menghubungkan asisten obrolan kita ke kecerdasan buatan terkuat milik Google menggunakan **Gemini API** dan SDK `@google/genai` resmi, melalui backend milik sendiri supaya API Key tidak pernah sampai ke browser.
 
 ---
 
