@@ -2,7 +2,7 @@
 
 Halo teman-teman! Selamat datang di **Modul 6**.
 
-Pernahkah kalian membayangkan aplikasi web kalian memiliki kemampuan berdialog cerdas secara *real-time*? Hari ini, kita akan membawa aplikasi kita ke tingkat kecerdasan berikutnya dengan mengintegrasikannya langsung ke model kecerdasan buatan terkuat milik Google menggunakan **Gemini API**.
+Pernahkah kalian membayangkan aplikasi web kalian memiliki kemampuan berdialog cerdas secara *real-time*? Hari ini, kita akan membawa aplikasi kita ke tingkat kecerdasan berikutnya dengan mengintegrasikannya ke model kecerdasan buatan terkuat milik Google menggunakan **Gemini API** — melalui backend milik kita sendiri, supaya API Key tidak pernah sampai ke browser.
 
 Kita akan belajar cara membuat koneksi aman, memahami aspek keamanan kredensial, dan membangun **AI Study Assistant** interaktif yang siap membantu kalian belajar pemrograman.
 
@@ -12,8 +12,8 @@ Kita akan belajar cara membuat koneksi aman, memahami aspek keamanan kredensial,
 Setelah menyelesaikan modul ini, diharapkan kalian mampu:
 1. Menjelaskan fungsi dan cara kerja Gemini API.
 2. Membuat API Key di Google AI Studio secara mandiri.
-3. Menyimpan API Key dengan aman menggunakan *Environment Variables* (`.env`) di React.
-4. Menginstal dan mengoperasikan SDK resmi Google `@google/genai`.
+3. Menjelaskan kenapa API Key tidak boleh ada di kode frontend, dan menyimpannya dengan aman di sisi server menggunakan *Environment Variables* (`.env`).
+4. Menginstal dan mengoperasikan SDK resmi Google `@google/genai` di backend, serta pola *proxy backend* untuk memanggilnya dari React.
 5. Merancang teknik *Prompt Engineering* dasar menggunakan *System Instruction*.
 6. Membangun antarmuka asisten AI interaktif dengan penanganan error.
 
@@ -33,7 +33,7 @@ Untuk kebutuhan belajar ini, kita akan menggunakan model **`gemini-3.6-flash`** 
 
 ## 6.2 Google AI Studio & API Key
 
-Sebelum memanggil API dari kode React, kita membutuhkan **API Key** (kunci autentikasi). Kunci ini bisa diibaratkan sebagai username & password unik proyek kalian untuk menggunakan layanan AI Google.
+Sebelum memanggil API dari backend, kita membutuhkan **API Key** (kunci autentikasi). Kunci ini bisa diibaratkan sebagai username & password unik proyek kalian untuk menggunakan layanan AI Google.
 
 ### Cara Mendapatkan API Key:
 1. Kunjungi platform pengujian **[Google AI Studio](https://aistudio.google.com)**.
@@ -42,19 +42,30 @@ Sebelum memanggil API dari kode React, kita membutuhkan **API Key** (kunci auten
 4. Klik **Create API Key** lalu salin rentetan kunci rahasia yang muncul (berawalan `AIzaSy...`).
 
 > [!WARNING]
-> **Jaga Kerahasiaan API Key Anda:** Kunci API bersifat rahasia dan berharga. Jangan pernah menulisnya langsung di dalam baris kode proyek kalian, dan pastikan kunci ini tidak ikut terunggah (*commit*) ke repositori GitHub publik agar tidak disalahgunakan oleh pihak asing.
+> **Jaga Kerahasiaan API Key Anda:** Kunci API bersifat rahasia dan berharga. Jangan pernah menulisnya langsung di dalam baris kode proyek kalian, jangan pernah menaruhnya di kode frontend (apa pun yang dikirim ke browser bisa dibaca siapa saja), dan pastikan kunci ini tidak ikut terunggah (*commit*) ke repositori GitHub publik agar tidak disalahgunakan oleh pihak asing.
 
 ---
 
-## 6.3 Menyimpan API Key Menggunakan Environment Variables
+## 6.3 Kenapa API Key Tidak Boleh Ada di Frontend
 
-Cara teraman untuk menyimpan kredensial sensitif di React (Vite) adalah menggunakan file environment variables bernama **`.env`** di folder root proyek kalian.
+Godaan paling umum bagi pemula: menaruh API Key di file `.env` dengan prefix `VITE_`, lalu membacanya di React lewat `import.meta.env.VITE_GEMINI_API_KEY`. **Jangan lakukan ini.** Vite mengganti semua variabel berprefix `VITE_` dengan nilainya saat *build*, sehingga kunci tersebut ikut tertulis di dalam bundle JavaScript yang dikirim ke browser. Siapa pun bisa membukanya lewat DevTools dan memakai kunci kalian sampai kuotanya habis — atau sampai tagihannya datang.
+
+File `.gitignore` tidak menolong di sini: ia hanya menjaga kunci tidak masuk ke repositori Git, tetapi tidak mengubah fakta bahwa nilai `VITE_*` ikut terkirim ke setiap pengunjung aplikasi.
+
+Aturan yang benar:
+
+* **Rahasia hanya boleh hidup di server.** Server adalah kode yang berjalan di mesin kalian sendiri, bukan di browser pengunjung.
+* **Browser hanya bicara dengan endpoint milik kalian sendiri.** Endpoint itulah yang memegang kunci dan meneruskan pertanyaan ke Gemini. Pola ini disebut **proxy backend**:
+
+```text
+Browser (React)  →  POST /api/ask  →  Server (punya API Key)  →  Gemini API
+```
 
 ### Langkah Setup Keamanan:
 1. Buat berkas baru bernama **`.env`** di level terluar proyek kalian (sejajar dengan `package.json`).
-2. Masukkan kunci API kalian menggunakan prefix khusus Vite:
+2. Masukkan kunci API kalian **tanpa prefix `VITE_`**. File ini hanya akan dibaca oleh server (Node.js), bukan oleh Vite, sehingga nilainya tidak pernah ikut ke-bundle:
    ```text
-   VITE_GEMINI_API_KEY=AIzaSyYourActualAPIKeyHere
+   GEMINI_API_KEY=AIzaSyYourActualAPIKeyHere
    ```
 3. Buka file **`.gitignore`** proyek kalian, lalu tambahkan baris `.env` di paling bawah agar Git secara otomatis mengabaikan file ini saat kalian melakukan push ke GitHub:
    ```text
@@ -62,20 +73,20 @@ Cara teraman untuk menyimpan kredensial sensitif di React (Vite) adalah mengguna
    .env
    .env.local
    ```
-4. Di dalam kode React, kalian bisa memanggil nilai kunci tersebut secara aman dengan kode:
-   ```javascript
-   const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-   ```
+
+Ingat perbedaan kuncinya: prefix `VITE_` berarti *"nilai ini boleh dibaca semua orang"* — hanya untuk konfigurasi publik. Secret tidak pernah memakai prefix itu.
 
 ---
 
-## 6.4 Memasang SDK Resmi `@google/genai`
+## 6.4 Memasang SDK Resmi `@google/genai` di Backend
 
-Google menyediakan pustaka SDK resmi untuk mempermudah pemanggilan fungsi kecerdasan buatan. Jalankan instalasi SDK melalui terminal kalian:
+Google menyediakan pustaka SDK resmi untuk mempermudah pemanggilan fungsi kecerdasan buatan. SDK ini akan dipakai oleh kode **server**, bukan kode React — begitu pula `express` (server HTTP) dan `dotenv` (pembaca file `.env` di Node.js). Jalankan instalasi melalui terminal kalian:
 
 ```bash
-npm install @google/genai
+npm install @google/genai express dotenv
 ```
+
+Template Vite React sudah memakai ESM (`"type": "module"` di `package.json`), jadi sintaks `import` di file server nanti langsung jalan tanpa konfigurasi tambahan.
 
 ---
 
@@ -83,14 +94,21 @@ npm install @google/genai
 
 Mari kita rancang modul asisten belajar pemrograman cerdas di proyek kita.
 
-### Step 1: Membuat Service API (`src/services/geminiService.js`)
-Buat file service khusus untuk menginisialisasi client Google GenAI dan menyusun fungsi tanya jawab:
+### Step 1: Membuat Endpoint Backend (`server/index.js`)
+Buat file server khusus untuk menginisialisasi client Google GenAI dan melayani pertanyaan dari frontend. Perhatikan: kunci hanya dibaca di sini, lewat `process.env` — tidak pernah muncul di kode React:
 
 ```javascript
-// src/services/geminiService.js
+// server/index.js
+import express from "express";
 import { GoogleGenAI } from "@google/genai";
+import "dotenv/config"; // Membaca file .env di folder root proyek
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const API_KEY = process.env.GEMINI_API_KEY;
+
+if (!API_KEY) {
+  console.error("GEMINI_API_KEY tidak ditemukan. Harap periksa file .env Anda.");
+  process.exit(1);
+}
 
 // Inisialisasi client SDK resmi Google
 const ai = new GoogleGenAI({
@@ -100,9 +118,13 @@ const ai = new GoogleGenAI({
   },
 });
 
-export async function askGemini(question) {
-  if (!API_KEY) {
-    throw new Error('API Key Gemini tidak ditemukan. Harap periksa file .env Anda.');
+const app = express();
+app.use(express.json());
+
+app.post("/api/ask", async (req, res) => {
+  const { question } = req.body ?? {};
+  if (typeof question !== "string" || !question.trim()) {
+    return res.status(400).json({ error: "Pertanyaan wajib diisi." });
   }
 
   try {
@@ -124,21 +146,65 @@ export async function askGemini(question) {
     });
 
     if (interaction.status !== 'completed') {
-      throw new Error('AI mengembalikan respons tidak lengkap.');
+      return res.status(502).json({ error: 'AI mengembalikan respons tidak lengkap.' });
     }
 
-    return interaction.output_text || 'Maaf, saya tidak bisa memproses jawaban.';
+    return res.json({ answer: interaction.output_text || 'Maaf, saya tidak bisa memproses jawaban.' });
   } catch (error) {
     console.error('Gemini API Error:', error);
-    if (error.message.includes('API key')) {
-      throw new Error('Kredensial API Key tidak valid.');
-    }
-    throw error;
+    // Jangan kirim detail error ke client: pesannya bisa membocorkan info server.
+    return res.status(500).json({ error: 'Gagal memproses pertanyaan.' });
   }
+});
+
+app.listen(3001, () => {
+  console.log("Backend AI jalan di http://localhost:3001");
+});
+```
+
+### Step 2: Meneruskan `/api` dari Vite ke Server (`vite.config.js`)
+Saat development, React jalan di port 5173 sedangkan server di port 3001. Supaya frontend cukup memanggil `/api/ask` (tanpa urusan CORS), tambahkan proxy di konfigurasi Vite:
+
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3001',
+    },
+  },
+});
+```
+
+### Step 3: Membuat Service API di Frontend (`src/services/geminiService.js`)
+Service di React sekarang hanya memanggil endpoint milik sendiri. Tidak ada kunci, tidak ada SDK — yang dikirim hanya pertanyaan, yang diterima hanya jawaban:
+
+```javascript
+// src/services/geminiService.js
+export async function askGemini(question) {
+  const response = await fetch("/api/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Gagal terhubung dengan asisten AI.');
+  }
+
+  const data = await response.json();
+  return data.answer;
 }
 ```
 
-### Step 2: Membuat Komponen Antarmuka Chat (`src/components/AIAssistant.jsx`)
+### Menjalankan Aplikasi
+Jalankan dua proses di dua terminal terpisah: `node server/index.js` untuk backend, lalu `npm run dev` untuk React. Keduanya harus hidup bersamaan agar chat berfungsi.
+
+### Step 4: Membuat Komponen Antarmuka Chat (`src/components/AIAssistant.jsx`)
 Gunakan kombinasi komponen `Card`, `Input`, dan `Button` milik `shadcn/ui` untuk mendesain panel obrolan AI yang interaktif:
 
 ```jsx
@@ -253,11 +319,12 @@ export default AIAssistant;
 
 Berikut adalah poin-poin kesimpulan penting dari pembelajaran Gemini AI kita hari ini:
 1. **Fungsi Gemini API:** Layanan AI tingkat lanjut yang terintegrasi untuk memberikan kecerdasan pemrosesan bahasa alami di web.
-2. **Kunci Autentikasi:** API Key di Google AI Studio wajib dijaga ketat agar tidak bocor ke repositori GitHub.
-3. **Environment Variables:** Mengisolasi kredensial sensitif menggunakan file `.env` yang disembunyikan lewat pengaturan berkas `.gitignore`.
-4. **SDK Resmi:** Memanfaatkan package `@google/genai` resmi milik Google untuk kemudahan inisialisasi client dan interaksi asinkron.
-5. **System Instruction:** Menyetel kepribadian, gaya bahasa, batasan topik, serta format respons asisten AI agar sesuai dengan target sasaran pengguna.
+2. **Kunci Autentikasi:** API Key di Google AI Studio wajib dijaga ketat: tidak boleh ada di kode frontend, tidak boleh bocor ke repositori GitHub, dan hanya boleh dibaca oleh server.
+3. **Environment Variables:** Kredensial sensitif disimpan di file `.env` yang dibaca server (tanpa prefix `VITE_`), dan disembunyikan lewat pengaturan berkas `.gitignore`. Prefix `VITE_` berarti nilai ikut ke-bundle dan bisa dibaca siapa saja — jangan pernah dipakai untuk secret.
+4. **SDK Resmi:** Memanfaatkan package `@google/genai` resmi milik Google di sisi server untuk kemudahan inisialisasi client dan interaksi asinkron.
+5. **Pola Proxy Backend:** Browser memanggil endpoint milik sendiri (`/api/ask`), server yang memegang kunci dan meneruskan pertanyaan ke Gemini API.
+6. **System Instruction:** Menyetel kepribadian, gaya bahasa, batasan topik, serta format respons asisten AI agar sesuai dengan target sasaran pengguna.
 
-Selamat! Aplikasi kalian sekarang sudah terhubung dengan AI dan dapat menjawab pertanyaan pemrograman secara interaktif. 
+Selamat! Aplikasi kalian sekarang sudah terhubung dengan AI melalui backend kalian sendiri dan dapat menjawab pertanyaan pemrograman secara interaktif.
 
 Di **Modul 7 (Terakhir)** berikutnya, kalian akan menyatukan seluruh pilar (Routing, shadcn/ui, API, dan AI) ke dalam sebuah **Mini Project mandiri**! Bersiaplah untuk tantangan akhir! 🚀

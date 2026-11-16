@@ -13,7 +13,7 @@ Melalui mini project mandiri ini, kalian diharapkan mampu:
 1. Membangun aplikasi React multi-halaman yang dinamis dan responsif.
 2. Mengintegrasikan komponen antarmuka premium siap pakai dari `shadcn/ui`.
 3. Menarik data negara dari *REST Countries API v5* secara asinkron dengan header otentikasi Bearer Token.
-4. Menghubungkan asisten obrolan pintar berbasis *Gemini AI API* secara interaktif.
+4. Menghubungkan asisten obrolan pintar berbasis *Gemini AI API* secara interaktif melalui endpoint backend sendiri, supaya API Key tidak pernah sampai ke browser.
 5. Menyajikan antarmuka ramah pengguna dengan penanganan visual loading, error, dan data kosong.
 
 ---
@@ -44,6 +44,8 @@ Agar kode kalian rapi, terorganisir, dan mudah dirawat, ikuti standarisasi folde
 
 ```text
 ai-country-explorer/
+├── server/
+│   └── index.js         ← Endpoint backend Gemini AI (memegang API Key)
 ├── src/
 │   ├── components/
 │   │   ├── ui/              ← Folder komponen shadcn/ui
@@ -56,11 +58,11 @@ ai-country-explorer/
 │   │   └── NotFound.jsx     ← Halaman error 404
 │   ├── services/
 │   │   ├── countryService.js ← Service Fetch REST Countries v5 dengan Header Auth
-│   │   └── geminiService.js  ← Service SDK Gemini AI
+│   │   └── geminiService.js  ← Service Fetch ke endpoint /api/ask (tanpa API Key)
 │   ├── App.jsx              ← Konfigurasi rute React Router v7
 │   ├── main.jsx             ← Pintu masuk BrowserRouter
 │   └── index.css            ← File CSS Tailwind global
-├── .env                     ← Menyimpan API Key Gemini
+├── .env                     ← API Key Gemini, dibaca server saja (tanpa prefix VITE_)
 ├── components.json          ← Konfigurasi shadcn
 └── tailwind.config.js       ← Konfigurasi Tailwind
 ```
@@ -76,10 +78,10 @@ ai-country-explorer/
    cd ai-country-explorer
    npm install
    ```
-2. Pasang library React Router v7 dan SDK Gemini AI:
+2. Pasang library React Router v7, lalu SDK Gemini AI beserta `express` dan `dotenv` untuk backend (SDK dipakai oleh kode server, bukan kode React):
    ```bash
    npm install react-router
-   npm install @google/genai
+   npm install @google/genai express dotenv
    ```
 3. Lakukan inisialisasi konfigurasi `shadcn/ui` beserta ikon-ikon Lucide:
    ```bash
@@ -89,9 +91,9 @@ ai-country-explorer/
 
 ### Tahap 2: Pengaturan Lingkungan Kunci API
 1. Buat file `.env` di folder terluar proyek.
-2. Masukkan API Key Google AI Studio kalian:
+2. Masukkan API Key Google AI Studio kalian **tanpa prefix `VITE_`** — file ini hanya dibaca oleh server (Node.js), sehingga nilainya tidak pernah ikut ke-bundle JavaScript yang dikirim ke browser (lihat Modul 6 bagian 6.3):
    ```text
-   VITE_GEMINI_API_KEY=AIzaSyYourActualAPIKeyHere
+   GEMINI_API_KEY=AIzaSyYourActualAPIKeyHere
    ```
 3. Daftarkan file `.env` ke dalam berkas `.gitignore` demi keamanan.
 
@@ -134,22 +136,37 @@ export async function searchCountries(query) {
 }
 ```
 
-### Tahap 4: Hubungkan Gemini AI Assistant (`src/services/geminiService.js`)
-Inisialisasi client Google GenAI menggunakan API Key dari `import.meta.env.VITE_GEMINI_API_KEY` untuk obrolan geografi:
+### Tahap 4: Hubungkan Gemini AI Assistant (Backend + `src/services/geminiService.js`)
+Ikuti pola proxy backend dari Modul 6: client Google GenAI diinisialisasi di server dengan API Key dari `process.env`, dan frontend hanya memanggil endpoint `/api/ask`. Tambahkan proxy `/api` ke `http://localhost:3001` di `vite.config.js` seperti di Modul 6, lalu jalankan backend (`node server/index.js`) bersamaan dengan `npm run dev`.
 
 ```javascript
-// src/services/geminiService.js
+// server/index.js
+import express from "express";
 import { GoogleGenAI } from "@google/genai";
+import "dotenv/config"; // Membaca file .env di folder root proyek
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const API_KEY = process.env.GEMINI_API_KEY;
+
+if (!API_KEY) {
+  console.error("GEMINI_API_KEY tidak ditemukan. Harap periksa file .env Anda.");
+  process.exit(1);
+}
 
 const ai = new GoogleGenAI({
   apiKey: API_KEY,
 });
 
-export async function askGeographyAI(question, countryContext = '') {
+const app = express();
+app.use(express.json());
+
+app.post("/api/ask", async (req, res) => {
+  const { question, countryContext = "" } = req.body ?? {};
+  if (typeof question !== "string" || !question.trim()) {
+    return res.status(400).json({ error: "Pertanyaan wajib diisi." });
+  }
+
   try {
-    const prompt = countryContext 
+    const prompt = countryContext
       ? `Negara Fokus: ${countryContext}\nPertanyaan: ${question}`
       : question;
 
@@ -162,11 +179,39 @@ export async function askGeographyAI(question, countryContext = '') {
         Jawablah menggunakan bahasa Indonesia yang santai, edukatif, dan mudah dipahami mahasiswa.
       `,
     });
-    return interaction.output_text;
+
+    if (interaction.status !== 'completed') {
+      return res.status(502).json({ error: 'AI mengembalikan respons tidak lengkap.' });
+    }
+
+    return res.json({ answer: interaction.output_text });
   } catch (error) {
     console.error(error);
+    // Jangan kirim detail error ke client: pesannya bisa membocorkan info server.
+    return res.status(500).json({ error: 'Gagal terhubung dengan asisten AI.' });
+  }
+});
+
+app.listen(3001, () => {
+  console.log("Backend AI jalan di http://localhost:3001");
+});
+```
+
+```javascript
+// src/services/geminiService.js
+export async function askGeographyAI(question, countryContext = '') {
+  const response = await fetch("/api/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, countryContext }),
+  });
+
+  if (!response.ok) {
     throw new Error('Gagal terhubung dengan asisten AI.');
   }
+
+  const data = await response.json();
+  return data.answer;
 }
 ```
 
@@ -180,7 +225,7 @@ export async function askGeographyAI(question, countryContext = '') {
 | **UX/UI & Desain** | 20% | Desain premium, rapi, menggunakan standard komponen `shadcn/ui`, dan fully responsive di layar HP. |
 | **State & Error Handling** | 20% | Menangani visual Loading skeleton, Error alert, dan Empty State pencarian secara halus. |
 | **Kualitas & Kerapian Kode** | 20% | Pemisahan folder clean, penulisan fungsi asinkron bersih, variabel dinamis terawat. |
-| **Dokumentasi Proyek** | 10% | Menyusun berkas `README.md` cara setup proyek dan file `.env`. |
+| **Dokumentasi Proyek** | 10% | Menyusun berkas `README.md` cara setup proyek, file `.env` server, dan cara menjalankan backend bersamaan dengan frontend. |
 
 ---
 
@@ -190,7 +235,7 @@ Selamat! Kalian telah menguasai pilar-pilar penting pengembangan aplikasi web mo
 1. **Pemahaman SPA & Routing:** Mengetahui cara memindahkan halaman antarmuka web instan tanpa perlu reload layar browser.
 2. **Kekuatan Component Library:** Memanfaatkan `shadcn/ui` untuk meningkatkan efisiensi pengerjaan visual antarmuka berstandar premium.
 3. **Konektivitas API Dunia Nyata:** Terbiasa menarik data dinamis asinkron dari internet (menggunakan REST Countries API v5 dengan Bearer Token).
-4. **Sentuhan Kecerdasan Buatan:** Mampu merancang chatbot interaktif asisten belajar bertenaga Gemini AI.
+4. **Sentuhan Kecerdasan Buatan:** Mampu merancang chatbot interaktif asisten belajar bertenaga Gemini AI melalui backend sendiri yang menjaga API Key.
 
 Kerjakan mini project kalian dengan jujur, teliti, dan penuh eksplorasi kreatif. Karya portofolio ini akan menjadi bukti nyata kesiapan kalian melangkah ke dunia industri web developer profesional! 
 
