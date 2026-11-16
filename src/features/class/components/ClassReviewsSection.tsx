@@ -22,10 +22,8 @@ export const ClassReviewsSection: React.FC<{ classId: string }> = ({
     return null;
   }
 
-  const reviews = data.data ?? [];
-  const aggregate = data.aggregate;
-  const showAggregate =
-    !!aggregate && aggregate.count > 0 && aggregate.average != null;
+  const reviews = data.data?.reviews ?? [];
+  const aggregate = data.data?.aggregate;
 
   return (
     <section>
@@ -33,7 +31,7 @@ export const ClassReviewsSection: React.FC<{ classId: string }> = ({
         Ulasan Peserta
       </h2>
 
-      {showAggregate && (
+      {aggregate && aggregate.count > 0 && aggregate.average != null && (
         <div className="flex items-center gap-2 mb-4">
           <FaStar size={20} className="text-amber-400" />
           <p className="text-lg font-bold text-slate-800">
@@ -45,7 +43,7 @@ export const ClassReviewsSection: React.FC<{ classId: string }> = ({
         </div>
       )}
 
-      {data.canReview && (
+      {data.data?.canReview && (
         <div className="mb-6">
           {/* A new review sorts first (createdAt desc), so go back to
               page 1 after submitting to show the review just sent. */}

@@ -29,7 +29,7 @@ export interface ClassModel {
   totalCertificates?: number;
   // Aggregate rating. Only present when the API sends it (the list
   // endpoint may not); absence hides the catalog badge.
-  rating?: { average: number; count: number } | null;
+  rating?: { average: number | null; count: number } | null;
   code?: string;
   level: CourseType;
   category: CategoriesModel;

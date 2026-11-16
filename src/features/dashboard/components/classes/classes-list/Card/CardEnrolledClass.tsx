@@ -56,7 +56,7 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
   // send managers and past reviewers to a form they cannot use.
   const { data: reviews } = useClassReviews(id, 1, 1, !!certificate);
   const showReviewPrompt =
-    !!certificate && reviews?.canReview === true;
+    !!certificate && reviews?.data?.canReview === true;
   return (
     <>
       <div
