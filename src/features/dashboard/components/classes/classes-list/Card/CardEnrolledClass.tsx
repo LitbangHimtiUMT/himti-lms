@@ -29,8 +29,8 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
   const mutation = useGenerateCertificate();
   const { data: profile } = useProfile();
 
-  const handleGenerate = async (classId: string) =>
-    await mutation.mutateAsync({
+  const handleGenerate = (classId: string) =>
+    mutation.mutate({
       classId,
     });
 

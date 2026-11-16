@@ -56,8 +56,8 @@ export const TableCreatedClassesList = () => {
   const [classId, setClassId] = useState("");
   const [className, setClassName] = useState("");
 
-  const handlePublishClass = async (id: string) => {
-    await mutation.mutateAsync({ id, type: "publish" });
+  const handlePublishClass = (id: string) => {
+    mutation.mutate({ id, type: "publish" });
   };
 
   const handleDeleteClass = async (id: string) => {

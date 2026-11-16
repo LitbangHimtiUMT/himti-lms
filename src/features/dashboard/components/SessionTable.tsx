@@ -33,7 +33,7 @@ export const SessionTable = () => {
 
   const handleDeleteSession = async () => {
     if (sessionId) {
-      mutation.mutateAsync({
+      mutation.mutate({
         type: "delete",
         data: {
           name: "",

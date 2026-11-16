@@ -41,7 +41,7 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
     setData((prev) => ({ ...prev, fileModule: selectedFile }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const formData = new FormData();
 
     formData.append("name", data.name);
@@ -55,14 +55,14 @@ export const FormCreateModules = ({ data: moduleData }: FormCreateModulesProps =
     }
     formData.append("textModule", data.textModule || "");
     if (isEdit && moduleData) {
-      await mutation.mutateAsync({
+      mutation.mutate({
         type: "update",
         id: moduleData.id,
         data: formData,
       });
       return;
     }
-    await mutation.mutateAsync({
+    mutation.mutate({
       type: "create",
       data: formData,
     });

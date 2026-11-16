@@ -113,6 +113,8 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
     setFiles(selectedFile);
   };
 
+  // Async on purpose: the submit prop below requires a Promise<void>
+  // handler, even though the mutation itself is fire-and-forget.
   const handleSubmit = async () => {
     if (!files) return;
 
@@ -120,7 +122,7 @@ export const HeaderAssignment: React.FC<HeaderAssignmentProps> = ({
     formData.append("file", files);
     formData.append("assignmentId", data.id);
 
-    await mutation.mutateAsync({
+    mutation.mutate({
       type: "submit",
       data: formData as FormData,
       moduleId: data.module.id,

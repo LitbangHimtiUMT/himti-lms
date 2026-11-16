@@ -41,7 +41,7 @@ export const DetailSessionContent = () => {
     setSearchParams({ ...queries, page });
 
   const handleDeleteModule = async () => {
-    mutation.mutateAsync({
+    mutation.mutate({
       type: "delete",
       id: moduleId,
     });

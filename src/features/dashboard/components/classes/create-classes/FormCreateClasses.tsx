@@ -64,7 +64,7 @@ export const FormCreateClasses = () => {
     setForm((prev) => ({ ...prev, thumbnail: selectedFile })); // simpan file kalau valid
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
 
@@ -74,7 +74,7 @@ export const FormCreateClasses = () => {
       }
     });
 
-    await mutation.mutateAsync({
+    mutation.mutate({
       type: "create",
       data: formData,
     });
