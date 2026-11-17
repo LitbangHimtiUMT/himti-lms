@@ -48,8 +48,15 @@ export const CardEnrolledClass: React.FC<CardEnrolledClassProps> = ({
     !certificate && !owner
   );
   const eligible = eligibility?.data?.eligible ?? false;
+  // Participant path only: the server returns an empty assignment
+  // list for the mentor path, so the meter would read 0/0. A
+  // response without a role (older API) still shows the hint.
   const showHint =
-    !certificate && !owner && !!eligibility?.data && !eligible;
+    !certificate &&
+    !owner &&
+    !!eligibility?.data &&
+    !eligible &&
+    eligibility?.data?.role !== "PEMATERI";
   // Waiting state: every assignment approved, but the mentor has not
   // marked the class completed yet, so the claim stays locked.
   const allApproved =
