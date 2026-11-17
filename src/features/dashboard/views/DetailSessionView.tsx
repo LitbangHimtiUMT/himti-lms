@@ -39,17 +39,24 @@ export const DetailSessionView = () => {
             !!profile?.data?.isMentor
           }
         >
-          {isCompleted ? (
-            <Button variant="disabled">Create Modules</Button>
-          ) : (
-            <Link
-              to={`/dashboard/${classId}/${sessionId}/create-modules${
-                from ? `?from=${from}` : ""
-              }`}
-            >
-              <Button>Create Modules</Button>
-            </Link>
-          )}
+          {/* The Button is w-full by design, so it needs a
+              width-constraining wrapper or it squeezes the breadcrumb
+              as a direct flex child (same w-48 pattern as the class
+              detail header). */}
+          <div className="lg:w-48 w-full shrink-0">
+            {isCompleted ? (
+              <Button variant="disabled">Create Modules</Button>
+            ) : (
+              <Link
+                className="block"
+                to={`/dashboard/${classId}/${sessionId}/create-modules${
+                  from ? `?from=${from}` : ""
+                }`}
+              >
+                <Button>Create Modules</Button>
+              </Link>
+            )}
+          </div>
         </ConditionNode>
       </div>
       <DetailSessionContent />
