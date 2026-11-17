@@ -1,4 +1,6 @@
 import { Button } from "../../_global/components/Button";
+import { Badge, BadgeVariant } from "../../_global/components/Badge";
+import { CertificateRole } from "../../../core/model/certificates";
 import { FaExternalLinkAlt, FaEye } from "react-icons/fa";
 import { useSearchParams } from "react-router-dom";
 import { CONFIG_APP } from "../../../core/configs/app";
@@ -7,6 +9,13 @@ import { Poppins } from "../../_global/components/Text";
 import { convertQueryParamsToObject } from "../../_global/helper";
 import { formatTime } from "../../_global/lib/format-time";
 import { useCertificates } from "../hooks/useCertificates";
+
+// Role pill variants: existing Badge variants only, one hue per
+// role so a mentor certificate is distinguishable at a glance.
+const roleVariant: Record<CertificateRole, BadgeVariant> = {
+  PESERTA: "primary",
+  PEMATERI: "secondary",
+};
 
 export const CertificatesViews = () => {
   const { data: certificates, isFetching, isError, refetch } =
@@ -51,7 +60,7 @@ export const CertificatesViews = () => {
             currentPage: certificates?.meta?.page || 1,
             onPageChange: (page) => handleChangePage(String(page)),
           }}
-          title={["Certificate ID", "Class", "Category", "Issue Date" , '']}
+          title={["Certificate ID", "Class", "Category", "Role", "Issue Date" , '']}
           isError={isError}
           onRetry={refetch}
           columnTable={[
@@ -73,6 +82,16 @@ export const CertificatesViews = () => {
                   {classes.category.name}
                 </Poppins>
               ),
+            },
+            {
+              // A response without a role (older API) shows no pill
+              // rather than an empty one.
+              return: ({ role }) =>
+                role ? (
+                  <Badge size="sm" variant={roleVariant[role]}>
+                    {role}
+                  </Badge>
+                ) : null,
             },
             {
               return: ({ createdAt }) => (

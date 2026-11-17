@@ -3,8 +3,10 @@ import { ClassReviewsSection } from "../components/ClassReviewsSection";
 import { useSession } from "../../authentication/hooks/useSession";
 import { useProfile } from "../../profile/useProfile";
 import { useCertificateEligibility } from "../../certificates/hooks/useCertificateEligibility";
+import { useGenerateCertificate } from "../../dashboard/hooks/certificates/useGenerateCertificate";
 import { useNavigate } from "react-router-dom";
 import DefaultImage from "@core/assets/default-photo.svg";
+import { CONFIG_APP } from "@core/configs/app";
 import { StatusClasses } from "@core/model/classes";
 import { EligibilityAssignmentStatus } from "@core/model/certificates";
 import { Poppins } from "../../_global/components/Text";
@@ -16,6 +18,7 @@ import {
   FaLayerGroup,
   FaArrowLeft,
   FaTag,
+  FaEye,
 } from "react-icons/fa";
 import { formatRupiah } from "../../_global/helper";
 
@@ -71,13 +74,28 @@ export const ClassDetailView = () => {
   // navbar's cached query, so this adds no request.
   const isCreator = course?.creator?.id === profile?.data?.id;
 
-  // Eligibility is only meaningful for enrolled participants: guests
-  // and the class creator never see this section, and no request is
-  // made for them.
+  // Eligibility is meaningful for enrolled participants and for
+  // class mentors (the creator and co-mentors): the creator is a
+  // mentor, so there is no creator exclusion. The server decides
+  // which claim path applies from the caller's relation to the
+  // class. Guests get no request.
   const { data: eligibility } = useCertificateEligibility(
     course?.id,
-    !!course?.isAlreadyJoin && !isCreator
+    !!course?.isAlreadyJoin || !!course?.isClassMentor
   );
+  const generateCertificate = useGenerateCertificate();
+
+  // The mentor path never renders the assignment meter: the server
+  // returns an empty assignment list for mentors, and mentor
+  // eligibility depends only on class completion and sessions. A
+  // response without a role (older API) falls through to the
+  // participant variant, preserving the previous behavior.
+  const isMentorPath = eligibility?.data?.role === "PEMATERI";
+
+  // The held certificate's code, captured in a const so the View
+  // button's onClick closure can use it: narrowing of
+  // eligibility.data does not survive into callbacks.
+  const certificateCode = eligibility?.data?.certificateCode;
 
   if (isFetching) {
     return (
@@ -196,12 +214,74 @@ export const ClassDetailView = () => {
             </div>
           </section>
 
-          {/* Certificate progress (enrolled participants only) */}
+          {/* Certificate section: assignment meter for participants,
+              claim states for mentors (no assignment meter) */}
           {eligibility?.data && (
             <section>
               <h2 className="text-xl font-bold text-slate-800 mb-3 border-b border-slate-100 pb-2">
                 Progres Sertifikat
               </h2>
+              {isMentorPath ? (
+                <>
+                  {eligibility.data.hasCertificate &&
+                  certificateCode ? (
+                    <>
+                      <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                        Sertifikat pemateri Anda untuk kelas ini sudah terbit.
+                      </p>
+                      <div className="w-max">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() =>
+                            window.open(
+                              `${CONFIG_APP.BASE_URL}/lms/certificates/file?code=${certificateCode}`,
+                              "_blank",
+                              "noopener,noreferrer"
+                            )
+                          }
+                        >
+                          <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+                            <FaEye className="shrink-0 text-gray-600 dark:text-gray-300" />
+                            <Poppins>Lihat Sertifikat</Poppins>
+                          </div>
+                        </Button>
+                      </div>
+                    </>
+                  ) : eligibility.data.eligible ? (
+                    <>
+                      <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                        Kelas sudah selesai. Klaim sertifikat pemateri Anda.
+                      </p>
+                      <div className="w-max">
+                        <Button
+                          size="sm"
+                          variant={
+                            generateCertificate.isPending
+                              ? "disabled"
+                              : "primary"
+                          }
+                          onClick={() =>
+                            generateCertificate.mutate({ classId: course.id })
+                          }
+                        >
+                          <span className="flex items-center justify-center whitespace-nowrap">
+                            {generateCertificate.isPending
+                              ? "Memproses..."
+                              : "Klaim Sertifikat"}
+                          </span>
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      Sertifikat pemateri bisa diklaim setelah kelas ditandai
+                      selesai dan memiliki minimal satu sesi.
+                    </p>
+                  )}
+                </>
+              ) : (
+                <>
               <p className="text-sm text-slate-600 leading-relaxed mb-3">
                 Sertifikat bisa diklaim setelah semua tugas disetujui mentor
                 dan mentor menandai kelas selesai.
@@ -247,6 +327,8 @@ export const ClassDetailView = () => {
                     </li>
                   ))}
                 </ul>
+              )}
+                </>
               )}
             </section>
           )}

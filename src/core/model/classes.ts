@@ -20,6 +20,10 @@ export interface ClassModel {
   name: string;
   description: string;
   isAlreadyJoin: boolean;
+  // True when the caller is the class creator or a co-mentor.
+  // Only the class detail response carries it; absence (list
+  // responses, guests) is treated as false.
+  isClassMentor?: boolean;
   status: StatusClasses;
   // null = not completed. Optional: list responses from an older API
   // may not carry it; absence is treated as not completed.
