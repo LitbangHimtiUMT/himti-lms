@@ -7,6 +7,9 @@ import {
   useDetailClass,
 } from "../../../../class/hooks/useClasses";
 import { useProfile } from "../../../../profile/useProfile";
+import { useCertificateEligibility } from "../../../../certificates/hooks/useCertificateEligibility";
+import { useGenerateCertificate } from "../../../hooks/certificates/useGenerateCertificate";
+import { CONFIG_APP } from "../../../../../core/configs/app";
 import { DrawerParticipants } from "../../drawer/DrawerParticipants";
 import { Poppins } from "../../../../_global/components/Text";
 import { DrawerMentorClass } from "../../drawer/DrawerMentorClass";
@@ -29,6 +32,26 @@ export const HeaderDetailClass = () => {
   const isCompleted = !!classes?.data?.completedAt;
   const canComplete =
     !!classId && classes?.data?.status !== "DRAFT" && !isCompleted;
+
+  // Mentor certificate claim: the eligibility endpoint decides the
+  // caller's path server-side; the button only appears for class
+  // mentors (creator or co-mentor) once the class can actually
+  // issue their certificate — eligible, or already holding one.
+  // Until the answer arrives, no button: claiming on unknown
+  // eligibility would be a guess.
+  const { data: eligibility } = useCertificateEligibility(
+    classId,
+    !!classId && !!classes?.data?.isClassMentor
+  );
+  const generateCertificate = useGenerateCertificate();
+  const certificateCode = eligibility?.data?.certificateCode;
+  const hasCertificate =
+    eligibility?.data?.hasCertificate === true && !!certificateCode;
+  const certificateFileUrl = certificateCode
+    ? `${CONFIG_APP.BASE_URL}/lms/certificates/file?code=${certificateCode}`
+    : null;
+  const showClaimAction =
+    hasCertificate || (eligibility?.data?.eligible ?? false);
 
   const handleDeleteClass = async () => {
     if (classes?.data?.id) {
@@ -161,6 +184,42 @@ export const HeaderDetailClass = () => {
                 >
                   Mark Completed
                 </Button>
+              </ConditionNode>
+            </div>
+          )}
+          {showClaimAction && (
+            <div className="md:w-48 w-full">
+              <ConditionNode
+                condition={!isFetching}
+                option={<Skeleton width="100%" height="2rem" />}
+              >
+                {hasCertificate && certificateFileUrl ? (
+                  <Button
+                    variant="secondary"
+                    onClick={() =>
+                      window.open(
+                        certificateFileUrl,
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
+                  >
+                    View Certificate
+                  </Button>
+                ) : (
+                  <Button
+                    variant={
+                      generateCertificate.isPending ? "disabled" : "primary"
+                    }
+                    onClick={() =>
+                      classId && generateCertificate.mutate({ classId })
+                    }
+                  >
+                    {generateCertificate.isPending
+                      ? "Generating..."
+                      : "Claim Certificate"}
+                  </Button>
+                )}
               </ConditionNode>
             </div>
           )}
