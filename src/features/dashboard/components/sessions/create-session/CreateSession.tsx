@@ -6,13 +6,12 @@ import { useDetailClass } from "../../../../class/hooks/useClasses";
 import { useProfile } from "../../../../profile/useProfile";
 import { DrawerStateSession } from "../../../store";
 import { SessionDrawerCreation } from "../../drawer/SessionDrawerCreation";
-import { Skeleton } from "../../../../_global/components/Shimer";
 
 export const CreateSession = () => {
   const { classId, id } = useParams();
 
   const [show, setShow] = useAtom(DrawerStateSession);
-  const { data: profile, isLoading } = useProfile();
+  const { data: profile } = useProfile();
   const { data: classes } = useDetailClass();
 
   const isOwner = profile?.data?.id === classes?.data?.creator?.id;
@@ -25,25 +24,17 @@ export const CreateSession = () => {
           profile fetch a non-owner would otherwise see a skeleton
           that vanishes with nothing in its place. */}
       <ConditionNode condition={(!!classId || !!id) && isOwner}>
-        {isLoading ? (
-          <>
-            <div>
-              <Skeleton width="100%" height="2rem" />
-            </div>
-          </>
-        ) : (
-          <div className="cursor-pointer">
-            <Button
-              variant={isCompleted ? "disabled" : "primary"}
-              onClick={onHide}
-              style={{
-                cursor: "pointer",
-              }}
-            >
-              Create Session
-            </Button>
-          </div>
-        )}
+        <div className="cursor-pointer">
+          <Button
+            variant={isCompleted ? "disabled" : "primary"}
+            onClick={onHide}
+            style={{
+              cursor: "pointer",
+            }}
+          >
+            Create Session
+          </Button>
+        </div>
       </ConditionNode>
       <SessionDrawerCreation
         data={show.data}
