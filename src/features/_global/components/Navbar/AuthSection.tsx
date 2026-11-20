@@ -15,7 +15,7 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
   direction = "row",
 }) => {
   const { isAuthenticated } = useSession();
-  const { data: profile, isFetching } = useProfile();
+  const { data: profile, isLoading } = useProfile();
   const [show, setShow] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -45,12 +45,12 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
     };
   }, [open ]);
 
-  const photo = !profile?.data?.photo || isFetching ? DefaultImage : profile?.data?.photo;
+  const photo = !profile?.data?.photo || isLoading ? DefaultImage : profile?.data?.photo;
 
   return (
     <>
-      {isAuthenticated || isFetching ? (
-        isFetching ? (
+      {isAuthenticated || isLoading ? (
+        isLoading ? (
           <div
             className={`flex items-center gap-2 ${
               direction === "row" ? "" : "flex-col"

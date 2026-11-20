@@ -9,7 +9,13 @@ import DefaultImage from "@core/assets/default-photo.svg";
 import { Poppins } from "../../_global/components/Text";
 
 const ClassLayout: React.FC = () => {
-  const { data: classes, isFetching, isError, refetch } = useClasses();
+  const { data: classes, isLoading, isFetching, isError, refetch } =
+    useClasses();
+
+  // Skeleton only before the first load: paging/search/filter refetches
+  // keep the cached cards on screen instead of swapping in skeletons.
+  const isLoadingClasses =
+    isLoading || (isFetching && !classes?.data);
 
   // A failed refetch keeps stale data: only treat it as an error
   // when there is nothing to show at all.
@@ -30,8 +36,8 @@ const ClassLayout: React.FC = () => {
   return (
     <>
       <div className="py-10">
-        <div className={`${classes?.data?.length || isFetching ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center" : 'flex justify-center'}`}>
-          {isFetching && (
+        <div className={`${classes?.data?.length || isLoadingClasses ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center" : 'flex justify-center'}`}>
+          {isLoadingClasses && (
             <>
               <div className="bg-white border border-slate-200/80 rounded-2xl p-4 w-full h-[420px] flex flex-col gap-4 animate-pulse">
                 <div className="w-full h-48 bg-slate-200/60 rounded-xl" />
@@ -53,7 +59,7 @@ const ClassLayout: React.FC = () => {
               </div>
             </>
           )}
-          {!isFetching && isLoadError && (
+          {!isLoadingClasses && isLoadError && (
             <div className="w-full">
               <QueryErrorState
                 description={[
@@ -65,13 +71,13 @@ const ClassLayout: React.FC = () => {
               />
             </div>
           )}
-          {!isFetching && !isLoadError && !classes?.data?.length && (
+          {!isLoadingClasses && !isLoadError && !classes?.data?.length && (
             <div className="text-center w-full py-16 flex flex-col items-center justify-center gap-2">
               <Poppins className="text-lg text-slate-700 font-semibold">Tidak Ada Kelas Ditemukan</Poppins>
               <Poppins className="text-sm text-slate-400">Coba cari dengan kata kunci lain atau hubungi admin.</Poppins>
             </div>
           )}
-          {!isFetching && classes?.data &&
+          {!isLoadingClasses && classes?.data &&
             classes.data.map((course, index) => (
               <ClassCard
                 key={index}

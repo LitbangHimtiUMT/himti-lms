@@ -40,6 +40,7 @@ interface DialogType {
 export const DetailAssignmentContent = () => {
   const {
     assignmentData: assignment,
+    isLoading: isAssignmentLoading,
     isFetching: isFetchingAssignment,
     isError: isErrorAssignment,
     refetch: refetchAssignment,
@@ -47,6 +48,7 @@ export const DetailAssignmentContent = () => {
   const {
     getByAssignment: {
       data: submissions,
+      isLoading: isSubmissionsLoading,
       isFetching: isFetchingSubmission,
       isError: isErrorSubmission,
       refetch: refetchSubmissions,
@@ -54,6 +56,14 @@ export const DetailAssignmentContent = () => {
     approve,
     reject,
   } = useSubmissions(["get-by-assignment"]);
+
+  // Assignment and submissions load independently: a submissions
+  // refetch (e.g. after approve/reject) must not collapse the
+  // assignment detail that is already on screen, and vice versa.
+  const isLoadingAssignment =
+    isAssignmentLoading || (isFetchingAssignment && !assignment);
+  const isLoadingSubmissions =
+    isSubmissionsLoading || (isFetchingSubmission && !submissions?.data);
   const [approval, setApproval] = useState<DialogType | null>(null);
 
   const { data: classes } = useDetailClass();
@@ -80,7 +90,7 @@ export const DetailAssignmentContent = () => {
   const [show, setShow] = useState(false);
   const onHide = () => setShow((prev) => !prev);
 
-  if (isFetchingAssignment || isFetchingSubmission) {
+  if (isLoadingAssignment) {
     return (
       <div className="flex flex-col gap-6 mb-6">
         <Skeleton width="100%" height="500px" />
@@ -216,8 +226,11 @@ export const DetailAssignmentContent = () => {
             </h2>
           </div>
 
-          <>
-            {/* Desktop Table */}
+          {isLoadingSubmissions ? (
+            <Skeleton width="100%" height="300px" />
+          ) : (
+            <>
+              {/* Desktop Table */}
             <Table className="hidden sm:block">
               <TableHead
                 field={[
@@ -456,7 +469,8 @@ export const DetailAssignmentContent = () => {
                 </>
               )}
             </div>
-          </>
+            </>
+          )}
         </div>
         <ConditionNode condition={!!approval}>
           <>

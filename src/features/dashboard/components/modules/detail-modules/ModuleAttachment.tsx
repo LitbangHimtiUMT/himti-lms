@@ -4,8 +4,9 @@ import { useDetailModule } from "../../../hooks/modules/useModules";
 import { Skeleton } from "../../../../_global/components/Shimer";
 
 export const ModuleAttachment = () => {
-  const { data: modules, isFetching } = useDetailModule();
-  if (isFetching) return <Skeleton width="100%" height="6rem" />;
+  const { data: modules, isLoading, isFetching } = useDetailModule();
+  if (isLoading || (isFetching && !modules?.data))
+    return <Skeleton width="100%" height="6rem" />;
   return (
     <div className="group relative">
       <div

@@ -18,8 +18,12 @@ export const LearningDashboardView = () => {
 
   const moduleIdQs = searchParams.get("moduleId") || "";
 
-  const { data: module, isFetching, isError, refetch } =
+  const { data: module, isLoading, isFetching, isError, refetch } =
     useDetailModule(moduleIdQs);
+
+  // Skeleton only before the first load: switching modules refetches
+  // with the previous module still cached, so it stays on screen.
+  const isLoadingModule = isLoading || (isFetching && !module?.data);
 
   const { data: classes } = useDetailClass();
   const total = classes?.data?.total;
@@ -87,7 +91,7 @@ export const LearningDashboardView = () => {
         )}
 
         {/* Di dalam div Main Content (sebelum div penutup) */}
-        {isFetching ? (
+        {isLoadingModule ? (
           <>
             <div className="p-6 pb-24 flex flex-col gap-5">
               <Skeleton width="100%" height="50px" />

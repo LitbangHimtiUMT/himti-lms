@@ -33,7 +33,7 @@ export const LearningRoot: React.FC<LearningRootProps> = ({
       <div className="flex relative min-h-screen">
         {withSidebar && (
           <GeneralSidebar
-            isFetching={menu.isFetching}
+            isLoading={menu.isLoading}
             items={menu.menus}
             collapsed={collapsed}
           />

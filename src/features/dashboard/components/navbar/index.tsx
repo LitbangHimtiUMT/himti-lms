@@ -18,7 +18,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
   withSidebar = false,
   collapsed = false,
 }) => {
-  const { data: profile, isFetching } = useProfile();
+  const { data: profile, isLoading } = useProfile();
   const role = profile?.data?.isMentor
     ? "Mentor"
     : profile?.data?.role || "unknown";
@@ -64,7 +64,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
           </h2>
         )}
         <div className="ml-auto flex items-center gap-3">
-          {isFetching ? (
+          {isLoading ? (
             <Skeleton width="4rem" height="1rem" />
           ) : (
             <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
@@ -72,7 +72,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
             </span>
           )}
           <div className="flex items-center gap-2.5">
-            {isFetching ? (
+            {isLoading ? (
               <>
                 <Skeleton width="8rem" height="0.8rem" />
                 <Skeleton width="2rem" height="2rem" borderRadius="100%" />
@@ -84,7 +84,7 @@ export const DashboardNavbar: React.FC<DashboardNavbarProps> = ({
                 </p>
                 <img
                   src={
-                    !profile?.data?.photo || isFetching
+                    !profile?.data?.photo || isLoading
                       ? DefaultImage
                       : profile?.data?.photo
                   }
