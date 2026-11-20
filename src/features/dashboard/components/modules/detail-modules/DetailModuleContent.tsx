@@ -25,6 +25,7 @@ interface DrawerState {
 export const DetailModuleContent = () => {
   const {
     data: modules,
+    isLoading,
     isFetching: isFetchingModules,
     isError,
     refetch,
@@ -46,7 +47,12 @@ export const DetailModuleContent = () => {
     }
   };
 
-  if (isFetchingModules) {
+  // Skeleton only before the first load: a background refetch keeps
+  // the cached module on screen (dimmed via opacity-70 below).
+  const isLoadingModules =
+    isLoading || (isFetchingModules && !modules?.data);
+
+  if (isLoadingModules) {
     return (
       <>
         <Skeleton width="100%" height="500px" />
@@ -74,7 +80,7 @@ export const DetailModuleContent = () => {
         }`}
       >
         {isCompleted && <CompletedClassNotice />}
-        {!modules?.data?.assignment && !isFetchingModules ? (
+        {!modules?.data?.assignment && !isLoadingModules ? (
           <>
             <div className="flex items-center justify-end">
               <div className="w-48">
@@ -159,7 +165,7 @@ export const DetailModuleContent = () => {
           condition={
             !!modules?.data?.file.url &&
             !!modules.data.file.fileName &&
-            !isFetchingModules
+            !isLoadingModules
           }
         >
           <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">

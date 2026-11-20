@@ -1,6 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import useDebounce from "../../_global/hooks/useDebounce";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { certificateService } from "../../../core/services/certificates";
 
 export const useCertificates = () => {
@@ -25,5 +25,8 @@ export const useCertificates = () => {
     // fresh every time the user lands here, or a just-claimed
     // certificate stays invisible until a manual retry.
     refetchOnMount: true,
+    // Keep the previous page visible while the next one loads, so
+    // paging/search does not swap the table for skeletons.
+    placeholderData: keepPreviousData,
   });
 };

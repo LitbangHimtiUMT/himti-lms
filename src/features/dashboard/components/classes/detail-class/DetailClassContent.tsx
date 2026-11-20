@@ -6,7 +6,8 @@ import { HeaderDetailClass } from "./HeaderDetailClass";
 import { CompletedClassNotice } from "../ClassContentNotices";
 
 export const DetailClassContent = () => {
-  const { data: classes, isFetching, isError, refetch } = useDetailClass();
+  const { data: classes, isLoading, isFetching, isError, refetch } =
+    useDetailClass();
   return (
     <>
       <div className="flex flex-col gap-8">
@@ -33,7 +34,9 @@ export const DetailClassContent = () => {
               completedAt={classes?.data?.completedAt}
               thumbnail={classes?.data?.thumbnail || ""}
               totalParticipant={classes?.data?.totalParticipant || 0}
-              isFetching={isFetching}
+              // Skeleton only before the first load: a background refetch
+              // keeps the cached card on screen instead of collapsing it.
+              isLoading={isLoading || (isFetching && !classes?.data)}
             />
           )}
         </div>

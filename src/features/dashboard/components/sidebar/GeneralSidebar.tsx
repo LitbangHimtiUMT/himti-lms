@@ -13,7 +13,7 @@ import { ISidebarProps } from "./types";
 
 export const GeneralSidebar: React.FC<ISidebarProps> = ({
   items,
-  isFetching,
+  isLoading,
   collapsed = false,
 }) => {
   const [show, setShow] = useAtom(sidebarAtom);
@@ -79,7 +79,7 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({
 
         {/* Scrollable Items */}
         <div className="flex-1 overflow-y-auto">
-          {isFetching ? (
+          {isLoading ? (
             <div className="flex flex-col gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
                 <Skeleton key={index} width="100%" height="3rem" />

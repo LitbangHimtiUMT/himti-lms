@@ -17,7 +17,7 @@ interface CardDetailClassProps {
   // a default that would hide a data problem.
   status?: StatusClasses;
   completedAt?: string | null;
-  isFetching?: boolean;
+  isLoading?: boolean;
   id: string;
 }
 
@@ -30,7 +30,7 @@ export const CardDetailClass: React.FC<CardDetailClassProps> = ({
   totalParticipant,
   status,
   completedAt,
-  isFetching,
+  isLoading,
   name,
 }) => {
 
@@ -46,7 +46,7 @@ export const CardDetailClass: React.FC<CardDetailClassProps> = ({
     ARCHIVED: "warning",
   };
 
-  if (isFetching) {
+  if (isLoading) {
     return (
       <div className="w-full">
         <Skeleton width="100%" height="12rem" />

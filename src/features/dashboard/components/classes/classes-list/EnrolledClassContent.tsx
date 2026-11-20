@@ -13,9 +13,15 @@ import { useCategories } from "../../../../categories/hooks/useCategories";
 import { Button } from "../../../../_global/components/Button";
 
 export const EnrolledClassContent = () => {
-  const { data: classes, isFetching, isError, refetch } = useClasses({
-    path: "user",
-  });
+  const { data: classes, isLoading, isFetching, isError, refetch } =
+    useClasses({
+      path: "user",
+    });
+
+  // Skeleton only before the first load: paging/search refetches keep
+  // the cached cards on screen instead of swapping in skeletons.
+  const isLoadingClasses =
+    isLoading || (isFetching && !classes?.data);
 
   const { handleInputChange: handleSearch, value: search } =
     useSearchParamsInput("search");
@@ -90,7 +96,7 @@ export const EnrolledClassContent = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {isFetching ? (
+        {isLoadingClasses ? (
           // Loading skeleton
           Array.from({ length: 5 }).map((_, idx) => (
             <div

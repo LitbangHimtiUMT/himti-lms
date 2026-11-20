@@ -28,7 +28,7 @@ export const LearningUserRoot = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const moduleIdQs = searchParams.get("moduleId") || "";
-  const { data: classes, isFetching, isError, refetch } = useDetailClass();
+  const { data: classes, isLoading: isLoadingClass, isFetching, isError, refetch } = useDetailClass();
   // Perbaikan 1: Gunakan useMemo untuk inisialisasi awal modules
   const initialModules = useMemo(() => {
     return classes?.data?.sessions.map((item, index) => {
@@ -219,7 +219,7 @@ export const LearningUserRoot = () => {
 
             {/* Course Modules (scrollable) */}
             <div className="overflow-y-auto">
-              {isFetching ? (
+              {isLoadingClass || (isFetching && !classes?.data) ? (
                 <div className="flex flex-col gap-4 px-2 mt-2">
                   {Array.from({ length: 4 }).map((_, i) => (
                     <Skeleton key={i} width="100%" height="40px" />

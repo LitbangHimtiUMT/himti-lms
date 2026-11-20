@@ -94,7 +94,13 @@ const SkeletonCard = () => (
 );
 
 const MentorGrid = () => {
-  const { data: mentors, isFetching, isError, refetch } = useMentors();
+  const { data: mentors, isLoading, isFetching, isError, refetch } =
+    useMentors();
+
+  // Skeleton only before the first load: paging/search refetches keep
+  // the cached cards on screen instead of swapping in skeletons.
+  const isLoadingMentors =
+    isLoading || (isFetching && !mentors?.data);
   const {
     value: search,
     handleInputChange: handleSearch,
@@ -117,7 +123,7 @@ const MentorGrid = () => {
           />
         </div>
       </div>
-      {isFetching ? (
+      {isLoadingMentors ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <SkeletonCard />
           <SkeletonCard />

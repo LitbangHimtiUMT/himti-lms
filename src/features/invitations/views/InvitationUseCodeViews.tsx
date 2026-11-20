@@ -26,11 +26,16 @@ const decodeInvitationCode = (code: unknown): string | null => {
 export const InvitationUseCodeViews = () => {
   const {
     data: classes,
+    isLoading: classLoading,
     isFetching: classFetching,
     isError: isErrorClass,
     refetch: refetchClass,
   } = useDetailClass("code");
-  const { data: profile, isFetching: profileFetching } = useProfile();
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    isFetching: profileFetching,
+  } = useProfile();
 
   const mutation = useClassesCreation();
 
@@ -38,7 +43,11 @@ export const InvitationUseCodeViews = () => {
 
   const classData = classes?.data;
   const isCreator = classData?.creator?.id === profile?.data?.id;
-  const isFetching = classFetching || profileFetching;
+  // Skeleton only before the first load: a background refetch keeps
+  // the loaded class (and the Join button state) on screen.
+  const isLoading =
+    (classLoading || (classFetching && !classes?.data)) ||
+    (profileLoading || (profileFetching && !profile?.data));
   // Join only makes sense once the invited class actually loaded: no
   // data (or a failed load) must never leave an active Join button
   // next to an empty class name.
@@ -46,7 +55,7 @@ export const InvitationUseCodeViews = () => {
     !!classData &&
     !!code &&
     !isErrorClass &&
-    !isFetching &&
+    !isLoading &&
     !mutation.isPending &&
     !isCreator &&
     !classData.isAlreadyJoin;
@@ -69,7 +78,7 @@ export const InvitationUseCodeViews = () => {
           You have been invited to join the following class:
         </p>
 
-        {isFetching ? (
+        {isLoading ? (
           <div className="flex flex-col items-center gap-2">
             <Skeleton width="75%" height="1.5rem" />
             <Skeleton width="60%" height="1rem" />
@@ -101,7 +110,7 @@ export const InvitationUseCodeViews = () => {
             <div className="flex flex-col items-center gap-3 w-full">
               <ConditionNode
                 condition={
-                  !!classData.isAlreadyJoin && !isCreator && !isFetching
+                  !!classData.isAlreadyJoin && !isCreator && !isLoading
                 }
               >
                 <div className="bg-red-100 w-[75#] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
@@ -110,7 +119,7 @@ export const InvitationUseCodeViews = () => {
               </ConditionNode>
               <ConditionNode
                 condition={
-                  isCreator && !classData.isAlreadyJoin && !isFetching
+                  isCreator && !classData.isAlreadyJoin && !isLoading
                 }
               >
                 <div className="bg-red-100 w-[75#] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">

@@ -33,6 +33,7 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
 
   const {
     data: classMentors,
+    isLoading: isLoadingClassMentor,
     isFetching: isFetchingClassMentor,
     isError: isErrorClassMentor,
     refetch: refetchClassMentors,
@@ -132,7 +133,8 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto py-4">
-          {isFetchingClassMentor ? (
+          {isLoadingClassMentor ||
+          (isFetchingClassMentor && !classMentors?.data) ? (
             <>
               <div className="flex flex-col gap-3 px-3">
                 <Skeleton width="100%" height="3.5rem" />

@@ -15,6 +15,7 @@ export const AssignmentDetailView = () => {
   };
   const {
     data: assignment,
+    isLoading: isAssignmentLoading,
     isFetching: isFetchingAssignment,
     isError: isErrorAssignment,
     refetch: refetchAssignment,
@@ -22,6 +23,7 @@ export const AssignmentDetailView = () => {
   const {
     get: {
       data: submissions,
+      isLoading: isSubmissionLoading,
       isFetching: isFetchingSubmission,
       isError: isErrorSubmission,
       refetch: refetchSubmission,
@@ -56,8 +58,15 @@ export const AssignmentDetailView = () => {
       <div>
         <AssignmentDetailContent
           mode={mode.assignment ? "current" : "history"}
+          // Skeleton only before the first load: a background refetch
+          // keeps the cached detail on screen instead of swapping in
+          // the skeleton.
           isLoading={
-            mode.assignment ? isFetchingAssignment : isFetchingSubmission
+            mode.assignment
+              ? isAssignmentLoading ||
+                (isFetchingAssignment && !assignment?.data)
+              : isSubmissionLoading ||
+                (isFetchingSubmission && !submissions?.data)
           }
           isOpen={mode.assignment ? assignment?.data?.isOpen : submissions?.data?.isOpen}
           type={mode.assignment ? assignment?.data?.type : submissions?.data?.assignment?.type}

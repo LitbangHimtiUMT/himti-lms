@@ -65,7 +65,8 @@ const eligibilityStatusVariant: Record<
 
 export const ClassDetailView = () => {
   const navigate = useNavigate();
-  const { data: res, isFetching, isError, refetch } = useDetailClass("id");
+  const { data: res, isLoading, isFetching, isError, refetch } =
+    useDetailClass("id");
   const { isAuthenticated, isLoading: isSessionLoading } = useSession();
   const { data: profile } = useProfile();
   const course = res?.data;
@@ -97,7 +98,9 @@ export const ClassDetailView = () => {
   // eligibility.data does not survive into callbacks.
   const certificateCode = eligibility?.data?.certificateCode;
 
-  if (isFetching) {
+  // Skeleton only before the first load: a background refetch keeps
+  // the loaded page on screen instead of swapping in the skeleton.
+  if (isLoading || (isFetching && !res?.data)) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-16 animate-pulse">
         <div className="h-10 bg-slate-200 rounded w-1/3 mb-6" />

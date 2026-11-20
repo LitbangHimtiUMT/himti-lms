@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { participantService } from "../../../../core/services/participants";
 import useDebounce from "../../../_global/hooks/useDebounce";
 
@@ -30,5 +30,8 @@ export const useParticipants = (query: Query) => {
       });
     },
     enabled,
+    // Keep the previous list visible while a search refetch loads, so
+    // typing does not swap the list for skeletons on every keystroke.
+    placeholderData: keepPreviousData,
   });
 };

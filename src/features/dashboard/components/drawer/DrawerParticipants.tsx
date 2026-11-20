@@ -47,11 +47,12 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [isExporting, setIsExporting] = React.useState(false);
 
-  const { data: participants, isFetching, isError, refetch } = useParticipants({
-    path: `participant/${classId}`,
-    search: searchQuery,
-    enabled: show && !!classId,
-  });
+  const { data: participants, isLoading, isFetching, isError, refetch } =
+    useParticipants({
+      path: `participant/${classId}`,
+      search: searchQuery,
+      enabled: show && !!classId,
+    });
 
   const canExport =
     !isFetching && !isExporting && (participants?.data?.length ?? 0) > 0;
@@ -120,7 +121,7 @@ export const DrawerParticipants: React.FC<DrawerParticipantsProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto py-4">
-          {isFetching ? (
+          {isLoading || (isFetching && !participants?.data) ? (
             <>
               <div className="flex flex-col gap-3 px-3">
                 <Skeleton width="100%" height="3.5rem" />

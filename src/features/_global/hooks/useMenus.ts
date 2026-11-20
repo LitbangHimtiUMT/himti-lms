@@ -1,7 +1,7 @@
 import { useProfile } from "../../profile/useProfile";
 
 export const useMenus = () => {
-  const { data: profile, isFetching } = useProfile();
+  const { data: profile, isLoading } = useProfile();
   const isMentor = profile?.data?.isMentor as boolean;
 
   const menu = [
@@ -42,7 +42,7 @@ export const useMenus = () => {
   );
 
   return {
-    isFetching,
+    isLoading,
     menus: filteredMenu,
   };
 };

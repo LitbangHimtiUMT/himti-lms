@@ -11,7 +11,7 @@ export interface ISidebarItemProps {
 }
 
 export interface ISidebarProps {
-  isFetching?: boolean
+  isLoading?: boolean
   items: ISidebarItemProps[];
   collapsed?: boolean;
 }
