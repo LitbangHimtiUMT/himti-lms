@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { classesService } from "../../../../core/services/classes";
 import useDebounce from "../../../_global/hooks/useDebounce";
@@ -36,6 +36,9 @@ export const useClassMentors = (query: Query) => {
       });
     },
     enabled,
+    // Keep the previous list visible while a search refetch loads, so
+    // typing does not swap the list for skeletons on every keystroke.
+    placeholderData: keepPreviousData,
   });
 };
 

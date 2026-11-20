@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { mentorService } from "../../../core/services/mentor";
 import useDebounce from "../../_global/hooks/useDebounce";
@@ -20,6 +20,9 @@ export const useMentors = () => {
           search,
         },
       }),
+    // Keep the previous page visible while the next one loads, so
+    // paging/search does not swap the grid for skeletons.
+    placeholderData: keepPreviousData,
   });
 
   return query;

@@ -3,7 +3,7 @@ import { classesService } from "@core/services/classes";
 import { useSession } from "@features/authentication/hooks/useSession";
 import useDebounce from "@features/_global/hooks/useDebounce";
 import { getErrorMessage } from "../../_global/helper/get-error-message";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { InviteMentorDTO } from "../../../core/model/classes";
@@ -59,6 +59,9 @@ export function useClasses(options?: Options) {
         },
         path: options?.path,
       }),
+    // Keep the previous page visible while the next one loads, so
+    // paging/search/filter does not swap the list for skeletons.
+    placeholderData: keepPreviousData,
   });
   return query;
 }

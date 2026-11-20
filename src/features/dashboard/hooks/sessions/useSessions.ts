@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { SessionCreationDTO } from "../../../../core/model/sessions";
@@ -27,6 +27,9 @@ const [searchParams] = useSearchParams();
         }
       }),
     enabled: !!classId,
+    // Keep the previous page visible while the next one loads, so
+    // paging does not swap the table for skeletons.
+    placeholderData: keepPreviousData,
   });
 
   return query;
