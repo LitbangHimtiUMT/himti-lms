@@ -144,11 +144,10 @@ export const LearningDashboardView = () => {
         {isLoadingModule ? (
           <>
             {/* Same wrapper as LearningModuleContent below
-                (md:p-6 p-4 pb-48): title 32px, video aspect-video
-                (the real iframe is h-72 on mobile and ~600px+ on
-                desktop — aspect-video lands 201px on a phone, 87px
-                short of the real 288px, but the old 600px block was
-                312px too tall there), then prose text lines. */}
+                (md:p-6 p-4 pb-48): title 32px, video at the real
+                iframe's exact heights (h-72 on mobile,
+                lg:min-h-[600px] on desktop — EmbededYoutube.tsx),
+                then prose text lines. */}
             <div className="md:p-6 p-4 pb-48">
               <Skeleton
                 width="66%"
@@ -157,12 +156,16 @@ export const LearningDashboardView = () => {
                 tone={darkMode ? "dark" : "light"}
               />
               <div className="md:p-3 p-0">
-                <Skeleton
-                  width="100%"
-                  height="auto"
-                  aspectRatio="16 / 9"
-                  tone={darkMode ? "dark" : "light"}
-                />
+                {/* Same heights as the real iframe (EmbededYoutube):
+                    h-72 on mobile, lg:min-h-[600px] on desktop. */}
+                <div className="w-full lg:min-h-[600px] h-72">
+                  <Skeleton
+                    width="100%"
+                    height="100%"
+                    borderRadius="0.375rem"
+                    tone={darkMode ? "dark" : "light"}
+                  />
+                </div>
                 <div className="mt-4 space-y-2">
                   <Skeleton
                     width="100%"
