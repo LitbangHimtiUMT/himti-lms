@@ -13,6 +13,7 @@ import { Poppins } from "../../_global/components/Text";
 import { Badge, BadgeVariant } from "../../_global/components/Badge";
 import { Button } from "../../_global/components/Button";
 import { QueryErrorState } from "../../_global/components/QueryErrorState";
+import { Skeleton } from "../../_global/components/Shimer";
 import {
   FaUsers,
   FaLayerGroup,
@@ -106,19 +107,22 @@ export const ClassDetailView = () => {
   // the left sections and the enrollment card.
   if (isLoading || (isFetching && !res?.data)) {
     return (
-      <div className="font-sans text-gray-800 animate-pulse">
+      <div className="font-sans text-gray-800">
         {/* Hero: same full-bleed h-[320px] md:h-[400px] block, with
             the overlay content (back link, pills, title) at the
             bottom, px-6 pb-10 md:px-16 */}
-        <div className="relative h-[320px] md:h-[400px] overflow-hidden bg-slate-200">
+        <div className="relative h-[320px] md:h-[400px] overflow-hidden">
+          <Skeleton width="100%" height="100%" borderRadius="0" />
           <div className="absolute inset-0 flex flex-col justify-end px-6 pb-10 md:px-16">
-            <div className="h-5 w-32 bg-slate-300 rounded mb-4" />
+            <Skeleton width="8rem" height="1.25rem" className="mb-4" />
             <div className="flex flex-wrap gap-2 mb-2">
-              <div className="h-6 w-20 bg-slate-300 rounded-full" />
-              <div className="h-6 w-28 bg-slate-300 rounded-full" />
-              <div className="h-6 w-24 bg-slate-300 rounded-full" />
+              <Skeleton width="5rem" height="1.5rem" borderRadius="9999px" />
+              <Skeleton width="7rem" height="1.5rem" borderRadius="9999px" />
+              <Skeleton width="6rem" height="1.5rem" borderRadius="9999px" />
             </div>
-            <div className="h-11 md:h-12 w-2/3 max-w-3xl bg-slate-300 rounded" />
+            <div className="h-11 md:h-12 w-2/3 max-w-3xl">
+              <Skeleton width="100%" height="100%" />
+            </div>
           </div>
         </div>
 
@@ -129,12 +133,12 @@ export const ClassDetailView = () => {
             {/* Description: h2 (text-xl) + 3 text lines */}
             <section>
               <div className="mb-3 border-b border-slate-100 pb-2">
-                <div className="h-7 w-40 bg-slate-200 rounded" />
+                <Skeleton width="10rem" height="1.75rem" />
               </div>
               <div className="space-y-1">
-                <div className="h-4 bg-slate-200 rounded w-full" />
-                <div className="h-4 bg-slate-200 rounded w-5/6" />
-                <div className="h-4 bg-slate-200 rounded w-4/6" />
+                <Skeleton width="100%" height="1rem" />
+                <Skeleton width="83.33%" height="1rem" />
+                <Skeleton width="66.67%" height="1rem" />
               </div>
             </section>
 
@@ -146,9 +150,9 @@ export const ClassDetailView = () => {
                   key={i}
                   className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col items-center gap-2"
                 >
-                  <div className="h-5 w-5 bg-slate-200 rounded" />
-                  <div className="h-8 w-12 bg-slate-200 rounded" />
-                  <div className="h-4 w-16 bg-slate-200 rounded" />
+                  <Skeleton width="1.25rem" height="1.25rem" />
+                  <Skeleton width="3rem" height="2rem" />
+                  <Skeleton width="4rem" height="1rem" />
                 </div>
               ))}
             </section>
@@ -157,10 +161,10 @@ export const ClassDetailView = () => {
                 2 assignment rows (px-4 py-3, title + module + badge) */}
             <section>
               <div className="mb-3 border-b border-slate-100 pb-2">
-                <div className="h-7 w-56 bg-slate-200 rounded" />
+                <Skeleton width="14rem" height="1.75rem" />
               </div>
-              <div className="h-5 bg-slate-200 rounded w-full mb-3" />
-              <div className="h-5 bg-slate-200 rounded w-64 mb-3" />
+              <Skeleton width="100%" height="1.25rem" className="mb-3" />
+              <Skeleton width="16rem" height="1.25rem" className="mb-3" />
               <ul className="space-y-2">
                 {[0, 1].map((i) => (
                   <li
@@ -168,10 +172,10 @@ export const ClassDetailView = () => {
                     className="flex items-center justify-between gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3"
                   >
                     <div className="space-y-1">
-                      <div className="h-5 w-40 bg-slate-200 rounded" />
-                      <div className="h-4 w-24 bg-slate-200 rounded" />
+                      <Skeleton width="10rem" height="1.25rem" />
+                      <Skeleton width="6rem" height="1rem" />
                     </div>
-                    <div className="h-6 w-16 bg-slate-200 rounded-full shrink-0" />
+                    <Skeleton width="4rem" height="1.5rem" borderRadius="9999px" className="shrink-0" />
                   </li>
                 ))}
               </ul>
@@ -181,12 +185,12 @@ export const ClassDetailView = () => {
                 (avatar 40px + name/date + stars + 2 text lines) */}
             <section>
               <div className="mb-3 border-b border-slate-100 pb-2">
-                <div className="h-7 w-48 bg-slate-200 rounded" />
+                <Skeleton width="12rem" height="1.75rem" />
               </div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="h-5 w-5 bg-slate-200 rounded-full" />
-                <div className="h-7 w-10 bg-slate-200 rounded" />
-                <div className="h-5 w-28 bg-slate-200 rounded" />
+                <Skeleton width="1.25rem" height="1.25rem" borderRadius="9999px" />
+                <Skeleton width="2.5rem" height="1.75rem" />
+                <Skeleton width="7rem" height="1.25rem" />
               </div>
               <ul className="space-y-4">
                 {[0, 1].map((i) => (
@@ -195,16 +199,16 @@ export const ClassDetailView = () => {
                     className="bg-slate-50 border border-slate-100 rounded-xl p-4"
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="h-10 w-10 bg-slate-200 rounded-full shrink-0" />
+                      <Skeleton width="2.5rem" height="2.5rem" borderRadius="9999px" className="shrink-0" />
                       <div className="space-y-1">
-                        <div className="h-5 w-32 bg-slate-200 rounded" />
-                        <div className="h-4 w-24 bg-slate-200 rounded" />
+                        <Skeleton width="8rem" height="1.25rem" />
+                        <Skeleton width="6rem" height="1rem" />
                       </div>
                     </div>
-                    <div className="h-4 w-20 bg-slate-200 rounded" />
+                    <Skeleton width="5rem" height="1rem" />
                     <div className="mt-2 space-y-1">
-                      <div className="h-4 bg-slate-200 rounded w-full" />
-                      <div className="h-4 bg-slate-200 rounded w-5/6" />
+                      <Skeleton width="100%" height="1rem" />
+                      <Skeleton width="83.33%" height="1rem" />
                     </div>
                   </li>
                 ))}
@@ -214,13 +218,13 @@ export const ClassDetailView = () => {
             {/* Instructor placeholder: title + card (avatar 56px) */}
             <section>
               <div className="mb-4 border-b border-slate-100 pb-2">
-                <div className="h-7 w-48 bg-slate-200 rounded" />
+                <Skeleton width="12rem" height="1.75rem" />
               </div>
               <div className="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-xl p-4">
-                <div className="h-14 w-14 bg-slate-200 rounded-full shrink-0" />
+                <Skeleton width="3.5rem" height="3.5rem" borderRadius="9999px" className="shrink-0" />
                 <div className="space-y-1">
-                  <div className="h-5 w-40 bg-slate-200 rounded" />
-                  <div className="h-4 w-56 bg-slate-200 rounded" />
+                  <Skeleton width="10rem" height="1.25rem" />
+                  <Skeleton width="14rem" height="1rem" />
                 </div>
               </div>
             </section>
@@ -232,20 +236,20 @@ export const ClassDetailView = () => {
           <div className="col-span-1">
             <div className="sticky top-6">
               <div className="rounded-2xl border border-slate-200 shadow-lg bg-white overflow-hidden">
-                <div className="h-40 bg-slate-200" />
+                <Skeleton width="100%" height="10rem" borderRadius="0" />
                 <div className="p-5 space-y-4">
-                  <div className="h-8 w-24 bg-slate-200 rounded" />
+                  <Skeleton width="6rem" height="2rem" />
                   <ul className="space-y-2 divide-y divide-slate-100">
                     {[0, 1, 2, 3].map((i) => (
                       <li key={i} className="flex justify-between py-2">
-                        <div className="h-5 w-16 bg-slate-200 rounded" />
-                        <div className="h-5 w-20 bg-slate-200 rounded" />
+                        <Skeleton width="4rem" height="1.25rem" />
+                        <Skeleton width="5rem" height="1.25rem" />
                       </li>
                     ))}
                   </ul>
                   <div className="pt-2 space-y-2">
-                    <div className="h-8 w-full bg-slate-200 rounded-md" />
-                    <div className="h-8 w-full bg-slate-200 rounded-md" />
+                    <Skeleton width="100%" height="2rem" borderRadius="0.375rem" />
+                    <Skeleton width="100%" height="2rem" borderRadius="0.375rem" />
                   </div>
                 </div>
               </div>
@@ -481,21 +485,21 @@ export const ClassDetailView = () => {
             // (title + line + sm button at 24px), participants the
             // meter + assignment rows. Guests get nothing: the hook
             // is disabled for them, so this branch never renders.
-            <section className="animate-pulse" aria-hidden="true">
+            <section aria-hidden="true">
               <div className="mb-3 border-b border-slate-100 pb-2">
-                <div className="h-7 w-56 bg-slate-200 rounded" />
+                <Skeleton width="14rem" height="1.75rem" />
               </div>
               {course?.isClassMentor ? (
                 <>
-                  <div className="h-5 bg-slate-200 rounded w-3/4 mb-3" />
+                  <Skeleton width="75%" height="1.25rem" className="mb-3" />
                   <div className="w-max">
-                    <div className="h-6 w-32 bg-slate-200 rounded-md" />
+                    <Skeleton width="8rem" height="1.5rem" borderRadius="0.375rem" />
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="h-5 bg-slate-200 rounded w-full mb-3" />
-                  <div className="h-5 bg-slate-200 rounded w-64 mb-3" />
+                  <Skeleton width="100%" height="1.25rem" className="mb-3" />
+                  <Skeleton width="16rem" height="1.25rem" className="mb-3" />
                   <ul className="space-y-2">
                     {[0, 1, 2].map((i) => (
                       <li
@@ -503,10 +507,10 @@ export const ClassDetailView = () => {
                         className="flex items-center justify-between gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3"
                       >
                         <div className="space-y-1">
-                          <div className="h-5 w-40 bg-slate-200 rounded" />
-                          <div className="h-4 w-24 bg-slate-200 rounded" />
+                          <Skeleton width="10rem" height="1.25rem" />
+                          <Skeleton width="6rem" height="1rem" />
                         </div>
-                        <div className="h-6 w-16 bg-slate-200 rounded-full shrink-0" />
+                        <Skeleton width="4rem" height="1.5rem" borderRadius="9999px" className="shrink-0" />
                       </li>
                     ))}
                   </ul>
@@ -593,7 +597,7 @@ export const ClassDetailView = () => {
                   ) : isSessionLoading ? (
                     // md Button is 32px (px-3 py-1.5 text-sm), so the
                     // placeholder is h-8 in the same slot.
-                    <div className="h-8 w-full bg-slate-200 rounded-md animate-pulse" />
+                    <Skeleton width="100%" height="2rem" borderRadius="0.375rem" />
                   ) : !isAuthenticated ? (
                     <>
                       <Button
