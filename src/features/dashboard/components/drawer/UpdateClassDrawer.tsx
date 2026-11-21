@@ -87,7 +87,12 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
     setImage(selectedFile);
   };
 
-  const { data: detail, isFetching: classFetching } = useDetailClass(
+  // The detail fetch only refines two things: the authoritative
+  // completedAt (the row data already carries it — see the ?? below)
+  // and the thumbnail file size shown in the upload box. Neither
+  // blocks the form, so the drawer no longer waits on this fetch:
+  // the form renders from the row data the moment it opens.
+  const { data: detail } = useDetailClass(
     "id",
     show ? form?.id : undefined
   );
@@ -161,14 +166,54 @@ export const UpdateClassDrawer: React.FC<DrawerParticipantsProps> = ({
         <Poppins className="text-left text-lg px-5 mb-5 font-semibold">
           Update Class
         </Poppins>
-        {classFetching ? (
-          <>
-            <div className="flex flex-col gap-4 px-4">
-              {Array.from({ length: 3 }).map(() => (
-                <Skeleton width="100%" height="4rem" />
-              ))}
+        {/* The form renders from the row data as soon as it exists
+            (the drawer only opens with data — show={!!data} at the
+            call site). The skeleton below only covers the one-frame
+            gap before the effect fills `form`, so it mirrors the
+            form field by field: label (text-sm, 20px) + control,
+            same px-5 / gap-3 wrapper as the form itself. Measured
+            from the JSX below: input md 40px, textarea 160px,
+            dropdown trigger 42px, upload block ~280px, checkbox
+            20px, submit 32px. */}
+        {!form ? (
+          <div className="px-5 flex flex-col items-center gap-3">
+            <div className="w-full flex flex-col gap-2">
+              <Skeleton width="6rem" height="1.25rem" />
+              <Skeleton width="100%" height="2.5rem" />
             </div>
-          </>
+            <div className="w-full flex flex-col gap-2">
+              <Skeleton width="7rem" height="1.25rem" />
+              <Skeleton width="100%" height="10rem" />
+            </div>
+            <div className="w-full flex flex-col gap-2">
+              <Skeleton width="4rem" height="1.25rem" />
+              <Skeleton width="100%" height="42px" />
+            </div>
+            <div className="w-full flex flex-col gap-2">
+              <Skeleton width="5rem" height="1.25rem" />
+              <Skeleton width="100%" height="42px" />
+            </div>
+            <div className="w-full flex flex-col gap-2">
+              <Skeleton width="100%" height="5rem" />
+              <Skeleton width="6rem" height="1.5rem" />
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                <div className="flex flex-col items-center gap-3">
+                  <Skeleton width="3rem" height="3rem" />
+                  <Skeleton width="10rem" height="1.25rem" />
+                  <Skeleton width="8rem" height="1rem" />
+                </div>
+              </div>
+            </div>
+            <div className="w-full flex items-center gap-2">
+              <Skeleton width="1.25rem" height="1.25rem" />
+              <Skeleton width="3rem" height="1.25rem" />
+            </div>
+            <div className="w-full flex flex-col gap-2">
+              <Skeleton width="4rem" height="1.25rem" />
+              <Skeleton width="100%" height="2.5rem" />
+            </div>
+            <Skeleton width="100%" height="2rem" />
+          </div>
         ) : (
           <form
             className="px-5 flex flex-col items-center gap-3"
