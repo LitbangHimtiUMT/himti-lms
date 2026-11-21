@@ -53,11 +53,53 @@ export const DetailModuleContent = () => {
     isLoading || (isFetchingModules && !modules?.data);
 
   if (isLoadingModules) {
+    // Same container as the real content below (flex flex-col gap-6
+    // mb-6), with a block for each real section. Main card: same
+    // shell + p-6 md:p-8, pill + title header, then 8 text lines.
+    // Video card: same shell + p-4, title row, aspect-video block.
+    // Total lands near ~900px — the middle of the real range
+    // (a short text-only module is ~300px; long text + video + file
+    // reaches ~1500px). The Create Assignment row, the in-card View
+    // Assignment button, the file card and the completed notice are
+    // conditional on data we do not have yet, so they are not
+    // reserved; that costs one button/notice height either way.
+    const textLineWidths = [
+      "100%",
+      "100%",
+      "95%",
+      "100%",
+      "85%",
+      "100%",
+      "90%",
+      "60%",
+    ];
     return (
-      <>
-        <Skeleton width="100%" height="500px" />
-        <Skeleton width="100%" height="300px" />
-      </>
+      <div className="flex flex-col gap-6 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
+          <div className="p-6 md:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <Skeleton
+                width="9rem"
+                height="1.75rem"
+                borderRadius="9999px"
+              />
+              <Skeleton width="50%" height="1.75rem" />
+            </div>
+            <div className="space-y-3">
+              {textLineWidths.map((width, i) => (
+                <Skeleton key={i} width={width} height="1rem" />
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Skeleton width="1.25rem" height="1.25rem" />
+            <Skeleton width="10rem" height="1.75rem" />
+          </div>
+          <Skeleton width="100%" height="auto" aspectRatio="16 / 9" />
+        </div>
+      </div>
     );
   }
 
