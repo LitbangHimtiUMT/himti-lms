@@ -7,6 +7,7 @@ import { convertQueryParamsToObject } from "@features/_global/helper";
 import { useSearchParams } from "react-router-dom";
 import DefaultImage from "@core/assets/default-photo.svg";
 import { Poppins } from "../../_global/components/Text";
+import { Skeleton } from "../../_global/components/Shimer";
 
 const ClassLayout: React.FC = () => {
   const { data: classes, isLoading, isFetching, isError, refetch } =
@@ -39,24 +40,52 @@ const ClassLayout: React.FC = () => {
         <div className={`${classes?.data?.length || isLoadingClasses ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center" : 'flex justify-center'}`}>
           {isLoadingClasses && (
             <>
-              <div className="bg-white border border-slate-200/80 rounded-2xl p-4 w-full h-[420px] flex flex-col gap-4 animate-pulse">
-                <div className="w-full h-48 bg-slate-200/60 rounded-xl" />
-                <div className="h-6 bg-slate-200/60 rounded w-3/4" />
-                <div className="h-4 bg-slate-200/60 rounded w-1/2" />
-                <div className="h-10 bg-slate-200/60 rounded-xl mt-auto" />
-              </div>
-              <div className="bg-white border border-slate-200/80 rounded-2xl p-4 w-full h-[420px] flex flex-col gap-4 animate-pulse">
-                <div className="w-full h-48 bg-slate-200/60 rounded-xl" />
-                <div className="h-6 bg-slate-200/60 rounded w-3/4" />
-                <div className="h-4 bg-slate-200/60 rounded w-1/2" />
-                <div className="h-10 bg-slate-200/60 rounded-xl mt-auto" />
-              </div>
-              <div className="bg-white border border-slate-200/80 rounded-2xl p-4 w-full h-[420px] flex flex-col gap-4 animate-pulse">
-                <div className="w-full h-48 bg-slate-200/60 rounded-xl" />
-                <div className="h-6 bg-slate-200/60 rounded w-3/4" />
-                <div className="h-4 bg-slate-200/60 rounded w-1/2" />
-                <div className="h-10 bg-slate-200/60 rounded-xl mt-auto" />
-              </div>
+              {/* Same shell and rows as ClassCard below: thumb
+                  aspect-[330/223] (~238px), category 16px, title
+                  28px, price 28px, details row 16px, footer
+                  (avatar 32px + "Lihat Detail" 28px) — ~470px. */}
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white border border-slate-200/80 rounded-2xl p-4 w-full max-w-sm flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="mb-4">
+                      <Skeleton
+                        width="100%"
+                        height="auto"
+                        aspectRatio="330 / 223"
+                        borderRadius="0.75rem"
+                      />
+                    </div>
+                    <div className="px-1">
+                      <Skeleton width="40%" height="1rem" className="mb-1" />
+                      <Skeleton width="75%" height="1.75rem" />
+                      <Skeleton
+                        width="35%"
+                        height="1.75rem"
+                        className="mt-2"
+                      />
+                      <div className="flex items-center gap-6 mt-3">
+                        <Skeleton width="4rem" height="1rem" />
+                        <Skeleton width="5rem" height="1rem" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Skeleton
+                        width="2rem"
+                        height="2rem"
+                        borderRadius="9999px"
+                        className="shrink-0"
+                      />
+                      <Skeleton width="6rem" height="1rem" />
+                    </div>
+                    <Skeleton width="6.5rem" height="1.75rem" />
+                  </div>
+                </div>
+              ))}
             </>
           )}
           {!isLoadingClasses && isLoadError && (
