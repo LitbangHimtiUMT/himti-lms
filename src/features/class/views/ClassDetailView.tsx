@@ -80,10 +80,11 @@ export const ClassDetailView = () => {
   // mentor, so there is no creator exclusion. The server decides
   // which claim path applies from the caller's relation to the
   // class. Guests get no request.
-  const { data: eligibility } = useCertificateEligibility(
-    course?.id,
-    !!course?.isAlreadyJoin || !!course?.isClassMentor
-  );
+  const { data: eligibility, isLoading: isEligibilityLoading } =
+    useCertificateEligibility(
+      course?.id,
+      !!course?.isAlreadyJoin || !!course?.isClassMentor
+    );
   const generateCertificate = useGenerateCertificate();
 
   // The mentor path never renders the assignment meter: the server
@@ -356,7 +357,7 @@ export const ClassDetailView = () => {
 
           {/* Certificate section: assignment meter for participants,
               claim states for mentors (no assignment meter) */}
-          {eligibility?.data && (
+          {eligibility?.data ? (
             <section>
               <h2 className="text-xl font-bold text-slate-800 mb-3 border-b border-slate-100 pb-2">
                 Progres Sertifikat
@@ -471,7 +472,48 @@ export const ClassDetailView = () => {
                 </>
               )}
             </section>
-          )}
+          ) : isEligibilityLoading &&
+            (course?.isAlreadyJoin || course?.isClassMentor) ? (
+            // Same spot as the real section, so the reviews and
+            // instructor below it do not shift when eligibility lands.
+            // Shape follows the caller's relation, which the course
+            // already tells us: mentors get the compact variant
+            // (title + line + sm button at 24px), participants the
+            // meter + assignment rows. Guests get nothing: the hook
+            // is disabled for them, so this branch never renders.
+            <section className="animate-pulse" aria-hidden="true">
+              <div className="mb-3 border-b border-slate-100 pb-2">
+                <div className="h-7 w-56 bg-slate-200 rounded" />
+              </div>
+              {course?.isClassMentor ? (
+                <>
+                  <div className="h-5 bg-slate-200 rounded w-3/4 mb-3" />
+                  <div className="w-max">
+                    <div className="h-6 w-32 bg-slate-200 rounded-md" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="h-5 bg-slate-200 rounded w-full mb-3" />
+                  <div className="h-5 bg-slate-200 rounded w-64 mb-3" />
+                  <ul className="space-y-2">
+                    {[0, 1, 2].map((i) => (
+                      <li
+                        key={i}
+                        className="flex items-center justify-between gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3"
+                      >
+                        <div className="space-y-1">
+                          <div className="h-5 w-40 bg-slate-200 rounded" />
+                          <div className="h-4 w-24 bg-slate-200 rounded" />
+                        </div>
+                        <div className="h-6 w-16 bg-slate-200 rounded-full shrink-0" />
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </section>
+          ) : null}
 
           {/* Reviews (certificate holders can review; hides itself
               when the API has no reviews endpoint yet) */}
@@ -548,7 +590,11 @@ export const ClassDetailView = () => {
                     >
                       Lanjut Belajar
                     </Button>
-                  ) : isSessionLoading ? null : !isAuthenticated ? (
+                  ) : isSessionLoading ? (
+                    // md Button is 32px (px-3 py-1.5 text-sm), so the
+                    // placeholder is h-8 in the same slot.
+                    <div className="h-8 w-full bg-slate-200 rounded-md animate-pulse" />
+                  ) : !isAuthenticated ? (
                     <>
                       <Button
                         variant="primary"
