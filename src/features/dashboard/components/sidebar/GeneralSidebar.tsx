@@ -19,7 +19,7 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({
   const [show, setShow] = useAtom(sidebarAtom);
   const handleShow = () => setShow((prev) => !prev);
   const [showLogout, setShowLogout] = useState(false);
-  const { data: profile } = useProfile();
+  const { data: profile, isLoading: isProfileLoading } = useProfile();
   const screen = useScreen();
 
   const mobile = !screen.lg && !screen.xl && !screen["2xl"];
@@ -80,10 +80,21 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({
         {/* Scrollable Items */}
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
+            // One group, like the real menu below: title 16px +
+            // 4 item rows of 40px (mentor has 4 items, non-mentor
+            // 3 — 4 is the neutral max, the footer is pinned so
+            // the extra row shifts nothing below it).
             <div className="flex flex-col gap-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <Skeleton key={index} width="100%" height="3rem" />
-              ))}
+              <div className="flex flex-col gap-2">
+                <div className="px-3">
+                  <Skeleton width="6rem" height="1rem" />
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <Skeleton key={index} width="100%" height="2.5rem" />
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             <div className="flex flex-col gap-4">
@@ -99,39 +110,69 @@ export const GeneralSidebar: React.FC<ISidebarProps> = ({
           )}
         </div>
 
-        {/* User Info */}
-        <div
-          className={`mt-4 flex items-center gap-2.5 border-t border-slate-100 pt-4 ${
-            collapsed ? "lg:justify-center" : ""
-          }`}
-        >
-          <img
-            src={
-              !profile?.data?.photo ? DefaultImage : profile?.data?.photo
-            }
-            onError={(e) =>
-              ((e.target as HTMLImageElement).src = DefaultImage)
-            }
-            alt="Profile"
-            className="h-9 w-9 shrink-0 rounded-full border border-slate-200 object-cover"
-          />
-          <div className={`min-w-0 flex-1 ${collapsed ? "lg:hidden" : ""}`}>
-            <p className="truncate text-[13px] font-semibold text-slate-900">
-              {profile?.data?.name || "unknown"}
-            </p>
-            <p className="truncate text-xs text-slate-500">{role}</p>
-          </div>
-          <button
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 ${
-              collapsed ? "lg:hidden" : ""
+        {/* User Info: while the profile loads, a skeleton in the
+            same slot — the old code rendered the real footer with
+            the name "unknown" flashing in. Same responsive hiding
+            as the real footer when collapsed. */}
+        {isProfileLoading ? (
+          <div
+            className={`mt-4 flex items-center gap-2.5 border-t border-slate-100 pt-4 ${
+              collapsed ? "lg:justify-center" : ""
             }`}
-            onClick={() => setShowLogout((prev) => !prev)}
-            title="Keluar"
-            aria-label="Keluar"
           >
-            <LogOut size={19} />
-          </button>
-        </div>
+            <Skeleton
+              width="2.25rem"
+              height="2.25rem"
+              borderRadius="9999px"
+              className="shrink-0"
+            />
+            <div
+              className={`min-w-0 flex-1 ${collapsed ? "lg:hidden" : ""}`}
+            >
+              <Skeleton width="6rem" height="1.25rem" />
+              <Skeleton width="4rem" height="1rem" />
+            </div>
+            <Skeleton
+              width="2.25rem"
+              height="2.25rem"
+              borderRadius="0.75rem"
+              className={`shrink-0 ${collapsed ? "lg:hidden" : ""}`}
+            />
+          </div>
+        ) : (
+          <div
+            className={`mt-4 flex items-center gap-2.5 border-t border-slate-100 pt-4 ${
+              collapsed ? "lg:justify-center" : ""
+            }`}
+          >
+            <img
+              src={
+                !profile?.data?.photo ? DefaultImage : profile?.data?.photo
+              }
+              onError={(e) =>
+                ((e.target as HTMLImageElement).src = DefaultImage)
+              }
+              alt="Profile"
+              className="h-9 w-9 shrink-0 rounded-full border border-slate-200 object-cover"
+            />
+            <div className={`min-w-0 flex-1 ${collapsed ? "lg:hidden" : ""}`}>
+              <p className="truncate text-[13px] font-semibold text-slate-900">
+                {profile?.data?.name || "unknown"}
+              </p>
+              <p className="truncate text-xs text-slate-500">{role}</p>
+            </div>
+            <button
+              className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-500 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 ${
+                collapsed ? "lg:hidden" : ""
+              }`}
+              onClick={() => setShowLogout((prev) => !prev)}
+              title="Keluar"
+              aria-label="Keluar"
+            >
+              <LogOut size={19} />
+            </button>
+          </div>
+        )}
       </aside>
       <LogoutConfirmation
         onHide={() => setShowLogout((prev) => !prev)}

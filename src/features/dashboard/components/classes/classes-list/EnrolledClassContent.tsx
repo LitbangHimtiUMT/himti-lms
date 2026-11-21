@@ -97,24 +97,68 @@ export const EnrolledClassContent = () => {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {isLoadingClasses ? (
-          // Loading skeleton
-          Array.from({ length: 5 }).map((_, idx) => (
+          // Loading skeleton: 10 cards like the page size, same
+          // rows as CardEnrolledClass — thumb 160px, title 28px +
+          // badge 22px, price 24px, category badge + sessions,
+          // progress label + bar 8px, 2 hint lines, review prompt
+          // 36px, buttons sm 26px (24px + secondary border).
+          // The hint + prompt are the common full variant, so a
+          // plain card overshoots ~90px the other way.
+          Array.from({ length: 10 }).map((_, idx) => (
             <div
               key={idx}
               className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm hover:shadow-md transition-all"
             >
-              <Skeleton height="10rem" width="100%" />
-              <div className="p-4 flex flex-col gap-3">
-                <Skeleton height="1.5rem" width="80%" />
-                <Skeleton height="1rem" width="60%" />
-                <div className="flex gap-2">
-                  <Skeleton height="1.5rem" width="5rem" />
-                  <Skeleton height="1.5rem" width="5rem" />
+              <Skeleton height="10rem" width="100%" borderRadius="0" />
+              <div className="p-4">
+                <div className="flex flex-col mb-3">
+                  <Skeleton height="1.75rem" width="80%" />
+                  <div className="flex w-max gap-1.5">
+                    <Skeleton
+                      height="1.375rem"
+                      width="5rem"
+                      borderRadius="9999px"
+                    />
+                  </div>
                 </div>
-                <Skeleton height="0.5rem" width="100%" />
-                <div className="flex justify-between mt-2">
-                  <Skeleton height="2rem" width="6rem" />
-                  <Skeleton height="2rem" width="6rem" />
+                <div className="flex items-center gap-2 mb-2">
+                  <Skeleton height="1.5rem" width="40%" />
+                </div>
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  <Skeleton
+                    height="1.375rem"
+                    width="5rem"
+                    borderRadius="9999px"
+                  />
+                  <Skeleton height="1.25rem" width="6rem" />
+                </div>
+                <div className="mb-4">
+                  <div className="flex justify-between mb-1">
+                    <Skeleton height="1.25rem" width="4rem" />
+                    <Skeleton height="1.25rem" width="2rem" />
+                  </div>
+                  <Skeleton
+                    height="0.5rem"
+                    width="100%"
+                    borderRadius="9999px"
+                  />
+                  <div className="mt-1.5">
+                    <Skeleton height="1rem" width="90%" />
+                  </div>
+                  <div className="mt-0.5">
+                    <Skeleton height="1rem" width="60%" />
+                  </div>
+                </div>
+                <div className="mb-4">
+                  <Skeleton height="2.25rem" width="100%" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1">
+                    <Skeleton height="26px" width="100%" />
+                  </div>
+                  <div className="flex-1">
+                    <Skeleton height="26px" width="100%" />
+                  </div>
                 </div>
               </div>
             </div>

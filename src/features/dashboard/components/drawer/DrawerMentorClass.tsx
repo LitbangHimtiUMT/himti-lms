@@ -135,13 +135,32 @@ export const DrawerMentorClass: React.FC<DrawerParticipantsProps> = ({
         <div className="flex-1 overflow-y-auto py-4">
           {isLoadingClassMentor ||
           (isFetchingClassMentor && !classMentors?.data) ? (
-            <>
-              <div className="flex flex-col gap-3 px-3">
-                <Skeleton width="100%" height="3.5rem" />
-                <Skeleton width="100%" height="3.5rem" />
-                <Skeleton width="100%" height="3.5rem" />
-              </div>
-            </>
+            // Same rows as the real list below: li py-1 + inner
+            // px-2 py-4, avatar 40px, name 24px + email 20px
+            // (the text block, not the avatar, sets the 84px row).
+            <ul className="flex-col gap-3 items-center justify-center">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <li
+                  key={i}
+                  className={`flex items-center justify-between py-1 ${
+                    i !== 2 ? "border-b border-solid border-gray-500" : ""
+                  }`}
+                >
+                  <div className="flex items-center space-x-3 w-full px-2 py-4 rounded-lg">
+                    <Skeleton
+                      width="2.5rem"
+                      height="2.5rem"
+                      borderRadius="9999px"
+                      className="shrink-0"
+                    />
+                    <div>
+                      <Skeleton width="8rem" height="1.5rem" />
+                      <Skeleton width="10rem" height="1.25rem" />
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
           ) : isErrorClassMentor && !classMentors?.data ? (
             <QueryErrorState
               customMinHeight={200}

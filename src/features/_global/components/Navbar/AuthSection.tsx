@@ -51,15 +51,34 @@ export const AuthSection: React.FC<AuthSectionProps> = ({
     <>
       {isAuthenticated || isLoading ? (
         isLoading ? (
-          <div
-            className={`flex items-center gap-2 ${
-              direction === "row" ? "" : "flex-col"
-            }`}
-          >
-            <Skeleton width="8rem" height="0.8rem" />
-            <Skeleton width="2rem" height="2rem" borderRadius="100%" />
-            <Skeleton height="1.8rem" width="5rem" />
-          </div>
+          direction === "row" ? (
+            // Same slot as the real button below: py-[5px] pl-[5px]
+            // pr-2.5, avatar 32px, name text-sm 20px, chevron 16px.
+            <div className="flex items-center gap-2.5 rounded-full py-[5px] pl-[5px] pr-2.5">
+              <Skeleton width="2rem" height="2rem" borderRadius="100%" />
+              <Skeleton width="8rem" height="1.25rem" />
+              <Skeleton width="1rem" height="1rem" />
+            </div>
+          ) : (
+            // Same stack as the real column below: user row (avatar
+            // 32px + name 20px + role 16px), Dashboard link 44px,
+            // Keluar button 44px w-full.
+            <div className="flex w-full flex-col gap-3">
+              <div className="flex items-center gap-2.5 px-3">
+                <Skeleton width="2rem" height="2rem" borderRadius="100%" />
+                <div className="min-w-0">
+                  <Skeleton width="6rem" height="1.25rem" />
+                  <Skeleton width="4rem" height="1rem" />
+                </div>
+              </div>
+              <Skeleton
+                width="100%"
+                height="2.75rem"
+                borderRadius="0.75rem"
+              />
+              <Skeleton width="100%" height="2.75rem" borderRadius="1rem" />
+            </div>
+          )
         ) : direction === "row" ? (
           <div className="relative" ref={menuRef}>
             <button

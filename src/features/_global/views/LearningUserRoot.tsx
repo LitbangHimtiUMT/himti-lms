@@ -220,11 +220,95 @@ export const LearningUserRoot = () => {
             {/* Course Modules (scrollable) */}
             <div className="overflow-y-auto">
               {isLoadingClass || (isFetching && !classes?.data) ? (
-                <div className="flex flex-col gap-4 px-2 mt-2">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <Skeleton key={i} width="100%" height="40px" />
-                  ))}
-                </div>
+                // Same shape as the real session list below: session
+                // header p-4 + chevron 16px + title 24px = 56px;
+                // the first session is open by default, so its
+                // lessons get sub-rows (p-2 + icon 32px = 48px).
+                // Collapsed, the real sidebar shows a centered 20px
+                // icon per session instead of a full bar.
+                sidebarOpen ? (
+                  <div className="flex flex-col">
+                    <div
+                      className={`border-b ${
+                        darkMode ? "border-gray-700" : "border-gray-200"
+                      }`}
+                    >
+                      <div className="p-4 flex items-center gap-2">
+                        <Skeleton
+                          width="1rem"
+                          height="1rem"
+                          tone={darkMode ? "dark" : "light"}
+                        />
+                        <Skeleton
+                          width="55%"
+                          height="1.5rem"
+                          tone={darkMode ? "dark" : "light"}
+                        />
+                      </div>
+                      <div className="pl-4 pr-2 pb-2">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="p-2 rounded-lg mb-2 flex items-center"
+                          >
+                            <Skeleton
+                              width="2rem"
+                              height="2rem"
+                              borderRadius="9999px"
+                              className="mr-3 shrink-0"
+                              tone={darkMode ? "dark" : "light"}
+                            />
+                            <Skeleton
+                              width="70%"
+                              height="1.25rem"
+                              tone={darkMode ? "dark" : "light"}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`border-b ${
+                          darkMode ? "border-gray-700" : "border-gray-200"
+                        }`}
+                      >
+                        <div className="p-4 flex items-center gap-2">
+                          <Skeleton
+                            width="1rem"
+                            height="1rem"
+                            tone={darkMode ? "dark" : "light"}
+                          />
+                          <Skeleton
+                            width="55%"
+                            height="1.5rem"
+                            tone={darkMode ? "dark" : "light"}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`border-b ${
+                          darkMode ? "border-gray-700" : "border-gray-200"
+                        }`}
+                      >
+                        <div className="p-4 flex items-center justify-center">
+                          <Skeleton
+                            width="1.25rem"
+                            height="1.25rem"
+                            tone={darkMode ? "dark" : "light"}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )
               ) : isError && !classes?.data ? (
                 <QueryErrorState
                   customMinHeight={140}

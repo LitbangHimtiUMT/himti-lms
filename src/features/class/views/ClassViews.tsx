@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Poppins } from "../../_global/components/Text";
+import { Skeleton } from "../../_global/components/Shimer";
 import ClassLayout from "../components/ClassLayout";
 import { useCategories } from "../../categories/hooks/useCategories";
 import { convertQueryParamsToObject } from "@features/_global/helper";
@@ -9,7 +10,8 @@ import { FaSearch, FaTimes } from "react-icons/fa";
 export const ClassViews = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParams = convertQueryParamsToObject(searchParams.toString());
-  const { data: categoriesData } = useCategories();
+  const { data: categoriesData, isLoading: isLoadingCategories } =
+    useCategories();
   
   const [searchInput, setSearchInput] = useState(queryParams.search || "");
   const selectedCategory = queryParams.categoryId || "";
@@ -143,19 +145,47 @@ export const ClassViews = () => {
               >
                 Semua Kategori
               </button>
-              {categoriesData?.data?.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => handleCategorySelect(cat.id)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all ${
-                    selectedCategory === cat.id
-                      ? "bg-[#2b6394] text-white shadow-sm"
-                      : "bg-slate-50 text-slate-600 hover:bg-slate-100"
-                  }`}
-                >
-                  {cat.name}
-                </button>
-              ))}
+              {isLoadingCategories ? (
+                // Same pills as the real tabs below: px-4 py-1.5
+                // text-xs = 28px, rounded-full. The count is
+                // unknown while loading, so 4 is the neutral middle.
+                <>
+                  <Skeleton
+                    width="7rem"
+                    height="1.75rem"
+                    borderRadius="9999px"
+                  />
+                  <Skeleton
+                    width="6rem"
+                    height="1.75rem"
+                    borderRadius="9999px"
+                  />
+                  <Skeleton
+                    width="8rem"
+                    height="1.75rem"
+                    borderRadius="9999px"
+                  />
+                  <Skeleton
+                    width="5rem"
+                    height="1.75rem"
+                    borderRadius="9999px"
+                  />
+                </>
+              ) : (
+                categoriesData?.data?.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => handleCategorySelect(cat.id)}
+                    className={`px-4 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all ${
+                      selectedCategory === cat.id
+                        ? "bg-[#2b6394] text-white shadow-sm"
+                        : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    {cat.name}
+                  </button>
+                ))
+              )}
             </div>
           </div>
 

@@ -3,6 +3,7 @@ import { CiSearch } from "react-icons/ci";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
 import { useMentors } from "../hooks/useMentors";
 import { Input } from "../../_global/components/Input";
+import { Skeleton } from "../../_global/components/Shimer";
 import { Pagination } from "../../_global/components/Pagination";
 import { QueryErrorState } from "../../_global/components/QueryErrorState";
 import { Poppins } from "../../_global/components/Text";
@@ -80,15 +81,22 @@ const MentorCard = ({ mentor }: { mentor: any }) => {
 };
 
 const SkeletonCard = () => (
-  <div className="rounded-2xl overflow-hidden bg-white border border-slate-200/80 animate-pulse">
-    <div className="aspect-[4/4] w-full bg-slate-200/80" />
-    <div className="p-5 space-y-3">
-      <div className="h-3 bg-slate-200 rounded w-1/3" />
-      <div className="h-5 bg-slate-200 rounded w-2/3" />
+  // Same shell as MentorCard below, with the name overlay moved
+  // back INSIDE the photo (absolute bottom-0, p-5) where the real
+  // one lives — the old skeleton put it under the photo, so the
+  // card ran ~490px against the real ~426px.
+  <div className="group relative rounded-2xl overflow-hidden bg-white border border-slate-200/80 shadow-sm flex flex-col">
+    <div className="relative aspect-[4/4] w-full overflow-hidden bg-slate-100">
+      <Skeleton width="100%" height="100%" borderRadius="0" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1f2d]/85 via-[#0d1f2d]/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 p-5">
+        <Skeleton width="33%" height="1rem" className="mb-0.5" />
+        <Skeleton width="66%" height="1.375rem" />
+      </div>
     </div>
-    <div className="px-5 py-4 border-t border-slate-100 flex justify-between">
-      <div className="h-3 bg-slate-200 rounded w-1/2" />
-      <div className="h-5 bg-slate-200 rounded-full w-16" />
+    <div className="px-5 py-4 flex items-center justify-between border-t border-slate-100 bg-white">
+      <Skeleton width="50%" height="1rem" />
+      <Skeleton width="4rem" height="1.5rem" borderRadius="9999px" />
     </div>
   </div>
 );
