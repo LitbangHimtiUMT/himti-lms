@@ -79,9 +79,17 @@ export const InvitationUseCodeViews = () => {
         </p>
 
         {isLoading ? (
-          <div className="flex flex-col items-center gap-2">
-            <Skeleton width="75%" height="1.5rem" />
-            <Skeleton width="60%" height="1rem" />
+          // Same stack as the real content below: class name
+          // text-lg 28px + code row text-sm 20px (mb-4), then the
+          // Join button w-1/3 size lg 36px.
+          <div className="flex flex-col items-center">
+            <div className="mb-4 flex flex-col items-center w-full">
+              <Skeleton width="75%" height="1.75rem" />
+              <Skeleton width="60%" height="1.25rem" className="mt-2" />
+            </div>
+            <div className="flex flex-col items-center gap-3 w-full">
+              <Skeleton width="33.333%" height="2.25rem" />
+            </div>
           </div>
         ) : isErrorClass || !classData ? (
           <QueryErrorState
@@ -113,7 +121,7 @@ export const InvitationUseCodeViews = () => {
                   !!classData.isAlreadyJoin && !isCreator && !isLoading
                 }
               >
-                <div className="bg-red-100 w-[75#] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
+                <div className="bg-red-100 w-[75%] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
                   You have joined this class.
                 </div>
               </ConditionNode>
@@ -122,7 +130,7 @@ export const InvitationUseCodeViews = () => {
                   isCreator && !classData.isAlreadyJoin && !isLoading
                 }
               >
-                <div className="bg-red-100 w-[75#] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
+                <div className="bg-red-100 w-[75%] text-red-800 border border-red-300 text-sm rounded-md px-4 py-3 mt-4">
                   Mentor cannot join this class as participants.
                 </div>
               </ConditionNode>
