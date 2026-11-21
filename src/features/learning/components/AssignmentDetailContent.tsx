@@ -71,7 +71,7 @@ export const AssignmentDetailContent = ({
     mode === "current" && !haveApproveSubmission && !data?.activeSubmission;
 
   if (!data || isLoading) {
-    return <AssignmentDetailSkeleton />;
+    return <AssignmentDetailSkeleton mode={mode} isOpen={isOpen} />;
   }
 
   return (
