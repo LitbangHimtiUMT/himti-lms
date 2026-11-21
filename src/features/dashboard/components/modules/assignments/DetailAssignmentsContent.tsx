@@ -91,10 +91,59 @@ export const DetailAssignmentContent = () => {
   const onHide = () => setShow((prev) => !prev);
 
   if (isLoadingAssignment) {
+    // Inside the same container as the real content below
+    // (container mx-auto px-4 py-6 sm:py-8), with a block for
+    // each real section: header buttons, assignment card
+    // (title + 4 meta cells + description), submissions card
+    // (title + 3 table rows). The old skeleton replaced the
+    // whole page with 2 full-bleed blocks.
     return (
-      <div className="flex flex-col gap-6 mb-6">
-        <Skeleton width="100%" height="500px" />
-        <Skeleton width="100%" height="300px" />
+      <div className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="flex flex-wrap gap-3 mb-6">
+          <Skeleton width="9rem" height="2rem" />
+          <Skeleton width="9rem" height="2rem" />
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+          <Skeleton width="66%" height="2rem" className="mb-3 sm:mb-4" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} width="80%" height="1.25rem" />
+            ))}
+          </div>
+          <div className="mb-4 sm:mb-6">
+            <Skeleton width="8rem" height="1.75rem" className="mb-2" />
+            <div className="space-y-2">
+              <Skeleton width="100%" height="1.5rem" />
+              <Skeleton width="100%" height="1.5rem" />
+              <Skeleton width="83%" height="1.5rem" />
+              <Skeleton width="66%" height="1.5rem" />
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+          <Skeleton width="10rem" height="1.75rem" className="mb-4 sm:mb-6" />
+          <div className="space-y-2">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 px-4 py-4">
+                <Skeleton
+                  width="2.5rem"
+                  height="2.5rem"
+                  borderRadius="9999px"
+                  className="shrink-0"
+                />
+                <div className="flex-1 space-y-1">
+                  <Skeleton width="50%" height="1.25rem" />
+                  <Skeleton width="35%" height="1.25rem" />
+                </div>
+                <Skeleton
+                  width="4rem"
+                  height="1.375rem"
+                  borderRadius="9999px"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
