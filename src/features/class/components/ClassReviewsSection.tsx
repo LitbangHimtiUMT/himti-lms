@@ -18,7 +18,48 @@ export const ClassReviewsSection: React.FC<{ classId: string }> = ({
   const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useClassReviews(classId, page);
 
-  if (isError || isLoading || !data) {
+  // Loading shows a skeleton in the section's own spot (title +
+  // aggregate row + 2 review cards: avatar 40px, name/date, 14px
+  // stars, 2 text lines), so the instructor section below does not
+  // jump when the reviews land. Errors stay fail-closed: the whole
+  // section hides, exactly as before.
+  if (isLoading) {
+    return (
+      <section className="animate-pulse" aria-hidden="true">
+        <div className="mb-3 border-b border-slate-100 pb-2">
+          <div className="h-7 w-48 bg-slate-200 rounded" />
+        </div>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="h-5 w-5 bg-slate-200 rounded-full" />
+          <div className="h-7 w-10 bg-slate-200 rounded" />
+          <div className="h-5 w-28 bg-slate-200 rounded" />
+        </div>
+        <ul className="space-y-4">
+          {[0, 1].map((i) => (
+            <li
+              key={i}
+              className="bg-slate-50 border border-slate-100 rounded-xl p-4"
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <div className="h-10 w-10 bg-slate-200 rounded-full shrink-0" />
+                <div className="space-y-1">
+                  <div className="h-5 w-32 bg-slate-200 rounded" />
+                  <div className="h-4 w-24 bg-slate-200 rounded" />
+                </div>
+              </div>
+              <div className="h-4 w-20 bg-slate-200 rounded" />
+              <div className="mt-2 space-y-1">
+                <div className="h-4 bg-slate-200 rounded w-full" />
+                <div className="h-4 bg-slate-200 rounded w-5/6" />
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  }
+
+  if (isError || !data) {
     return null;
   }
 
