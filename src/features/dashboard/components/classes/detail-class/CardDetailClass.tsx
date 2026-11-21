@@ -46,10 +46,38 @@ export const CardDetailClass: React.FC<CardDetailClassProps> = ({
     ARCHIVED: "warning",
   };
 
+  // Same shell as the real card (bg-white, shadow-md, rounded-2xl,
+  // flex-col on mobile, two columns on desktop) with a bar for every
+  // row, measured from the JSX below: thumbnail h-48 (mobile) / a
+  // third of the width (desktop), title text-lg 28px, created-by
+  // text-sm 20px, badges sm 22px, bottom row pt-2 + label 20px +
+  // value 24px. Content column ~198px; mobile total ~390px.
   if (isLoading) {
     return (
-      <div className="w-full">
-        <Skeleton width="100%" height="12rem" />
+      <div className="bg-white shadow-md rounded-2xl overflow-hidden w-full flex flex-col md:flex-row">
+        <div className="w-full md:w-1/3 h-48 md:h-auto shrink-0">
+          <Skeleton width="100%" height="100%" borderRadius="0" />
+        </div>
+        <div className="p-5 space-y-3 w-full md:w-2/3">
+          <Skeleton width="66%" height="1.75rem" />
+          <Skeleton width="12rem" height="1.25rem" />
+          <div className="flex flex-wrap gap-2">
+            <Skeleton width="4rem" height="1.375rem" borderRadius="9999px" />
+            <Skeleton width="5rem" height="1.375rem" borderRadius="9999px" />
+            <Skeleton width="4.5rem" height="1.375rem" borderRadius="9999px" />
+            <Skeleton width="5.5rem" height="1.375rem" borderRadius="9999px" />
+          </div>
+          <div className="flex justify-between items-center pt-2">
+            <div>
+              <Skeleton width="6rem" height="1.25rem" />
+              <Skeleton width="3rem" height="1.5rem" />
+            </div>
+            <div className="text-right">
+              <Skeleton width="3rem" height="1.25rem" />
+              <Skeleton width="5rem" height="1.5rem" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
