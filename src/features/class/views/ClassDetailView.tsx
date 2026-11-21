@@ -100,19 +100,156 @@ export const ClassDetailView = () => {
 
   // Skeleton only before the first load: a background refetch keeps
   // the loaded page on screen instead of swapping in the skeleton.
+  // Every block mirrors the real page below (same wrappers, same
+  // spacing, same heights): the full-bleed hero, the 3-column grid,
+  // the left sections and the enrollment card.
   if (isLoading || (isFetching && !res?.data)) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-16 animate-pulse">
-        <div className="h-10 bg-slate-200 rounded w-1/3 mb-6" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="aspect-video bg-slate-200 rounded-2xl" />
-            <div className="h-8 bg-slate-200 rounded w-2/3" />
-            <div className="h-4 bg-slate-200 rounded w-full" />
-            <div className="h-4 bg-slate-200 rounded w-5/6" />
-            <div className="h-4 bg-slate-200 rounded w-4/6" />
+      <div className="font-sans text-gray-800 animate-pulse">
+        {/* Hero: same full-bleed h-[320px] md:h-[400px] block, with
+            the overlay content (back link, pills, title) at the
+            bottom, px-6 pb-10 md:px-16 */}
+        <div className="relative h-[320px] md:h-[400px] overflow-hidden bg-slate-200">
+          <div className="absolute inset-0 flex flex-col justify-end px-6 pb-10 md:px-16">
+            <div className="h-5 w-32 bg-slate-300 rounded mb-4" />
+            <div className="flex flex-wrap gap-2 mb-2">
+              <div className="h-6 w-20 bg-slate-300 rounded-full" />
+              <div className="h-6 w-28 bg-slate-300 rounded-full" />
+              <div className="h-6 w-24 bg-slate-300 rounded-full" />
+            </div>
+            <div className="h-11 md:h-12 w-2/3 max-w-3xl bg-slate-300 rounded" />
           </div>
-          <div className="h-64 bg-slate-200 rounded-2xl" />
+        </div>
+
+        {/* Main content: same max-w-6xl, py-12, lg:grid-cols-3 gap-10 */}
+        <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Left: same lg:col-span-2 space-y-10 */}
+          <div className="lg:col-span-2 space-y-10">
+            {/* Description: h2 (text-xl) + 3 text lines */}
+            <section>
+              <div className="mb-3 border-b border-slate-100 pb-2">
+                <div className="h-7 w-40 bg-slate-200 rounded" />
+              </div>
+              <div className="space-y-1">
+                <div className="h-4 bg-slate-200 rounded w-full" />
+                <div className="h-4 bg-slate-200 rounded w-5/6" />
+                <div className="h-4 bg-slate-200 rounded w-4/6" />
+              </div>
+            </section>
+
+            {/* Stats: 3 cards, same p-4 flex-col gap-2 shape
+                (icon 20px + number text-2xl + label text-xs = 116px) */}
+            <section className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col items-center gap-2"
+                >
+                  <div className="h-5 w-5 bg-slate-200 rounded" />
+                  <div className="h-8 w-12 bg-slate-200 rounded" />
+                  <div className="h-4 w-16 bg-slate-200 rounded" />
+                </div>
+              ))}
+            </section>
+
+            {/* Certificate section placeholder: title + 2 lines +
+                2 assignment rows (px-4 py-3, title + module + badge) */}
+            <section>
+              <div className="mb-3 border-b border-slate-100 pb-2">
+                <div className="h-7 w-56 bg-slate-200 rounded" />
+              </div>
+              <div className="h-5 bg-slate-200 rounded w-full mb-3" />
+              <div className="h-5 bg-slate-200 rounded w-64 mb-3" />
+              <ul className="space-y-2">
+                {[0, 1].map((i) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between gap-3 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3"
+                  >
+                    <div className="space-y-1">
+                      <div className="h-5 w-40 bg-slate-200 rounded" />
+                      <div className="h-4 w-24 bg-slate-200 rounded" />
+                    </div>
+                    <div className="h-6 w-16 bg-slate-200 rounded-full shrink-0" />
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* Reviews placeholder: title + aggregate row + 2 cards
+                (avatar 40px + name/date + stars + 2 text lines) */}
+            <section>
+              <div className="mb-3 border-b border-slate-100 pb-2">
+                <div className="h-7 w-48 bg-slate-200 rounded" />
+              </div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-5 w-5 bg-slate-200 rounded-full" />
+                <div className="h-7 w-10 bg-slate-200 rounded" />
+                <div className="h-5 w-28 bg-slate-200 rounded" />
+              </div>
+              <ul className="space-y-4">
+                {[0, 1].map((i) => (
+                  <li
+                    key={i}
+                    className="bg-slate-50 border border-slate-100 rounded-xl p-4"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="h-10 w-10 bg-slate-200 rounded-full shrink-0" />
+                      <div className="space-y-1">
+                        <div className="h-5 w-32 bg-slate-200 rounded" />
+                        <div className="h-4 w-24 bg-slate-200 rounded" />
+                      </div>
+                    </div>
+                    <div className="h-4 w-20 bg-slate-200 rounded" />
+                    <div className="mt-2 space-y-1">
+                      <div className="h-4 bg-slate-200 rounded w-full" />
+                      <div className="h-4 bg-slate-200 rounded w-5/6" />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            {/* Instructor placeholder: title + card (avatar 56px) */}
+            <section>
+              <div className="mb-4 border-b border-slate-100 pb-2">
+                <div className="h-7 w-48 bg-slate-200 rounded" />
+              </div>
+              <div className="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-xl p-4">
+                <div className="h-14 w-14 bg-slate-200 rounded-full shrink-0" />
+                <div className="space-y-1">
+                  <div className="h-5 w-40 bg-slate-200 rounded" />
+                  <div className="h-4 w-56 bg-slate-200 rounded" />
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {/* Right: enrollment card, same sticky + rounded-2xl shell.
+              Thumb h-40 + p-5 (price text-2xl + 4 detail rows +
+              2 md buttons at 32px each) = ~490px. */}
+          <div className="col-span-1">
+            <div className="sticky top-6">
+              <div className="rounded-2xl border border-slate-200 shadow-lg bg-white overflow-hidden">
+                <div className="h-40 bg-slate-200" />
+                <div className="p-5 space-y-4">
+                  <div className="h-8 w-24 bg-slate-200 rounded" />
+                  <ul className="space-y-2 divide-y divide-slate-100">
+                    {[0, 1, 2, 3].map((i) => (
+                      <li key={i} className="flex justify-between py-2">
+                        <div className="h-5 w-16 bg-slate-200 rounded" />
+                        <div className="h-5 w-20 bg-slate-200 rounded" />
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="pt-2 space-y-2">
+                    <div className="h-8 w-full bg-slate-200 rounded-md" />
+                    <div className="h-8 w-full bg-slate-200 rounded-md" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
