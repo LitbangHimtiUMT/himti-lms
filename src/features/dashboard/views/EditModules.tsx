@@ -38,7 +38,29 @@ export const EditModules = () => {
         ]}
       />
       {isFetching && !modules?.data ? (
-        <Skeleton width="100%" height="500px" />
+        // Same rows as FormCreateModules below: 2 half-width inputs
+        // (label 20px + input md 40px), file row (label + native
+        // input ~24px), content row (label + editor ~250px: toolbar
+        // + 200px editing area), submit button lg 36px.
+        <div className="flex flex-col gap-4">
+          <div className="lg:w-1/2 w-full flex flex-col gap-2">
+            <Skeleton width="7rem" height="1.25rem" />
+            <Skeleton width="100%" height="2.5rem" />
+          </div>
+          <div className="lg:w-1/2 w-full flex flex-col gap-2">
+            <Skeleton width="7rem" height="1.25rem" />
+            <Skeleton width="100%" height="2.5rem" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton width="3rem" height="1.25rem" />
+            <Skeleton width="100%" height="1.5rem" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton width="5rem" height="1.25rem" />
+            <Skeleton width="100%" height="250px" />
+          </div>
+          <Skeleton width="100%" height="2.25rem" />
+        </div>
       ) : !modules?.data ? (
         <QueryErrorState
           description={[
